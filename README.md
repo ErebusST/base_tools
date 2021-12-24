@@ -97,7 +97,7 @@ spring:
 
 ## redis工具
  * 配置示例
-   ```
+```
  redis:
   redis_ip: redis
   redis_port: 6379
@@ -107,7 +107,7 @@ spring:
     maxTotal: 10
     testOnBorrow: true
     testOnReturn: true
-   ```
+```
 ## Gis相关工具
   * 包含各种坐标转换
   * 拆分单元格
