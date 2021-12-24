@@ -3,7 +3,7 @@
  包含jdbc以及hibernate的封装
  jdbc 支持多数据源
  hibernate 自动取配置中的第一个数据源
-多数据源配置示例
+* 多数据源配置示例
 ```
 spring:
   datasource:
@@ -51,7 +51,7 @@ spring:
     connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
     useGlobalDataSourceStat: true # 合并多个DruidDataSource的监控数据
 ```
-单数据源配置示例
+* 单数据源配置示例
 
 ```
 spring:
@@ -96,7 +96,18 @@ spring:
 ```
 
 ## redis工具
-
+ * 配置示例
+   ```
+ redis:
+  redis_ip: redis
+  redis_port: 6379
+  auth: password
+  pool:
+    maxIdle: 10
+    maxTotal: 10
+    testOnBorrow: true
+    testOnReturn: true
+   ```
 ## Gis相关工具
   * 包含各种坐标转换
   * 拆分单元格
