@@ -46,9 +46,7 @@ public class Point {
 
     public Point(String x, String y) {
         this.lng = new BigDecimal(x).setScale(6, BigDecimal.ROUND_HALF_UP);
-        ;
         this.lat = new BigDecimal(y).setScale(6, BigDecimal.ROUND_HALF_UP);
-        ;
     }
 
 
