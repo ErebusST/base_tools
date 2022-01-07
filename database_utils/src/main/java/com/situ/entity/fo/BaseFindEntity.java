@@ -17,9 +17,7 @@ import java.io.Serializable;
 /**
  * 查询基础类
  *
- * @author 司徒彬
- * <p>
- * 2017年1月11日18:08:13
+ * @author 司徒彬  <p> 2017年1月11日18:08:13
  */
 @Getter
 @Setter
@@ -40,10 +38,24 @@ public class BaseFindEntity implements Serializable {
     //private String state;
 
 
+    /**
+     * Get search content string.
+     *
+     * @return the search content
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:07
+     */
     public String getSearchContent() {
         return searchContent;
     }
 
+    /**
+     * Get like search content string.
+     *
+     * @return the like search content
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:07
+     */
     public String getLikeSearchContent() {
         searchContent = searchContent == null ? searchContent = "" : searchContent;
         return "%" + searchContent + "%";

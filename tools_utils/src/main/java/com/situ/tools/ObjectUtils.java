@@ -25,6 +25,8 @@ public class ObjectUtils extends org.apache.commons.lang3.ObjectUtils {
      *
      * @param object the object
      * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
      */
     public static boolean isEmpty(Object object) {
         return !isNotEmpty(object);
@@ -35,6 +37,8 @@ public class ObjectUtils extends org.apache.commons.lang3.ObjectUtils {
      *
      * @param object the object
      * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
      */
     public static boolean isNotEmpty(Object object) {
         boolean isNotEmpty = StringUtils.isNotEmpty(object);
@@ -54,6 +58,8 @@ public class ObjectUtils extends org.apache.commons.lang3.ObjectUtils {
      *
      * @param object the object
      * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
      */
     public static boolean isNull(Object object) {
         return object == null;
@@ -65,6 +71,8 @@ public class ObjectUtils extends org.apache.commons.lang3.ObjectUtils {
      *
      * @param object the object
      * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
      */
     public static boolean isNotNull(Object object) {
         return !isNull(object);
@@ -76,6 +84,8 @@ public class ObjectUtils extends org.apache.commons.lang3.ObjectUtils {
      * @param obj1 the obj 1
      * @param obj2 the obj 2
      * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
      */
     public static boolean equals(Object obj1, Object obj2) {
         if (isNull(obj1) && isNull(obj2)) {

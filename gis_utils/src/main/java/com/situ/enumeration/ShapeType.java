@@ -12,8 +12,15 @@ package com.situ.enumeration;
  * 形状类型
  *
  * @author 司徒彬
- * @date 2021/2/4 17:09
+ * @date 2021 /2/4 17:09
  */
 public enum ShapeType {
-    square, hexagon
+    /**
+     * Square shape type.
+     */
+    square,
+    /**
+     * Hexagon shape type.
+     */
+    hexagon
 }

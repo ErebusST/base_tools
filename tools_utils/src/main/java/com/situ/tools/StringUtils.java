@@ -22,7 +22,7 @@ import java.util.stream.Stream;
  * StringUtils重载方法
  *
  * @author 司徒彬
- * @date 2017-03-15 10:56
+ * @date 2017 -03-15 10:56
  */
 public class StringUtils extends org.apache.commons.lang3.StringUtils {
     /**
@@ -30,6 +30,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      *
      * @param cs the cs
      * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
      */
     public static boolean isEmpty(CharSequence cs) {
         return !isNotEmpty(cs);
@@ -40,6 +42,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      *
      * @param cs the cs
      * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
      */
     public static boolean isNotEmpty(CharSequence cs) {
         return isNotEmpty((Object) cs);
@@ -50,6 +54,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      *
      * @param str the str
      * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
      */
     public static boolean isEmpty(Object str) {
         return !isNotEmpty(str);
@@ -60,6 +66,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      *
      * @param str the str
      * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
      */
     public static boolean isNotEmpty(Object str) {
         return str != null && str.toString().trim().length() != 0;
@@ -70,6 +78,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      *
      * @param str the str
      * @return the string
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
      */
     public static String toString(Object str) {
         return isEmpty(str) ? "" : str.toString();
@@ -80,6 +90,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      *
      * @param length the length
      * @return the string
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
      */
     public static String createRandomStr(int length) {
         return RandomStringUtils.randomAlphanumeric(length);
@@ -91,6 +103,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      * @param source the source
      * @param target the target
      * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
      */
     public static boolean endsWith(String source, String target) {
         return endsWith(source, target, true);
@@ -103,6 +117,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      * @param target     the target
      * @param ignoreCase the ignore case
      * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
      */
     public static boolean endsWith(String source, String target, boolean ignoreCase) {
         if (ObjectUtils.isNull(source) || ObjectUtils.isNull(target)) {
@@ -126,6 +142,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      * @param sourceStr the source str
      * @param splitChar the split char
      * @return the list
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
      */
     public static List<String> splitToList(Object sourceStr, String splitChar) {
         return splitToList(sourceStr, splitChar, true);
@@ -138,6 +156,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      * @param splitChar   the split char
      * @param filterEmpty the filter empty
      * @return the list
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
      */
     public static List<String> splitToList(Object sourceStr, String splitChar, boolean filterEmpty) {
         if (sourceStr != null) {
@@ -163,6 +183,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      *
      * @param value the value
      * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
      */
     public static boolean isFloat(Object value) {
         return isFloat(value, false);
@@ -171,9 +193,11 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     /**
      * 验证是否浮点数
      *
-     * @param value
-     * @param allowBlank
-     * @return
+     * @param value      the value
+     * @param allowBlank the allow blank
+     * @return boolean boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
      */
     public static boolean isFloat(Object value, boolean allowBlank) {
         if (ObjectUtils.isEmpty(value)) {
@@ -193,17 +217,35 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      *
      * @param value the value
      * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
      */
     public static boolean isInteger(Object value) {
         String str = toString(value);
         return match(str, isInteger);
     }
 
+    /**
+     * Is cell phone boolean.
+     *
+     * @param value the value
+     * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
+     */
     public static boolean isCellPhone(Object value) {
         String str = toString(value);
         return match(str, isCellPhone);
     }
 
+    /**
+     * Is identity card boolean.
+     *
+     * @param value the value
+     * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
+     */
     public static boolean isIdentityCard(Object value) {
         String str = toString(value);
         return match(str, isIdentityCard);
@@ -214,6 +256,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      *
      * @param value the value
      * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
      */
     public static boolean isDate(Object value) {
         String str = toString(value);
@@ -235,6 +279,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      *
      * @param strings the strings
      * @return the first not empty string
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
      */
     public static String getFirstNotEmptyString(String... strings) {
         try {
@@ -313,12 +359,23 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     }
 
 
+    /**
+     * Match boolean.
+     *
+     * @param str   the str
+     * @param regex the regex
+     * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
+     */
     public static boolean match(String str, String regex) {
         Pattern compile = Pattern.compile(regex);
         return match(str, compile);
     }
 
     /***
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
      * @param str 源字符串
      * @param pattern 正则表达式
      * @return 是否匹配 boolean
@@ -336,6 +393,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      *
      * @param strings the strings
      * @return the string
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
      */
     public static String getCombineString(List<String> strings) {
         try {
@@ -351,6 +410,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      * @param delimiter the delimiter
      * @param strings   the strings
      * @return the combine string
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
      */
     public static String getCombineString(String delimiter, List<String> strings) {
         try {
@@ -365,6 +426,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      *
      * @param strings the strings
      * @return the combine string
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
      */
     public static String getCombineString(Stream<String> strings) {
         try {
@@ -380,6 +443,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      * @param delimiter the delimiter
      * @param strings   the strings
      * @return the combine string
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
      */
     public static String getCombineString(String delimiter, Stream<String> strings) {
         try {
@@ -413,6 +478,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      * @param delimiter the delimiter
      * @param strings   the strings
      * @return the combine string
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
      */
     public static String getCombineString(String delimiter, String... strings) {
         try {
@@ -426,10 +493,29 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         }
     }
 
+    /**
+     * Equals ignore case boolean.
+     *
+     * @param obj1 the obj 1
+     * @param obj2 the obj 2
+     * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
+     */
     public static boolean equalsIgnoreCase(Object obj1, Object obj2) {
         return equals(obj1, obj2, true);
     }
 
+    /**
+     * Equals boolean.
+     *
+     * @param obj1       the obj 1
+     * @param obj2       the obj 2
+     * @param ignoreCase the ignore case
+     * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
+     */
     public static boolean equals(Object obj1, Object obj2, boolean ignoreCase) {
         if (ignoreCase) {
             return DataSwitch.convertObjectToString(obj1).trim()
@@ -441,6 +527,14 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 
     }
 
+    /**
+     * Concat string.
+     *
+     * @param objects the objects
+     * @return the string
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
+     */
     public static String concat(Object... objects) {
         return Arrays.stream(objects).map(DataSwitch::convertObjectToString).collect(Collectors.joining());
     }
@@ -452,6 +546,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      * @param string  the string
      * @param objects the objects
      * @return the string
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
      */
     public static String format(String string, Object... objects) {
         for (Object object : objects) {

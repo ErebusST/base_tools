@@ -36,18 +36,34 @@ import java.util.stream.Collectors;
  * 数据库连接池配置
  *
  * @author 司徒彬
- * @date 2016-12-28 10:50
+ * @date 2016 -12-28 10:50
  */
 @Component
 @Configuration
 public class DruidPool {
 
+    /**
+     * The constant DEFAULT.
+     */
     public static final String DEFAULT = "489a0aac-52d2-4f8b-8e8c-a6e1deb97d4f";
+    /**
+     * The constant DEFAULT_SIZE.
+     */
     public static final Integer DEFAULT_SIZE = 10;
+    /**
+     * The constant DATA_SOURCE_SETTING.
+     */
     public static final Map<String, DruidDataSource> DATA_SOURCE_SETTING = new HashMap<>(DEFAULT_SIZE);
     @Getter
     private List<String> keys = new ArrayList<>(DEFAULT_SIZE);
 
+    /**
+     * Init data source .
+     *
+     * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:01
+     */
     @PostConstruct
     public void initDataSource() throws Exception {
         List<JdbcSource.Source> sources = config.getSource().getSources();
@@ -96,6 +112,9 @@ public class DruidPool {
         }
     }
 
+    /**
+     * The Config.
+     */
     @Autowired
     DruidDBConfig config;
 
@@ -121,15 +140,25 @@ public class DruidPool {
      * poolPreparedStatements=true
      * maxPoolPreparedStatementPerConnectionSize=200
      * filters=stat
+     *
+     * @return the connection
+     * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:01
      */
-
-
     public DruidPooledConnection getConnection() throws Exception {
         DruidDataSource dds = DATA_SOURCE_SETTING.values().stream().findFirst().get();
         return dds.getConnection();
     }
 
 
+    /**
+     * Session factory session factory.
+     *
+     * @return the session factory
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:01
+     */
     @Bean(name = "sessionFactory")
     public SessionFactory sessionFactory() {
         DruidDataSource dataSource = DATA_SOURCE_SETTING.values().stream().findFirst().get();
@@ -138,6 +167,13 @@ public class DruidPool {
         return sessionFactory;
     }
 
+    /**
+     * Transaction manager hibernate transaction manager.
+     *
+     * @return the hibernate transaction manager
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:01
+     */
     @Bean
     public HibernateTransactionManager transactionManager(){
         HibernateTransactionManager manager = new HibernateTransactionManager(sessionFactory());

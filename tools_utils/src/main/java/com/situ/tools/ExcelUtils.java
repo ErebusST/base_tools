@@ -12,10 +12,13 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.IntStream;
 
 /**
+ * The type Excel utils.
+ *
  * @author 司徒彬
- * @date 2021/11/1 15:42
+ * @date 2021 /11/1 15:42
  */
 @Slf4j
 public class ExcelUtils {
@@ -29,6 +32,8 @@ public class ExcelUtils {
      * @param fileRootPath the file root path
      * @return the string
      * @throws IOException the io exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:06
      */
     public static <T> String export(Class<T> clazz, Map<String, List<T>> data, String fileRootPath) throws IOException {
         String fileName = DataSwitch.getUUID().concat(".xlsx");
@@ -54,6 +59,17 @@ public class ExcelUtils {
         return write_path;
     }
 
+    /**
+     * Export .
+     *
+     * @param <T>      the type parameter
+     * @param clazz    the clazz
+     * @param data     the data
+     * @param response the response
+     * @throws IOException the io exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:06
+     */
     public static <T> void export(Class<T> clazz, Map<String, List<T>> data, HttpServletResponse response) throws IOException {
         ExcelWriter writer =  EasyExcel.write(response.getOutputStream(),clazz).autoCloseStream(true).build();
 
@@ -72,4 +88,26 @@ public class ExcelUtils {
             }
         }
     }
+
+    /**
+     * Index integer.
+     *
+     * @param column the column
+     * @return the integer
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:06
+     */
+    public static Integer index(String column) {
+        int length = column.length();
+        return IntStream.range(0, length)
+                .mapToObj(index -> {
+                    char ch = column.charAt(length - index - 1);
+                    int num = (int) (ch - 'A' + 1);
+                    num *= Math.pow(26, index);
+                    return num;
+                })
+                .mapToInt(num -> num)
+                .sum();
+    }
+
 }

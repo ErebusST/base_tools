@@ -12,8 +12,10 @@ import com.situ.tools.ObjectUtils;
 import lombok.Getter;
 
 /**
+ * The type Http header.
+ *
  * @author 司徒彬
- * @date 2020/6/26 15:06
+ * @date 2020 /6/26 15:06
  */
 @Getter
 public class HttpHeader {
@@ -25,6 +27,15 @@ public class HttpHeader {
         this.value = ObjectUtils.isEmpty(value) ? "" : value.toString();
     }
 
+    /**
+     * Get http header.
+     *
+     * @param key   the key
+     * @param value the value
+     * @return the http header
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:09
+     */
     public static HttpHeader get(String key, Object value) {
         return new HttpHeader(key, value);
     }

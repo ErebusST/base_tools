@@ -13,10 +13,17 @@ package com.situ.enumeration;
  * 信息摘要算法类别 枚举
  *
  * @author 司徒彬
- * @date 2017-04-12 10:47
+ * @date 2017 -04-12 10:47
  */
 public enum MessageDigestEnum {
-    MD5("MD5"), SHA1("SHA1"),
+    /**
+     * Md 5 message digest enum.
+     */
+    MD5("MD5"),
+    /**
+     * Sha 1 message digest enum.
+     */
+    SHA1("SHA1"),
     ;
 
     private String value;
@@ -25,6 +32,13 @@ public enum MessageDigestEnum {
         this.value = value;
     }
 
+    /**
+     * Get value string.
+     *
+     * @return the value
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:10
+     */
     public String getValue() {
         return value;
     }

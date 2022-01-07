@@ -14,8 +14,10 @@ import com.situ.entity.bo.RequestDeviceInfo;
 import javax.servlet.http.HttpServletRequest;
 
 /**
+ * The type Http request device utils.
+ *
  * @author 司徒彬
- * @date 2021/5/31 18:19
+ * @date 2021 /5/31 18:19
  */
 public class HttpRequestDeviceUtils {
     /**
@@ -93,7 +95,9 @@ public class HttpRequestDeviceUtils {
      * 根据当前请求的特征，判断该请求是否来自手机终端，主要检测特殊的头信息，以及user-Agent这个header
      *
      * @param request http请求
-     * @return 如果命中手机特征规则，则返回对应的特征字符串
+     * @return 如果命中手机特征规则 ，则返回对应的特征字符串
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:09
      */
     public static RequestDeviceInfo getRequestDeviceInfo(HttpServletRequest request) {
         boolean b = false;

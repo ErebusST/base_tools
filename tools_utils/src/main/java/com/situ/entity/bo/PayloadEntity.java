@@ -11,6 +11,9 @@ package com.situ.entity.bo;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * The type Payload entity.
+ */
 @Getter
 @Setter
 public class PayloadEntity {

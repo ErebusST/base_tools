@@ -11,8 +11,10 @@ package com.situ.annotation;
 import java.lang.annotation.*;
 
 /**
+ * The interface Skip overtime.
+ *
  * @author 司徒彬
- * @date 2021/5/20 14:38
+ * @date 2021 /5/20 14:38
  */
 @Documented //文档
 @Retention(RetentionPolicy.RUNTIME) //在运行时可以获取

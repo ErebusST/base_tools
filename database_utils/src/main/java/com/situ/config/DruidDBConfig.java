@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Configuration;
  * 数据库配置
  *
  * @author 司徒彬
- * @date 2020/6/21 11:06
+ * @date 2020 /6/21 11:06
  */
 @Configuration
 @Getter
@@ -78,6 +78,9 @@ public class DruidDBConfig {
     @Value("${spring.datasource.connectionProperties}")
     private String connectionProperties;
 
+    /**
+     * The Source.
+     */
     @Autowired
     JdbcSource source;
 

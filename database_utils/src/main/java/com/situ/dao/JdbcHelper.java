@@ -39,22 +39,40 @@ import java.util.stream.Collectors;
  * JDBC数据库管理类 <p> 传入参数格式 select * from table where a = :a and b = :b and c in (:c) <p> in操作，传入的参数值对象使用ArrayList
  *
  * @author 司徒彬
- * @date 2017-01-04 15:47
+ * @date 2017 -01-04 15:47
  */
 @Repository
 @Slf4j
 public class JdbcHelper {
 
 
+    /**
+     * The Druid pool.
+     */
     @Autowired
     DruidPool druidPool;
 
     private static final Map<String, Execute> EXECUTE_SOURCES = new HashMap<>(DruidPool.DEFAULT_SIZE);
 
+    /**
+     * Get execute.
+     *
+     * @return the execute
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:01
+     */
     public Execute get() {
         return get(DruidPool.DEFAULT);
     }
 
+    /**
+     * Get execute.
+     *
+     * @param key the key
+     * @return the execute
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:01
+     */
     public Execute get(String key) {
         if (StringUtils.equalsIgnoreCase(key, DruidPool.DEFAULT)) {
             key = DruidPool.DATA_SOURCE_SETTING.keySet().stream().findFirst().get();
@@ -68,14 +86,27 @@ public class JdbcHelper {
         return EXECUTE_SOURCES.get(key);
     }
 
+    /**
+     * The type Execute.
+     */
     public class Execute {
 
+        /**
+         * The Data source.
+         */
         @Setter
         DruidDataSource dataSource;
 
 
         private final String regex = ":[a-zA-Z]+\\w*";
 
+        /**
+         * Rollback .
+         *
+         * @param connection the connection
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:01
+         */
         @SneakyThrows
         public void rollback(DruidPooledConnection connection) {
             if (connection != null) {
@@ -83,6 +114,13 @@ public class JdbcHelper {
             }
         }
 
+        /**
+         * Commit .
+         *
+         * @param connection the connection
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:01
+         */
         @SneakyThrows
         public void commit(DruidPooledConnection connection) {
             if (connection != null) {
@@ -90,6 +128,13 @@ public class JdbcHelper {
             }
         }
 
+        /**
+         * Close .
+         *
+         * @param connection the connection
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:01
+         */
         public void close(DruidPooledConnection connection) {
             try {
                 if (connection != null) {
@@ -99,6 +144,14 @@ public class JdbcHelper {
             }
         }
 
+        /**
+         * Get connection druid pooled connection.
+         *
+         * @return the connection
+         * @throws SQLException the sql exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:01
+         */
         public DruidPooledConnection getConnection() throws SQLException {
             return getConnection(true);
         }
@@ -128,6 +181,8 @@ public class JdbcHelper {
          * @param sql the sql
          * @return the int
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:01
          */
         public int executeNonQuery(String sql) throws Exception {
             try {
@@ -144,6 +199,8 @@ public class JdbcHelper {
          * @param sql        the sql
          * @return the int
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:01
          */
         public int executeNonQuery(DruidPooledConnection connection, String sql) throws Exception {
             try {
@@ -160,6 +217,8 @@ public class JdbcHelper {
          * @param parameters the parameters
          * @return the int
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:01
          */
         public int executeNonQuery(String sql, Map<String, Object> parameters) throws Exception {
             DruidPooledConnection connection = null;
@@ -181,6 +240,8 @@ public class JdbcHelper {
          * @param parameters the parameters
          * @return the int
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:01
          */
         public int executeNonQuery(DruidPooledConnection connection, String sql, Map<String, Object> parameters) throws Exception {
             PreparedStatement preparedStatement = null;
@@ -203,6 +264,8 @@ public class JdbcHelper {
          * @param parametersList the parameters list
          * @return the int
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:02
          */
         public int executeBatch(String sql, List<Map<String, Object>> parametersList) throws Exception {
             DruidPooledConnection connection = null;
@@ -224,6 +287,8 @@ public class JdbcHelper {
          * @param parametersList the parameters list
          * @return the int
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:02
          */
         public int executeBatch(DruidPooledConnection connection, String sql, List<Map<String, Object>> parametersList) throws Exception {
             PreparedStatement preparedStatement = null;
@@ -253,6 +318,8 @@ public class JdbcHelper {
          * @param clazz the clazz
          * @return the t
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:02
          */
         public <T> T findFirst(Class<T> clazz) throws Exception {
             Table table = clazz.getAnnotation(Table.class);
@@ -275,6 +342,8 @@ public class JdbcHelper {
          * @param parameters the parameters
          * @return the t
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:02
          */
         public <T> T findFirst(Class<T> clazz, String sql, Map<String, Object> parameters) throws Exception {
             Map<String, Object> first = findFirst(sql, parameters);
@@ -291,6 +360,8 @@ public class JdbcHelper {
          * @param sql the sql
          * @return the map
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:02
          */
         public Map<String, Object> findFirst(String sql) throws Exception {
             try {
@@ -307,6 +378,8 @@ public class JdbcHelper {
          * @param parameters the parameters
          * @return the map
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:02
          */
         public Map<String, Object> findFirst(String sql, Map<String, Object> parameters) throws Exception {
             DruidPooledConnection connection = null;
@@ -328,6 +401,8 @@ public class JdbcHelper {
          * @param parameters the parameters
          * @return the map
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:02
          */
         public Map<String, Object> findFirst(DruidPooledConnection connection, String sql, Map<String, Object> parameters) throws Exception {
             PreparedStatement preparedStatement = null;
@@ -356,6 +431,8 @@ public class JdbcHelper {
          * @param sql        the sql
          * @return the list
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:02
          */
         public List<Map<String, Object>> findList(DruidPooledConnection connection, String sql) throws Exception {
             try {
@@ -371,6 +448,8 @@ public class JdbcHelper {
          * @param sql the sql
          * @return the list
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:02
          */
         public List<Map<String, Object>> findList(String sql) throws Exception {
             try {
@@ -387,6 +466,8 @@ public class JdbcHelper {
          * @param parameters the parameters
          * @return the list
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:02
          */
         public List<Map<String, Object>> findList(String sql, Map<String, Object> parameters) throws Exception {
             DruidPooledConnection connection = null;
@@ -408,6 +489,8 @@ public class JdbcHelper {
          * @param parameters the parameters
          * @return the list
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:03
          */
         public List<Map<String, Object>> findList(DruidPooledConnection connection, String sql, Map<String, Object> parameters) throws Exception {
             PreparedStatement preparedStatement = null;
@@ -434,6 +517,8 @@ public class JdbcHelper {
          * @param sql   the sql
          * @return the list
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:03
          */
         public <T> List<T> findList(Class<T> clazz, String sql) throws Exception {
             try {
@@ -451,6 +536,8 @@ public class JdbcHelper {
          * @param parameters the parameters
          * @return the list
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:03
          */
         public <T> List<T> findList(Class<T> clazz, Map<String, Object> parameters) throws Exception {
             Table table = clazz.getAnnotation(Table.class);
@@ -491,6 +578,8 @@ public class JdbcHelper {
          * @param parameters the parameters
          * @return the list
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:03
          */
         public <T> List<T> findList(Class<T> clazz, String sql, Map<String, Object> parameters) throws Exception {
             try {
@@ -518,6 +607,8 @@ public class JdbcHelper {
          * @param parameters the parameters
          * @return the list
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:03
          */
         public <T> List<T> findList(Class<T> clazz, DruidPooledConnection connection, String sql, Map<String, Object> parameters) throws Exception {
             PreparedStatement preparedStatement = null;
@@ -540,6 +631,8 @@ public class JdbcHelper {
          * @param sql the sql
          * @return the object
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:03
          */
         public Object executeScalar(String sql) throws Exception {
             try {
@@ -552,9 +645,12 @@ public class JdbcHelper {
         /**
          * 用于获取单字段值语句，返回第一个字段
          *
-         * @param sql the sql
+         * @param sql        the sql
+         * @param parameters the parameters
          * @return the object
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:03
          */
         public Object executeScalar(String sql, Map<String, Object> parameters) throws Exception {
             try {
@@ -571,6 +667,8 @@ public class JdbcHelper {
          * @param name the name
          * @return the object
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:03
          */
         public Object executeScalar(String sql, String name) throws Exception {
             try {
@@ -588,6 +686,8 @@ public class JdbcHelper {
          * @param parameters the parameters
          * @return the object
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:03
          */
         public Object executeScalar(String sql, String name, Map<String, Object> parameters) throws Exception {
             DruidPooledConnection connection = null;
@@ -605,11 +705,13 @@ public class JdbcHelper {
          * 用于获取单字段值语句（用数据库字段名指定字段）
          *
          * @param connection the connection
-         * @param name       the name
          * @param sql        the sql
+         * @param name       the name
          * @param parameters the parameters
          * @return the object
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:04
          */
         public Object executeScalar(DruidPooledConnection connection, String sql, String name, Map<String, Object> parameters) throws Exception {
             PreparedStatement preparedStatement = null;
@@ -642,6 +744,8 @@ public class JdbcHelper {
          * @param value     value为要验证的值
          * @return the boolean
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:04
          */
         public boolean isExist(String tableName, String key, Object value) throws Exception {
             try {
@@ -660,6 +764,8 @@ public class JdbcHelper {
          * @param parameters 验证的参数，key为字段名（数据库中实际字段名），value为要验证的值
          * @return the boolean
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:04
          */
         public boolean isExist(String tableName, Map<String, Object> parameters) throws Exception {
             DruidPooledConnection connection = null;
@@ -681,6 +787,8 @@ public class JdbcHelper {
          * @param parameters the parameters
          * @return the boolean
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:04
          */
         public boolean isExist(DruidPooledConnection connection, String tableName, Map<String, Object> parameters) throws Exception {
             try {
@@ -971,6 +1079,8 @@ public class JdbcHelper {
          * @param id    the id
          * @return the t
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:04
          */
         public <T> T findById(Class<T> clazz, Long id) throws Exception {
             if (ObjectUtils.isNull(id)) {
@@ -1011,6 +1121,8 @@ public class JdbcHelper {
          * @param parameters the parameters
          * @return the t
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:04
          */
         public <T> T findFirst(Class<T> clazz, Map<String, Object> parameters) throws Exception {
             Table table = clazz.getAnnotation(Table.class);
@@ -1046,8 +1158,17 @@ public class JdbcHelper {
         @Getter
         @Setter
         private class JdbcField {
+            /**
+             * The Field.
+             */
             Field field;
+            /**
+             * The Field in db.
+             */
             String fieldInDb;
+            /**
+             * The Auto generate.
+             */
             boolean autoGenerate;//GeneratedValue
         }
 
@@ -1101,6 +1222,8 @@ public class JdbcHelper {
          * @param entity   the entity
          * @return the boolean
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:04
          */
         public <Entity> boolean insert(Entity entity) throws Exception {
             return insert(entity, "", "");
@@ -1114,6 +1237,8 @@ public class JdbcHelper {
          * @param tableName the table name
          * @return the boolean
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:04
          */
         public <Entity> boolean insert(Entity entity, String tableName) throws Exception {
             return insert(entity, "", tableName);
@@ -1128,6 +1253,8 @@ public class JdbcHelper {
          * @param tableName the table name
          * @return the boolean
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:04
          */
         public <Entity> boolean insert(Entity entity, String schema, String tableName) throws Exception {
             DruidPooledConnection connection = getConnection();
@@ -1151,6 +1278,8 @@ public class JdbcHelper {
          * @param entity     the entity
          * @return the boolean
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:04
          */
         public <Entity> boolean insert(DruidPooledConnection connection, Entity entity) throws Exception {
             return insert(connection, entity, "", "");
@@ -1163,8 +1292,11 @@ public class JdbcHelper {
          * @param connection the connection
          * @param entity     the entity
          * @param schema     the schema
+         * @param tableName  the table name
          * @return the boolean
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:04
          */
         public <Entity> boolean insert(DruidPooledConnection connection, Entity entity, String schema, String tableName) throws Exception {
             Class<Entity> clazz = (Class<Entity>) entity.getClass();
@@ -1247,10 +1379,6 @@ public class JdbcHelper {
             }
         }
 
-        public <Entity> boolean replace(Entity entity) throws Exception {
-            return replace(entity, null);
-        }
-
         /**
          * Replace boolean.
          *
@@ -1258,6 +1386,23 @@ public class JdbcHelper {
          * @param entity   the entity
          * @return the boolean
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:05
+         */
+        public <Entity> boolean replace(Entity entity) throws Exception {
+            return replace(entity, null);
+        }
+
+        /**
+         * Replace boolean.
+         *
+         * @param <Entity>  the type parameter
+         * @param entity    the entity
+         * @param tableName the table name
+         * @return the boolean
+         * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:05
          */
         public <Entity> boolean replace(Entity entity, String tableName) throws Exception {
             DruidPooledConnection connection = getConnection();
@@ -1273,6 +1418,17 @@ public class JdbcHelper {
             }
         }
 
+        /**
+         * Replace boolean.
+         *
+         * @param <Entity>   the type parameter
+         * @param connection the connection
+         * @param entity     the entity
+         * @return the boolean
+         * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:05
+         */
         public <Entity> boolean replace(DruidPooledConnection connection, Entity entity) throws Exception {
             return replace(connection, entity, null);
         }
@@ -1280,10 +1436,14 @@ public class JdbcHelper {
         /**
          * Replace boolean.
          *
-         * @param <Entity> the type parameter
-         * @param entity   the entity
+         * @param <Entity>   the type parameter
+         * @param connection the connection
+         * @param entity     the entity
+         * @param tableName  the table name
          * @return the boolean
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:05
          */
         public <Entity> boolean replace(DruidPooledConnection connection, Entity entity, String tableName) throws Exception {
             Class<Entity> clazz = (Class<Entity>) entity.getClass();
@@ -1376,6 +1536,8 @@ public class JdbcHelper {
          * @param entity   the entity
          * @return the boolean
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:05
          */
         public <Entity> boolean update(Entity entity) throws Exception {
             DruidPooledConnection connection = getConnection();
@@ -1399,6 +1561,8 @@ public class JdbcHelper {
          * @param entity     the entity
          * @return the boolean
          * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -01-07 15:39:05
          */
         public <Entity> boolean update(DruidPooledConnection connection, Entity entity) throws Exception {
             Class<Entity> clazz = (Class<Entity>) entity.getClass();

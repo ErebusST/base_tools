@@ -100,6 +100,8 @@ public class BaseDBDao {
      * @param sortField     the sort field
      * @param orderTypeEnum the order type enum
      * @return the sort str
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:52
      */
     public String getSortStr(String sortField, OrderTypeEnum orderTypeEnum) {
         return getSortStr(null, sortField, orderTypeEnum);
@@ -110,6 +112,8 @@ public class BaseDBDao {
      *
      * @param findEntity the find entity
      * @return the sort str
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:52
      */
     public String getSortStr(BaseFindEntity findEntity) {
         return getSortStr(findEntity, null, null);
@@ -122,6 +126,8 @@ public class BaseDBDao {
      * @param defaultSortField the default sort field
      * @param orderTypeEnum    the order type enum
      * @return the sort str
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:52
      */
     public String getSortStr(BaseFindEntity findEntity, String defaultSortField, OrderTypeEnum orderTypeEnum) {
 
@@ -298,9 +304,11 @@ public class BaseDBDao {
         /**
          * Instantiates a new Entity setting.
          *
-         * @param clazz  the clazz
-         * @param column the column
-         * @param field  the field
+         * @param clazz         the clazz
+         * @param column        the column
+         * @param field         the field
+         * @param wasPrimaryKey the was primary key
+         * @param autoIncrease  the auto increase
          */
         public EntitySetting(Class<T> clazz, Column column, Field field, Boolean wasPrimaryKey, Boolean autoIncrease) {
             this.clazz = clazz;
@@ -609,6 +617,8 @@ public class BaseDBDao {
      * @return the new version
      * @throws UnsupportedEncodingException the unsupported encoding exception
      * @throws NoSuchAlgorithmException     the no such algorithm exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:52
      */
     public String getNewVersion(Object entity) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         try {
@@ -646,6 +656,8 @@ public class BaseDBDao {
      * @param entity the entity
      * @return the boolean
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:52
      */
     public boolean save(@Nonnull Object entity) throws Exception {
         try {
@@ -669,6 +681,8 @@ public class BaseDBDao {
      * @param entities the entities
      * @return the boolean
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:52
      */
     @Deprecated
     public <T> boolean saveMany(@Nonnull List<T> entities) throws Exception {
@@ -691,6 +705,8 @@ public class BaseDBDao {
      * @param entity the
      * @return the boolean
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:52
      */
     public boolean insertOne(@Nonnull Object entity) throws Exception {
         try {
@@ -710,6 +726,8 @@ public class BaseDBDao {
      * @param createId the create id
      * @return the boolean
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:52
      */
     public boolean insertOne(Object entity, boolean createId) throws Exception {
         try {
@@ -806,8 +824,9 @@ public class BaseDBDao {
      * @param <T>   the type parameter
      * @param tList the t list
      * @return the boolean
-     * @throws UnsupportedEncodingException the unsupported encoding exception
-     * @throws NoSuchAlgorithmException     the no such algorithm exception
+     * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:52
      */
     public <T> boolean insertMany(@Nonnull List<T> tList) throws Exception {
         try {
@@ -825,8 +844,9 @@ public class BaseDBDao {
      * @param tList     the t list
      * @param flushSize the flush size
      * @return the boolean
-     * @throws UnsupportedEncodingException the unsupported encoding exception
-     * @throws NoSuchAlgorithmException     the no such algorithm exception
+     * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:53
      */
     public <T> boolean insertMany(@Nonnull List<T> tList, @Nonnull int flushSize) throws Exception {
         Session session = null;
@@ -865,6 +885,8 @@ public class BaseDBDao {
      * @param entity the entity
      * @return the boolean
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:53
      */
     public boolean replace(@Nonnull Object entity) throws Exception {
         return replace(entity, true);
@@ -877,6 +899,8 @@ public class BaseDBDao {
      * @param createId the create id
      * @return the boolean
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:53
      */
     public boolean replace(@Nonnull Object entity, Boolean createId) throws Exception {
 
@@ -965,6 +989,8 @@ public class BaseDBDao {
      * @param entity the
      * @return the boolean
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:53
      */
     public int updateOne(@Nonnull Object entity) throws Exception {
         try {
@@ -982,6 +1008,8 @@ public class BaseDBDao {
      * @param entity the
      * @return the int
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:53
      */
     public int updateEntity(@Nonnull Object entity) throws Exception {
         try {
@@ -1095,6 +1123,8 @@ public class BaseDBDao {
      * @param fieldValue      the field value
      * @return the int
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:53
      */
     public <T> int updateByPrimaryKey(@Nonnull Class<T> clazz, @Nonnull Serializable primaryKeyValue, @Nonnull String fieldName, Object fieldValue)
             throws Exception {
@@ -1117,6 +1147,8 @@ public class BaseDBDao {
      * @param updateFieldParameters the update field parameters
      * @return the int
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:53
      */
     public <T> int updateByPrimaryKey(@Nonnull Class<T> clazz, @Nonnull Serializable primaryKeyValue, @Nonnull Map<String, Object> updateFieldParameters)
             throws Exception {
@@ -1145,6 +1177,8 @@ public class BaseDBDao {
      * @param fieldValue       the field value
      * @return the int
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:54
      */
     public <T> int updateByPrimaryKey(@Nonnull Class<T> clazz, @Nonnull List<Long> primaryKeyValues, @Nonnull String fieldName, Object fieldValue)
             throws Exception {
@@ -1167,6 +1201,8 @@ public class BaseDBDao {
      * @param updateFieldParameters the parameters
      * @return the int
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:54
      */
     public <T> int updateByPrimaryKey(@Nonnull Class<T> clazz, @Nonnull List<Long> primaryKeyValues, Map<String, Object> updateFieldParameters)
             throws Exception {
@@ -1194,6 +1230,8 @@ public class BaseDBDao {
      * @param parameters the parameters
      * @return the int
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:54
      */
     public int updateBySql(@Nonnull String sql, Map<String, Object> parameters) throws Exception {
         try {
@@ -1253,6 +1291,8 @@ public class BaseDBDao {
      * @param primaryKeyValue the primary key value
      * @return the int
      * @throws Exception the exception Serializable
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:54
      */
     public <T> int deleteByPrimaryKey(@Nonnull Class<T> clazz, @Nonnull Long primaryKeyValue) throws Exception {
         try {
@@ -1273,6 +1313,8 @@ public class BaseDBDao {
      * @param primaryKeyValues the primary key values
      * @return the int
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:54
      */
     public <T> int deleteByPrimaryKeys(@Nonnull Class<T> clazz, @Nonnull List<Long> primaryKeyValues)
             throws Exception {
@@ -1297,6 +1339,8 @@ public class BaseDBDao {
      * @param fieldValue the field value
      * @return the int
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:54
      */
     public <T> int deleteByFilter(@Nonnull Class<T> clazz, @Nonnull String fieldName, Object fieldValue)
             throws Exception {
@@ -1317,6 +1361,8 @@ public class BaseDBDao {
      * @param parameters the parameters
      * @return the int
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:54
      */
     public <T> int deleteByFilter(@Nonnull Class<T> clazz, Map<String, Object> parameters) throws Exception {
         try {
@@ -1336,6 +1382,8 @@ public class BaseDBDao {
      * @param parameters the parameters
      * @return the int
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:55
      */
     public int deleteBySql(@Nonnull String sql, Map<String, Object> parameters) throws Exception {
         try {
@@ -1389,6 +1437,8 @@ public class BaseDBDao {
      * @param primaryId the primary id
      * @return the t
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:55
      */
     public <T> T findById(@Nonnull Class<T> clazz, @Nonnull Serializable primaryId) throws Exception {
         //Session session = null;
@@ -1430,6 +1480,8 @@ public class BaseDBDao {
      * @param orders the orders
      * @return the t
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:55
      */
     public <T> T findFirstOne(@Nonnull Class<T> clazz, Order... orders) throws Exception {
         try {
@@ -1449,6 +1501,8 @@ public class BaseDBDao {
      * @param orders     the orders
      * @return the t
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:55
      */
     public <T> T findFirstOne(@Nonnull Class<T> clazz, @Nonnull String fieldName, Object fieldValue, Order... orders)
             throws Exception {
@@ -1470,6 +1524,8 @@ public class BaseDBDao {
      * @param orders     the orders
      * @return the t
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:55
      */
     public <T> T findFirstOne(@Nonnull Class<T> clazz, Map<String, Object> parameters, Order... orders) throws Exception {
         try {
@@ -1488,6 +1544,8 @@ public class BaseDBDao {
      * @param sql the sql
      * @return the map
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:55
      */
     public Map<String, Object> findFirstOneBySql(String sql) throws Exception {
         return findFirstOneBySql(sql, null);
@@ -1500,6 +1558,8 @@ public class BaseDBDao {
      * @param parameters the parameters
      * @return the map
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:55
      */
     public Map<String, Object> findFirstOneBySql(String sql, Map<String, Object> parameters) throws Exception {
         try {
@@ -1523,6 +1583,8 @@ public class BaseDBDao {
      * @param fieldName    the field name
      * @return the return type
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:55
      */
 //region Find field
     public <T, ReturnType> ReturnType findFieldValue(Class<T> clazz, String filterField, Object filterValue, String fieldName)
@@ -1553,6 +1615,8 @@ public class BaseDBDao {
      * @param fieldName the field name
      * @return the t
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:56
      */
     public <T> T findFieldValue(String sql, String fieldName) throws Exception {
         return this.findFieldValue(sql, null, fieldName);
@@ -1567,6 +1631,8 @@ public class BaseDBDao {
      * @param fieldName  the field name
      * @return the t
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:56
      */
     public <T> T findFieldValue(String sql, Map<String, Object> parameters, String fieldName) throws Exception {
         try {
@@ -1605,6 +1671,8 @@ public class BaseDBDao {
      * @param fields      the fields
      * @return the map
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:56
      */
     public <T> Map<String, Object> findFieldsValue(Class<T> clazz, String filterField, Object filterValue, String... fields)
             throws Exception {
@@ -1626,6 +1694,8 @@ public class BaseDBDao {
      * @param fields     the fields
      * @return the map
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:56
      */
     public <T> Map<String, Object> findFieldsValue(Class<T> clazz, Map<String, Object> parameters, String... fields)
             throws Exception {
@@ -1647,6 +1717,8 @@ public class BaseDBDao {
      * @param fields      the fields
      * @return the list
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:56
      */
     public <T> List<Map<String, Object>> findFieldsValueList(Class<T> clazz, String filterField, Object filterValue, String... fields)
             throws Exception {
@@ -1668,6 +1740,8 @@ public class BaseDBDao {
      * @param fields     the fields
      * @return the list
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:56
      */
     public <T> List<Map<String, Object>> findFieldValueList(Class<T> clazz, Map<String, Object> parameters, String... fields)
             throws Exception {
@@ -1722,6 +1796,8 @@ public class BaseDBDao {
      * @param orders the orders
      * @return the list
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:56
      */
     public <T> List<T> findList(@Nonnull Class<T> clazz, Order... orders) throws Exception {
         return findList(clazz, null, orders);
@@ -1737,6 +1813,8 @@ public class BaseDBDao {
      * @param orders     the orders
      * @return the list
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:57
      */
     public <T> List<T> findList(@Nonnull Class<T> clazz, @Nonnull String field, Object fieldValue, Order... orders)
             throws Exception {
@@ -1759,6 +1837,8 @@ public class BaseDBDao {
      * @param orders     the orders
      * @return the list
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:57
      */
     public <T> List<T> findList(@Nonnull Class<T> clazz, @Nonnull String field, Object fieldValue, Integer pageSize, Order... orders)
             throws Exception {
@@ -1781,6 +1861,8 @@ public class BaseDBDao {
      * @param orders     the orders
      * @return the list
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:57
      */
     public <T> List<T> findList(@Nonnull Class<T> clazz, @Nonnull String field, Object fieldValue, Integer pageNumber, Integer pageSize, Order... orders)
             throws Exception {
@@ -1802,6 +1884,8 @@ public class BaseDBDao {
      * @param orders     the orders
      * @return the list
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:57
      */
     public <T> List<T> findList(@Nonnull Class<T> clazz, Map<String, Object> parameters, Order... orders)
             throws Exception {
@@ -1822,6 +1906,8 @@ public class BaseDBDao {
      * @param orders     the orders
      * @return the list
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:57
      */
     public <T> List<T> findList(@Nonnull Class<T> clazz, Map<String, Object> parameters, Integer pageSize, Order... orders)
             throws Exception {
@@ -1845,6 +1931,8 @@ public class BaseDBDao {
      * @param orders     the orders
      * @return the list
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:57
      */
     public <T> List<T> findList(@Nonnull Class<T> clazz, Map<String, Object> parameters, Integer pageNumber, Integer pageSize, Order... orders)
             throws Exception {
@@ -1885,6 +1973,8 @@ public class BaseDBDao {
      * @param orders the orders
      * @return the list
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:58
      */
     public <T> List<T> findListByIds(@Nonnull Class<T> clazz, @Nonnull List<Long> idArr, Order... orders)
             throws Exception {
@@ -1909,6 +1999,8 @@ public class BaseDBDao {
      * @param orders     the orders
      * @return the list
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:58
      */
     public <T> List<Map<String, Object>> findListMap(@Nonnull Class<T> clazz, @Nonnull String field, Object fieldValue, Order... orders)
             throws Exception {
@@ -1934,6 +2026,8 @@ public class BaseDBDao {
      * @param orders     the orders
      * @return the list
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:58
      */
     public <T> List<Map<String, Object>> findListMap(@Nonnull Class<T> clazz, @Nonnull String field, Object fieldValue, Integer pageSize, Order... orders)
             throws Exception {
@@ -1956,6 +2050,8 @@ public class BaseDBDao {
      * @param orders     the orders
      * @return the list
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:58
      */
     public <T> List<Map<String, Object>> findListMap(@Nonnull Class<T> clazz, @Nonnull String field,
                                                      Object fieldValue, Integer pageNumber,
@@ -1978,6 +2074,8 @@ public class BaseDBDao {
      * @param orders     the orders
      * @return the list
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:58
      */
     public <T> List<Map<String, Object>> findListMap(@Nonnull Class<T> clazz, Map<String, Object> parameters, Order... orders)
             throws Exception {
@@ -1998,6 +2096,8 @@ public class BaseDBDao {
      * @param orders     the orders
      * @return the list
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:58
      */
     public <T> List<Map<String, Object>> findListMap(@Nonnull Class<T> clazz, Map<String, Object> parameters, Integer pageSize, Order... orders)
             throws Exception {
@@ -2019,6 +2119,8 @@ public class BaseDBDao {
      * @param orders     the orders
      * @return the list
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:59
      */
     public <T> List<Map<String, Object>> findListMap(@Nonnull Class<T> clazz, Map<String, Object> parameters, Integer pageNumber, Integer pageSize,
                                                      Order... orders) throws Exception {
@@ -2039,6 +2141,8 @@ public class BaseDBDao {
      * @param orders the orders
      * @return the list
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:59
      */
     public <T> List<Map<String, Object>> findListMapByIds(@Nonnull Class<T> clazz, @Nonnull List<Long> idArr, Order... orders)
             throws Exception {
@@ -2061,6 +2165,8 @@ public class BaseDBDao {
      * @param pageSize   the page size
      * @return the pager
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:59
      */
     public Pager findPager(@Nonnull String sql, Map<String, Object> parameters, Integer pageNumber, Integer pageSize)
             throws Exception {
@@ -2097,6 +2203,8 @@ public class BaseDBDao {
      * @param sql the sql
      * @return the list
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:59
      */
     public List<Map<String, Object>> findListMapBySql(@Nonnull String sql) throws Exception {
         try {
@@ -2113,6 +2221,8 @@ public class BaseDBDao {
      * @param parameters the parameters
      * @return the list
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:59
      */
     public List<Map<String, Object>> findListMapBySql(@Nonnull String sql, Map<String, Object> parameters)
             throws Exception {
@@ -2181,6 +2291,8 @@ public class BaseDBDao {
      * @param fieldValue the field value
      * @return the boolean
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:59
      */
     public <T> boolean isExist(@Nonnull Class<T> clazz, String field, Object fieldValue) throws Exception {
         try {
@@ -2200,6 +2312,8 @@ public class BaseDBDao {
      * @param entity     the entity
      * @return the boolean
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:38:59
      */
     public <T> boolean isExist(@Nonnull Class<T> clazz, String field, Object fieldValue, Object entity) throws Exception {
         try {
@@ -2219,6 +2333,8 @@ public class BaseDBDao {
      * @param parameters the parameters
      * @return the boolean
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:00
      */
     public <T> boolean isExist(@Nonnull Class<T> clazz, Map<String, Object> parameters) throws Exception {
         try {
@@ -2240,6 +2356,8 @@ public class BaseDBDao {
      * @param fieldValue the field value
      * @return the integer
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:00
      */
     public <T> Integer count(Class<T> clazz, String field, Object fieldValue) throws Exception {
         return count(clazz, field, fieldValue, null);
@@ -2255,6 +2373,8 @@ public class BaseDBDao {
      * @param primaryValue the primary value
      * @return the integer
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:00
      */
     public <T> Integer count(Class<T> clazz, String field, Object fieldValue, Long primaryValue) throws Exception {
         try {
@@ -2280,6 +2400,8 @@ public class BaseDBDao {
      * @param primaryValues the primary values
      * @return the integer
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:00
      */
     public <T> Integer count(Class<T> clazz, Map<String, Object> parameters, List<Long> primaryValues) throws Exception {
         try {
@@ -2306,6 +2428,8 @@ public class BaseDBDao {
      * @param parameters the parameters
      * @return the total count
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:00
      */
     public Integer count(String sql, Map<String, Object> parameters) throws Exception {
         try {
@@ -2415,6 +2539,8 @@ public class BaseDBDao {
      * @param classes    the table filters
      * @return boolean boolean
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:00
      */
     public <T> boolean checkForeignKeyUsedState(Class<T> clazz, Long foreignKey, Class<?>... classes) throws Exception {
         List<Long> foreignKeyValues = new ArrayList<>(1);
@@ -2432,6 +2558,8 @@ public class BaseDBDao {
      * @param classes          the table filters
      * @return the list
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:00
      */
     public <T> List<Long> checkForeignKeysUsedState(Class<T> clazz, List<Long> foreignKeyValues, Class<?>... classes) throws Exception {
         try {
@@ -2516,6 +2644,8 @@ public class BaseDBDao {
      *
      * @param value the value
      * @return the like string
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:00
      */
     public String getLikeString(Object value) {
         String str = ObjectUtils.isNull(value) ? "" : value.toString();

@@ -11,14 +11,28 @@ package com.situ.enumeration;
 import lombok.Getter;
 
 /**
+ * The enum Hexagon type.
+ *
  * @author 司徒彬
- * @date 2020-01-08 13:14
+ * @date 2020 -01-08 13:14
  */
 public enum HexagonType {
 
+    /**
+     * Up hexagon type.
+     */
     UP("UP", "向上"),
+    /**
+     * Down hexagon type.
+     */
     DOWN("DOWN", "向下"),
+    /**
+     * Left hexagon type.
+     */
     LEFT("LEFT", "向左"),
+    /**
+     * Right hexagon type.
+     */
     RIGHT("RIGHT", "向右"),
     ;
 

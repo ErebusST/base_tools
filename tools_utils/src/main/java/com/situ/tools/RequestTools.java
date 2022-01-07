@@ -46,6 +46,8 @@ public class RequestTools {
      * @param headers the headers
      * @return the string
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
      */
     public static Response get(@NonNull String url, HttpHeader... headers) throws Exception {
         return get(url, null, headers);
@@ -59,6 +61,8 @@ public class RequestTools {
      * @param headers   the headers
      * @return the string
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
      */
     public static Response get(@NonNull String url, Map<String, String> parameter, HttpHeader... headers) throws Exception {
         if (ObjectUtils.isNotNull(parameter) && parameter.size() > 0) {
@@ -86,6 +90,8 @@ public class RequestTools {
      * @param headers the headers
      * @return the string
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:08
      */
     public static Response post(@NonNull String url, HttpHeader... headers) throws Exception {
         return post(url, getUrlParameter(url), headers);
@@ -99,6 +105,8 @@ public class RequestTools {
      * @param headers   the headers
      * @return the string
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:08
      */
     public static Response post(@NonNull String url, JsonElement parameter, HttpHeader... headers) throws Exception {
         return call(HttpMethod.Post, ContentType.application_json, url, parameter, headers);
@@ -112,6 +120,8 @@ public class RequestTools {
      * @param headers the headers
      * @return the string
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:08
      */
     public static Response postForm(@NonNull String url, Map<String, Object> form, HttpHeader... headers) throws Exception {
         return call(HttpMethod.Post, ContentType.text_plain, url, form, headers);
@@ -124,6 +134,8 @@ public class RequestTools {
      * @param headers the headers
      * @return the string
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:08
      */
     public static Response put(@NonNull String url, HttpHeader... headers) throws Exception {
         return put(url, getUrlParameter(url), headers);
@@ -137,6 +149,8 @@ public class RequestTools {
      * @param headers   the headers
      * @return the string
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:08
      */
     public static Response put(@NonNull String url, JsonElement parameter, HttpHeader... headers) throws Exception {
         return call(HttpMethod.Put, ContentType.application_json, url, parameter, headers);
@@ -149,6 +163,8 @@ public class RequestTools {
      * @param headers the headers
      * @return the string
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:08
      */
     public static Response delete(@NonNull String url, HttpHeader... headers) throws Exception {
 
@@ -178,6 +194,8 @@ public class RequestTools {
      * @param headers   the headers
      * @return the string
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:08
      */
     public static Response delete(@NonNull String url, JsonElement parameter, HttpHeader... headers) throws Exception {
         return call(HttpMethod.Delete, ContentType.application_json, url, parameter, headers);

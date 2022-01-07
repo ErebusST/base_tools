@@ -31,6 +31,8 @@ public class Assert {
      * @param value the value
      * @param field the field
      * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:57
      */
     public static void notEmpty(Object value, String field) {
         if (ObjectUtils.isEmpty(value)) {
@@ -40,6 +42,14 @@ public class Assert {
         }
     }
 
+    /**
+     * Empty .
+     *
+     * @param value the value
+     * @param field the field
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:57
+     */
     public static void empty(Object value, String field) {
         if (ObjectUtils.isNotEmpty(value)) {
             String message =
@@ -55,6 +65,8 @@ public class Assert {
      * @param value the value
      * @param field the field
      * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:57
      */
     public static void notNull(Object value, String field) {
         if (ObjectUtils.isNull(value)) {
@@ -71,6 +83,8 @@ public class Assert {
      * @param field  the field
      * @param ranges the ranges
      * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:57
      */
     public static boolean inRange(Object value, String field, Object... ranges) {
         boolean in = Arrays.stream(ranges)
@@ -87,123 +101,278 @@ public class Assert {
     }
 
 
-
+    /**
+     * State .
+     *
+     * @param expression the expression
+     * @param message    the message
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:57
+     */
     public static void state(boolean expression, String message) {
         if (!expression) {
             throw new IllegalStateException(message);
         }
     }
 
+    /**
+     * State .
+     *
+     * @param expression      the expression
+     * @param messageSupplier the message supplier
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:57
+     */
     public static void state(boolean expression, Supplier<String> messageSupplier) {
         if (!expression) {
             throw new IllegalStateException(nullSafeGet(messageSupplier));
         }
     }
 
-    /** @deprecated */
+    /**
+     * State .
+     *
+     * @param expression the expression
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:57
+     * @deprecated
+     */
     @Deprecated
     public static void state(boolean expression) {
         state(expression, "[Assertion failed] - this state invariant must be true");
     }
 
+    /**
+     * Is true .
+     *
+     * @param expression the expression
+     * @param message    the message
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:57
+     */
     public static void isTrue(boolean expression, String message) {
         if (!expression) {
             throw new IllegalArgumentException(message);
         }
     }
 
+    /**
+     * Is true .
+     *
+     * @param expression      the expression
+     * @param messageSupplier the message supplier
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:57
+     */
     public static void isTrue(boolean expression, Supplier<String> messageSupplier) {
         if (!expression) {
             throw new IllegalArgumentException(nullSafeGet(messageSupplier));
         }
     }
 
-    /** @deprecated */
+    /**
+     * Is true .
+     *
+     * @param expression the expression
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     * @deprecated
+     */
     @Deprecated
     public static void isTrue(boolean expression) {
         isTrue(expression, "[Assertion failed] - this expression must be true");
     }
 
+    /**
+     * Is null .
+     *
+     * @param object  the object
+     * @param message the message
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     */
     public static void isNull(@Nullable Object object, String message) {
         if (object != null) {
             throw new IllegalArgumentException(message);
         }
     }
 
+    /**
+     * Is null .
+     *
+     * @param object          the object
+     * @param messageSupplier the message supplier
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     */
     public static void isNull(@Nullable Object object, Supplier<String> messageSupplier) {
         if (object != null) {
             throw new IllegalArgumentException(nullSafeGet(messageSupplier));
         }
     }
 
-    /** @deprecated */
+    /**
+     * Is null .
+     *
+     * @param object the object
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     * @deprecated
+     */
     @Deprecated
     public static void isNull(@Nullable Object object) {
         isNull(object, "[Assertion failed] - the object argument must be null");
     }
 
 
+    /**
+     * Not null .
+     *
+     * @param object          the object
+     * @param messageSupplier the message supplier
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     */
     public static void notNull(@Nullable Object object, Supplier<String> messageSupplier) {
         if (object == null) {
             throw new IllegalArgumentException(nullSafeGet(messageSupplier));
         }
     }
 
-    /** @deprecated */
+    /**
+     * Not null .
+     *
+     * @param object the object
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     * @deprecated
+     */
     @Deprecated
     public static void notNull(@Nullable Object object) {
         notNull(object, "[Assertion failed] - this argument is required; it must not be null");
     }
 
+    /**
+     * Has length .
+     *
+     * @param text    the text
+     * @param message the message
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     */
     public static void hasLength(@Nullable String text, String message) {
         if (!StringUtils.isNotEmpty(text)) {
             throw new IllegalArgumentException(message);
         }
     }
 
+    /**
+     * Has length .
+     *
+     * @param text            the text
+     * @param messageSupplier the message supplier
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     */
     public static void hasLength(@Nullable String text, Supplier<String> messageSupplier) {
         if (!StringUtils.isNotEmpty(text)) {
             throw new IllegalArgumentException(nullSafeGet(messageSupplier));
         }
     }
 
-    /** @deprecated */
+    /**
+     * Has length .
+     *
+     * @param text the text
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     * @deprecated
+     */
     @Deprecated
     public static void hasLength(@Nullable String text) {
         hasLength(text, "[Assertion failed] - this String argument must have length; it must not be null or empty");
     }
 
+    /**
+     * Has text .
+     *
+     * @param text    the text
+     * @param message the message
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     */
     public static void hasText(@Nullable String text, String message) {
         if (!StringUtils.isNotEmpty(text)) {
             throw new IllegalArgumentException(message);
         }
     }
 
+    /**
+     * Has text .
+     *
+     * @param text            the text
+     * @param messageSupplier the message supplier
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     */
     public static void hasText(@Nullable String text, Supplier<String> messageSupplier) {
         if (!StringUtils.isNotEmpty(text)) {
             throw new IllegalArgumentException(nullSafeGet(messageSupplier));
         }
     }
 
-    /** @deprecated */
+    /**
+     * Has text .
+     *
+     * @param text the text
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     * @deprecated
+     */
     @Deprecated
     public static void hasText(@Nullable String text) {
         hasText(text, "[Assertion failed] - this String argument must have text; it must not be null, empty, or blank");
     }
 
+    /**
+     * Does not contain .
+     *
+     * @param textToSearch the text to search
+     * @param substring    the substring
+     * @param message      the message
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     */
     public static void doesNotContain(@Nullable String textToSearch, String substring, String message) {
         if (StringUtils.isNotEmpty(textToSearch) && StringUtils.isNotEmpty(substring) && textToSearch.contains(substring)) {
             throw new IllegalArgumentException(message);
         }
     }
 
+    /**
+     * Does not contain .
+     *
+     * @param textToSearch    the text to search
+     * @param substring       the substring
+     * @param messageSupplier the message supplier
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     */
     public static void doesNotContain(@Nullable String textToSearch, String substring, Supplier<String> messageSupplier) {
         if (StringUtils.isNotEmpty(textToSearch) && StringUtils.isNotEmpty(substring) && textToSearch.contains(substring)) {
             throw new IllegalArgumentException(nullSafeGet(messageSupplier));
         }
     }
 
-    /** @deprecated */
+    /**
+     * Does not contain .
+     *
+     * @param textToSearch the text to search
+     * @param substring    the substring
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     * @deprecated
+     */
     @Deprecated
     public static void doesNotContain(@Nullable String textToSearch, String substring) {
         doesNotContain(textToSearch, substring, () -> {
@@ -211,24 +380,55 @@ public class Assert {
         });
     }
 
+    /**
+     * Not empty .
+     *
+     * @param array   the array
+     * @param message the message
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     */
     public static void notEmpty(@Nullable Object[] array, String message) {
         if (ObjectUtils.isEmpty(array)) {
             throw new IllegalArgumentException(message);
         }
     }
 
+    /**
+     * Not empty .
+     *
+     * @param array           the array
+     * @param messageSupplier the message supplier
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     */
     public static void notEmpty(@Nullable Object[] array, Supplier<String> messageSupplier) {
         if (ObjectUtils.isEmpty(array)) {
             throw new IllegalArgumentException(nullSafeGet(messageSupplier));
         }
     }
 
-    /** @deprecated */
+    /**
+     * Not empty .
+     *
+     * @param array the array
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     * @deprecated
+     */
     @Deprecated
     public static void notEmpty(@Nullable Object[] array) {
         notEmpty(array, "[Assertion failed] - this array must not be empty: it must contain at least 1 element");
     }
 
+    /**
+     * No null elements .
+     *
+     * @param array   the array
+     * @param message the message
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     */
     public static void noNullElements(@Nullable Object[] array, String message) {
         if (array != null) {
             Object[] var2 = array;
@@ -244,6 +444,14 @@ public class Assert {
 
     }
 
+    /**
+     * No null elements .
+     *
+     * @param array           the array
+     * @param messageSupplier the message supplier
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     */
     public static void noNullElements(@Nullable Object[] array, Supplier<String> messageSupplier) {
         if (array != null) {
             Object[] var2 = array;
@@ -259,30 +467,68 @@ public class Assert {
 
     }
 
-    /** @deprecated */
+    /**
+     * No null elements .
+     *
+     * @param array the array
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     * @deprecated
+     */
     @Deprecated
     public static void noNullElements(@Nullable Object[] array) {
         noNullElements(array, "[Assertion failed] - this array must not contain any null elements");
     }
 
+    /**
+     * Not empty .
+     *
+     * @param collection the collection
+     * @param message    the message
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     */
     public static void notEmpty(@Nullable Collection<?> collection, String message) {
         if (ObjectUtils.isEmpty(collection)) {
             throw new IllegalArgumentException(message);
         }
     }
 
+    /**
+     * Not empty .
+     *
+     * @param collection      the collection
+     * @param messageSupplier the message supplier
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     */
     public static void notEmpty(@Nullable Collection<?> collection, Supplier<String> messageSupplier) {
         if (CollectionUtils.isEmpty(collection)) {
             throw new IllegalArgumentException(nullSafeGet(messageSupplier));
         }
     }
 
-    /** @deprecated */
+    /**
+     * Not empty .
+     *
+     * @param collection the collection
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     * @deprecated
+     */
     @Deprecated
     public static void notEmpty(@Nullable Collection<?> collection) {
         notEmpty(collection, "[Assertion failed] - this collection must not be empty: it must contain at least 1 element");
     }
 
+    /**
+     * No null elements .
+     *
+     * @param collection the collection
+     * @param message    the message
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     */
     public static void noNullElements(@Nullable Collection<?> collection, String message) {
         if (collection != null) {
             Iterator var2 = collection.iterator();
@@ -297,6 +543,14 @@ public class Assert {
 
     }
 
+    /**
+     * No null elements .
+     *
+     * @param collection      the collection
+     * @param messageSupplier the message supplier
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     */
     public static void noNullElements(@Nullable Collection<?> collection, Supplier<String> messageSupplier) {
         if (collection != null) {
             Iterator var2 = collection.iterator();
@@ -312,13 +566,28 @@ public class Assert {
     }
 
 
-
-    /** @deprecated */
+    /**
+     * Not empty .
+     *
+     * @param map the map
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     * @deprecated
+     */
     @Deprecated
     public static void notEmpty(@Nullable Map<?, ?> map) {
         notEmpty(map, "[Assertion failed] - this map must not be empty; it must contain at least one entry");
     }
 
+    /**
+     * Is instance of .
+     *
+     * @param type    the type
+     * @param obj     the obj
+     * @param message the message
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     */
     public static void isInstanceOf(Class<?> type, @Nullable Object obj, String message) {
         notNull(type, (String)"Type to check against must not be null");
         if (!type.isInstance(obj)) {
@@ -327,6 +596,15 @@ public class Assert {
 
     }
 
+    /**
+     * Is instance of .
+     *
+     * @param type            the type
+     * @param obj             the obj
+     * @param messageSupplier the message supplier
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     */
     public static void isInstanceOf(Class<?> type, @Nullable Object obj, Supplier<String> messageSupplier) {
         notNull(type, (String)"Type to check against must not be null");
         if (!type.isInstance(obj)) {
@@ -335,10 +613,27 @@ public class Assert {
 
     }
 
+    /**
+     * Is instance of .
+     *
+     * @param type the type
+     * @param obj  the obj
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     */
     public static void isInstanceOf(Class<?> type, @Nullable Object obj) {
         isInstanceOf(type, obj, "");
     }
 
+    /**
+     * Is assignable .
+     *
+     * @param superType the super type
+     * @param subType   the sub type
+     * @param message   the message
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     */
     public static void isAssignable(Class<?> superType, @Nullable Class<?> subType, String message) {
         notNull(superType, (String)"Super type to check against must not be null");
         if (subType == null || !superType.isAssignableFrom(subType)) {
@@ -347,6 +642,15 @@ public class Assert {
 
     }
 
+    /**
+     * Is assignable .
+     *
+     * @param superType       the super type
+     * @param subType         the sub type
+     * @param messageSupplier the message supplier
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     */
     public static void isAssignable(Class<?> superType, @Nullable Class<?> subType, Supplier<String> messageSupplier) {
         notNull(superType, (String)"Super type to check against must not be null");
         if (subType == null || !superType.isAssignableFrom(subType)) {
@@ -355,6 +659,14 @@ public class Assert {
 
     }
 
+    /**
+     * Is assignable .
+     *
+     * @param superType the super type
+     * @param subType   the sub type
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     */
     public static void isAssignable(Class<?> superType, Class<?> subType) {
         isAssignable(superType, subType, "");
     }

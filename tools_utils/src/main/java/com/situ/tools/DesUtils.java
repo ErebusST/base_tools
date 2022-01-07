@@ -25,7 +25,7 @@ import java.io.UnsupportedEncodingException;
  * DES加密解密
  *
  * @author 司徒彬
- * @date 2014-4-15
+ * @date 2014 -4-15
  */
 @Component
 public class DesUtils {
@@ -33,6 +33,12 @@ public class DesUtils {
     private Environment environment;
     private final static String MODE = "DES";
 
+    /**
+     * Init .
+     *
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     */
     @PostConstruct
     public void init() {
         KEY = environment.getProperty("des.key");
@@ -45,6 +51,15 @@ public class DesUtils {
 
     private static String IV;
 
+    /**
+     * Encrypt string.
+     *
+     * @param encryptString the encrypt string
+     * @return the string
+     * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     */
     public static String encrypt(String encryptString) throws Exception {
         if (StringUtils.isEmpty(encryptString)) {
             return "";
@@ -69,10 +84,12 @@ public class DesUtils {
      * 功能简介：加密
      *
      * @param encryptString the encrypt string
-     * @return string
+     * @param count         the count
+     * @return string string
      * @throws Exception the exception
      * @author 司徒彬
-     * @date 2016/12/21 10:35
+     * @date 2016 /12/21 10:35
+     * @since 2022 -01-07 15:35:59
      */
     public static String encrypt(String encryptString, int count) throws Exception {
 
@@ -105,6 +122,15 @@ public class DesUtils {
     }
 
 
+    /**
+     * Decrypt string.
+     *
+     * @param decryptString the decrypt string
+     * @return the string
+     * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:59
+     */
     public static String decrypt(String decryptString) throws Exception {
 
         if (StringUtils.isEmpty(KEY)) {
@@ -130,10 +156,12 @@ public class DesUtils {
      * 功能简介：解密 <p>
      *
      * @param decryptString the decrypt string
-     * @return string
+     * @param count         the count
+     * @return string string
      * @throws Exception the exception
      * @author 司徒彬
      * @date 2016 /12/21 10:35
+     * @since 2022 -01-07 15:35:59
      */
     public static String decrypt(String decryptString, int count) throws Exception {
         decryptString = new String(Base64.decode(decryptString), StaticValue.ENCODING);

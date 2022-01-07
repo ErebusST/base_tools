@@ -29,6 +29,8 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      *
      * @param date the date
      * @return the date string
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:59
      */
     public static String getDateString(Timestamp date) {
         return getDateString(date, null);
@@ -40,6 +42,8 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @param date           the date
      * @param dateFormatEnum the date format enum
      * @return the date string
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:59
      */
     public static String getDateString(Timestamp date, DateFormatEnum dateFormatEnum) {
         if (ObjectUtils.isNull(date)) {
@@ -54,6 +58,8 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * 获得当前时间的字符串 默认格式：yyyy-MM-dd HH:mm:ss
      *
      * @return the date string
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:59
      */
     public static String getDateString() {
         return getDateString(new Date(), null);
@@ -64,6 +70,8 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      *
      * @param dateFormatEnum the date format enum
      * @return the date string
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:59
      */
     public static String getDateString(DateFormatEnum dateFormatEnum) {
         return getDateString(new Date(), dateFormatEnum);
@@ -75,6 +83,8 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @param date           the date
      * @param dateFormatEnum the date format enum
      * @return the date string
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:59
      */
     public static String getDateString(Date date, DateFormatEnum dateFormatEnum) {
         Timestamp timestamp = new Timestamp(date.getTime());
@@ -87,7 +97,9 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @param startDate 开始日期
      * @param endDate   结束日期
      * @return the days count
+     * @author ErebusST
      * @return：相差天数
+     * @since 2022 -01-07 15:35:59
      */
     public static int getDaysCount(Date startDate, Date endDate) {
         int dayInt = 0;
@@ -105,6 +117,8 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @param startDate the start date
      * @param endDate   the end date
      * @return the seconds count
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:59
      */
     public static int getSecondsCount(Date startDate, Date endDate) {
         long time = endDate.getTime() - startDate.getTime();
@@ -116,6 +130,8 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * 获取当前时间字符串(年月日时分秒)
      *
      * @return current year str
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:59
      */
     public static String getCurrentYearStr() {
         Calendar cal = Calendar.getInstance();
@@ -125,7 +141,12 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
     }
 
     /**
+     * Get year int.
+     *
+     * @param timestamp the timestamp
      * @return current year str
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:59
      */
     public static int getYear(Timestamp timestamp) {
         Calendar cal = Calendar.getInstance();
@@ -134,6 +155,14 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
         return year;
     }
 
+    /**
+     * Get month int.
+     *
+     * @param timestamp the timestamp
+     * @return the month
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:59
+     */
     public static int getMonth(Timestamp timestamp) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(timestamp.getTime());
@@ -142,6 +171,14 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
     }
 
 
+    /**
+     * Get day of year int.
+     *
+     * @param timestamp the timestamp
+     * @return the day of year
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:59
+     */
     public static int getDayOfYear(Timestamp timestamp) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(timestamp.getTime());
@@ -149,6 +186,14 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
         return day;
     }
 
+    /**
+     * Get week of year int.
+     *
+     * @param timestamp the timestamp
+     * @return the week of year
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:59
+     */
     public static int getWeekOfYear(Timestamp timestamp) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(timestamp.getTime());
@@ -156,6 +201,14 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
         return day;
     }
 
+    /**
+     * Get week of month int.
+     *
+     * @param timestamp the timestamp
+     * @return the week of month
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:59
+     */
     public static int getWeekOfMonth(Timestamp timestamp) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(timestamp.getTime());
@@ -168,6 +221,8 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * 获得当前时间
      *
      * @return the date
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:59
      */
     public static Timestamp getNow() {
         return new Timestamp(System.currentTimeMillis());
@@ -177,8 +232,10 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * 根据指定的字符串获得时间
      *
      * @param dateStr 时间字符串 yyyy-MM-dd HH:mm:ss
-     * @return date
+     * @return date date
      * @throws ParseException the parse exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:59
      */
     public static Date getDate(String dateStr) throws ParseException {
         return getDate(dateStr, null);
@@ -191,6 +248,8 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @param dateFormatEnum the date format enum
      * @return the date
      * @throws ParseException the parse exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:59
      */
     public static Date getDate(String dateStr, DateFormatEnum dateFormatEnum) throws ParseException {
         dateFormatEnum = dateFormatEnum == null ? DateFormatEnum.YYYY_MM_DD_HH_MM_SS : dateFormatEnum;
@@ -204,6 +263,8 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @param dateStr the date str
      * @return the timestamp
      * @throws ParseException the parse exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:59
      */
     public static Timestamp getTimestamp(Object dateStr) {
         return getTimestamp(DataSwitch.convertObjectToString(dateStr), 0, null);
@@ -216,6 +277,8 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @param day     the day
      * @return the timestamp
      * @throws ParseException the parse exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:59
      */
     public static Timestamp getTimestamp(String dateStr, int day) throws ParseException {
         return getTimestamp(dateStr, day, null);
@@ -229,6 +292,8 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @param dateFormatEnum the date format enum
      * @return the timestamp
      * @throws ParseException the parse exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:59
      */
     public static Timestamp getTimestamp(String dateStr, int day, DateFormatEnum dateFormatEnum) {
         try {
@@ -248,6 +313,8 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @param formatStr 时间格式字符串 yyyy-MM-dd
      * @return date by format
      * @throws ParseException the parse exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:59
      */
     public static Date getDateByFormat(String dateStr, String formatStr) throws ParseException {
         if (StringUtils.isBlank(dateStr)) {
@@ -263,6 +330,8 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @param date      时间对象
      * @param formatStr 时间格式字符串
      * @return date format str
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:59
      */
     public static String getDateFormatStr(Date date, String formatStr) {
         if (date == null) {
@@ -276,6 +345,8 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * 获取精确到秒的时间戳
      *
      * @return second timestamp
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:59
      */
     public static int getSecondTimestamp() {
         Date date = new Date();
@@ -294,7 +365,9 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @param day the day
      * @return the timestamp
      * @throws ParseException the parse exception
+     * @author ErebusST
      * @author：司徒彬 @date：2017/4/25 14:19
+     * @since 2022 -01-07 15:35:59
      */
     public static Timestamp addDay(int day) {
         Calendar cal = Calendar.getInstance();
@@ -313,6 +386,8 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @param day  the day
      * @return the timestamp
      * @throws ParseException the parse exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:59
      */
     public static Timestamp addDay(Timestamp date, int day) {
         Calendar cal = Calendar.getInstance();
@@ -337,6 +412,8 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @param year the year
      * @return the timestamp
      * @throws ParseException the parse exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:59
      */
     public static Timestamp addYear(Timestamp date, int year) throws ParseException {
         Calendar cal = Calendar.getInstance();
@@ -354,6 +431,16 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
         return currentTimestamp;//formatter.format(currentTime);
     }
 
+    /**
+     * Add seconds timestamp.
+     *
+     * @param date   the date
+     * @param second the second
+     * @return the timestamp
+     * @throws ParseException the parse exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:00
+     */
     public static Timestamp addSeconds(Timestamp date, int second) throws ParseException {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(date.getTime());
@@ -371,6 +458,15 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
     }
 
 
+    /**
+     * Get spend time string.
+     *
+     * @param start the start
+     * @param end   the end
+     * @return the spend time
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:00
+     */
     public static String getSpendTime(Long start, Long end) {
         long spendTime = Math.abs(end - start);
 
@@ -401,6 +497,8 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @param start the start
      * @param end   the end
      * @return the string
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:00
      */
     public static String getSpendTime(Timestamp start, Timestamp end) {
         long startTime = start.getTime();
@@ -414,6 +512,8 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      *
      * @param now the now
      * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:00
      */
     public static boolean isFirstDayOfWeek(Timestamp now) {
         Calendar cal = Calendar.getInstance();
@@ -428,6 +528,8 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @param now  the now
      * @param week the week
      * @return the first day of week
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:00
      */
     public static Timestamp getFirstDayOfWeek(Timestamp now, int week) {
         Calendar cal = Calendar.getInstance();
@@ -443,6 +545,15 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
     }
 
 
+    /**
+     * Get last day of week timestamp.
+     *
+     * @param now  the now
+     * @param week the week
+     * @return the last day of week
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:00
+     */
     public static Timestamp getLastDayOfWeek(Timestamp now, int week) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(now.getTime());
@@ -457,6 +568,14 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
         return currentTimestamp;
     }
 
+    /**
+     * Is first day of month boolean.
+     *
+     * @param now the now
+     * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:00
+     */
     public static boolean isFirstDayOfMonth(Timestamp now) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(now.getTime());
@@ -470,6 +589,8 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @param now   the now
      * @param month the month
      * @return the first day of month
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:00
      */
     public static Timestamp getFirstDayOfMonth(Timestamp now, int month) {
         Calendar cal = Calendar.getInstance();
@@ -484,6 +605,15 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
         return currentTimestamp;
     }
 
+    /**
+     * Get last day of month timestamp.
+     *
+     * @param now   the now
+     * @param month the month
+     * @return the last day of month
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:00
+     */
     public static Timestamp getLastDayOfMonth(Timestamp now, int month) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(now.getTime());

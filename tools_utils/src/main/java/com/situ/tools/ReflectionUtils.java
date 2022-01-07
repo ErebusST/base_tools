@@ -28,6 +28,8 @@ public class ReflectionUtils {
      *
      * @param clazz the clazz
      * @return the root path
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:08
      */
     public static String getRootPath(Class<?> clazz) {
         String packagePath = getPackagePath(clazz);
@@ -45,6 +47,8 @@ public class ReflectionUtils {
      *
      * @param clazz the clazz
      * @return the package path
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:08
      */
     public static String getPackagePath(Class<?> clazz) {
         String classPath = getResourcePath(clazz);
@@ -56,6 +60,8 @@ public class ReflectionUtils {
      *
      * @param clazz the clazz
      * @return the resource path
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:08
      */
     public static String getResourcePath(Class<?> clazz) {
         String path = clazz.getResource("/").getPath();
@@ -73,6 +79,8 @@ public class ReflectionUtils {
      * @param obj          the obj
      * @param propertyName the property name
      * @return the object
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:08
      */
     public static Object invokeGetterMethod(Object obj, String propertyName) {
         String getterMethodName = "get" + StringUtils.capitalize(propertyName);
@@ -85,6 +93,8 @@ public class ReflectionUtils {
      * @param obj          the obj
      * @param propertyName the property name
      * @param value        the value
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:08
      */
     public static void invokeSetterMethod(Object obj, String propertyName, Object value) {
         invokeSetterMethod(obj, propertyName, value, null);
@@ -93,9 +103,11 @@ public class ReflectionUtils {
     /**
      * 获取get方法
      *
-     * @param clazz
-     * @param propertyName
-     * @return
+     * @param clazz        the clazz
+     * @param propertyName the property name
+     * @return getter method
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:08
      */
     public static Method getGetterMethod(Class clazz, String propertyName) {
         String getterMethodName = "get" + StringUtils.capitalize(propertyName);
@@ -116,6 +128,8 @@ public class ReflectionUtils {
      * @param propertyName the property name
      * @param value        the value
      * @param propertyType 用于查找Setter方法,为空时使用value的Class替代.
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:08
      */
     public static void invokeSetterMethod(Object obj, String propertyName, Object value, Class<?> propertyType) {
         Class<?> type = propertyType != null ? propertyType : value.getClass();
@@ -129,6 +143,8 @@ public class ReflectionUtils {
      * @param obj       the obj
      * @param fieldName the field name
      * @return the field value
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:08
      */
     public static Object getFieldValue(final Object obj, final String fieldName) {
         Field field = getAccessibleField(obj, fieldName);
@@ -181,6 +197,14 @@ public class ReflectionUtils {
         }
     }
 
+    /**
+     * Is final boolean.
+     *
+     * @param field the field
+     * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:08
+     */
     public static boolean isFinal(Field field) {
         boolean isFinal = Modifier.isFinal(field.getModifiers());
         return isFinal;
@@ -193,6 +217,8 @@ public class ReflectionUtils {
      * @param obj       the obj
      * @param fieldName the field name
      * @return the accessible field
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:08
      */
     public static Field getAccessibleField(final Object obj, final String fieldName) {
         Assert.notNull(obj, "object不能为空");
@@ -215,6 +241,8 @@ public class ReflectionUtils {
      * @param <T>   the type parameter
      * @param clazz the obj
      * @return the field [ ]
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:08
      */
     public static <T> Field[] getFields(Class<T> clazz) {
         Field[] fields = clazz.getDeclaredFields();
@@ -239,6 +267,8 @@ public class ReflectionUtils {
      * @param parameterTypes the parameter types
      * @param args           the args
      * @return the object
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:08
      */
     public static Object invokeMethod(final Object obj, final String methodName, final Class<?>[] parameterTypes, final Object[] args) {
         Method method = getAccessibleMethod(obj, methodName, parameterTypes);
@@ -260,6 +290,8 @@ public class ReflectionUtils {
      * @param methodName     the method name
      * @param parameterTypes the parameter types
      * @return the accessible method
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:08
      */
     public static Method getAccessibleMethod(final Object obj, final String methodName, final Class<?>... parameterTypes) {
         Assert.notNull(obj, "object不能为空");
@@ -285,6 +317,8 @@ public class ReflectionUtils {
      * @param <T>   the type parameter
      * @param clazz The class to introspect
      * @return the first generic declaration, or Object.class if cannot be determined
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:08
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static <T> Class<T> getSuperClassGenricType(final Class clazz) {
@@ -297,6 +331,8 @@ public class ReflectionUtils {
      * @param clazz clazz The class to introspect
      * @param index the Index of the generic ddeclaration,start from 0.
      * @return the index generic declaration, or Object.class if cannot be determined
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:08
      */
     @SuppressWarnings("rawtypes")
     public static Class getSuperClassGenricType(final Class clazz, final int index) {
@@ -327,6 +363,8 @@ public class ReflectionUtils {
      *
      * @param e the e
      * @return the runtime exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:08
      */
     public static RuntimeException convertReflectionExceptionToUnchecked(Exception e) {
         if (e instanceof IllegalAccessException || e instanceof IllegalArgumentException || e instanceof NoSuchMethodException) {

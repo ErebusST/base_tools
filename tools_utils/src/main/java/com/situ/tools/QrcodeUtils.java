@@ -24,10 +24,20 @@ import java.util.Hashtable;
  * 二维码工具类
  *
  * @author 司徒彬
- * @date 2021/4/19 10:42
+ * @date 2021 /4/19 10:42
  */
 public class QrcodeUtils {
 
+    /**
+     * Creat rr code string.
+     *
+     * @param contents the contents
+     * @param width    the width
+     * @param height   the height
+     * @return the string
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:07
+     */
     public static String creatRrCode(String contents, int width, int height) {
         String binary = null;
         Hashtable hints = new Hashtable();

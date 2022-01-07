@@ -32,6 +32,8 @@ public class SessionMap {
      * Gets keys.
      *
      * @return the keys
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:06
      */
     public static Set<String> getKeys() {
         return PARA_MAP.keySet();
@@ -43,6 +45,8 @@ public class SessionMap {
      * @param key the key
      * @return the object
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:06
      */
     public static Object get(@Nonnull String key) {
         return get(key, true);
@@ -54,6 +58,8 @@ public class SessionMap {
      * @param key   the key
      * @param flush the flush
      * @return the object
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:06
      */
     public static Object get(@Nonnull String key, boolean flush) {
         SessionEntity sessionEntity = getSessionEntity(key);
@@ -77,6 +83,8 @@ public class SessionMap {
      *
      * @param key the key
      * @return the session entity
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:06
      */
     public static SessionEntity getSessionEntity(@Nonnull String key) {
 
@@ -94,6 +102,8 @@ public class SessionMap {
      * @param key the key
      * @return the string
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:06
      */
     public static String getString(@Nonnull String key) {
         Object value = get(key);
@@ -108,6 +118,8 @@ public class SessionMap {
      * @param key the key
      * @return the value
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:06
      */
     public static <T> T getValue(@Nonnull String key) {
         Object value = get(key);
@@ -120,6 +132,8 @@ public class SessionMap {
      *
      * @param userId the user id
      * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:06
      */
     public static boolean removeUserInfo(@Nonnull Long userId) {
         String key = userId + "_login";
@@ -133,6 +147,8 @@ public class SessionMap {
      *
      * @param key   the key
      * @param value the value
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:06
      */
     public static void put(@Nonnull String key, Object value) {
         put(key, value, 0L);
@@ -145,6 +161,8 @@ public class SessionMap {
      * @param key    the key
      * @param value  the value
      * @param expire the  expire
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:06
      */
     public static void put(@Nonnull String key, Object value, long expire) {
         Object result = BeanUtils.deepClone(value);
@@ -159,6 +177,8 @@ public class SessionMap {
      *
      * @param key the key
      * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:06
      */
     public static boolean containsKey(@Nonnull String key) {
         return PARA_MAP.keySet().stream().filter(str -> str.equalsIgnoreCase(key)).count() > 0;
@@ -168,6 +188,8 @@ public class SessionMap {
      * Remove.
      *
      * @param key the key
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:06
      */
     public static void remove(@Nonnull String key) {
         SessionEntity sessionEntity = PARA_MAP.get(key);
@@ -211,6 +233,8 @@ public class SessionMap {
      * Gets OVERTIME keys.
      *
      * @return the OVERTIME keys
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:06
      */
     public static void clearOverTimeSession() {
         PARA_MAP.keySet().stream().filter(SessionMap::checkIsExpire).forEach(SessionMap::remove);

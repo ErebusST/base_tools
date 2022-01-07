@@ -35,12 +35,20 @@ import java.util.stream.Stream;
  * 操作文件常用工具类
  *
  * @author 司徒彬
- * @date 2017年1月16日10:42:16
+ * @date 2017年1月16日10 :42:16
  */
 @Slf4j
 public class FileUtils {
 
 
+    /**
+     * Is exist boolean.
+     *
+     * @param path the path
+     * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:00
+     */
     public static boolean isExist(String path) {
         try {
             File file = new File(path);
@@ -55,6 +63,9 @@ public class FileUtils {
      * 如果传入是文件夹，则直接创建文件夹 如果传入的文件，则创建该文件的父文件夹 <p> 文件夹必须以 / 或者 \\ 结尾
      *
      * @param filePath the path
+     * @throws IOException the io exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:00
      */
     public static void createDirectory(String filePath) throws IOException {
         Path file = Paths.get(filePath);
@@ -73,6 +84,8 @@ public class FileUtils {
      *
      * @param file the file
      * @return the parent dir path
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:00
      */
     public static String getParentDirPath(String file) {
         Path path = Paths.get(file);
@@ -85,6 +98,9 @@ public class FileUtils {
      * Create file.
      *
      * @param filePath the file path
+     * @throws IOException the io exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:00
      */
     public static void createFile(String filePath) throws IOException {
         try {
@@ -103,6 +119,8 @@ public class FileUtils {
      *
      * @param filePath the file path
      * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:00
      */
     public static boolean isDirectory(@Nonnull String filePath) {
         try {
@@ -118,6 +136,8 @@ public class FileUtils {
      * @param dirPath the dir path
      * @return the long
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:00
      */
     public static long countFileSizeInDirectory(String dirPath) throws Exception {
         long size;
@@ -158,6 +178,8 @@ public class FileUtils {
      * @param dirPath the dir path
      * @return the file count in dir
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:00
      */
     public static long countFileNumberInDirectory(String dirPath) throws Exception {
         File directory = new File(dirPath);
@@ -194,6 +216,8 @@ public class FileUtils {
      * @param pathStr the path str
      * @return the list
      * @throws IOException the io exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:00
      */
     public static List<Path> listFiles(String pathStr) throws IOException {
         try {
@@ -211,6 +235,8 @@ public class FileUtils {
      * @param pathStr the path str
      * @return the list
      * @throws IOException the io exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:00
      */
     public static List<Path> listFilesContainSelf(String pathStr) throws IOException {
         try {
@@ -240,6 +266,8 @@ public class FileUtils {
      *
      * @param size the size
      * @return the string
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:00
      */
     public static String formatSize(long size) {
         // 转换文件大小
@@ -263,6 +291,8 @@ public class FileUtils {
      * @param fileName       the file name 文件名
      * @return the boolean
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:00
      */
     public static boolean copyFile(String sourceFilePath, String targetFilePath, String fileName) throws Exception {
         try {
@@ -279,6 +309,8 @@ public class FileUtils {
      * @param targetFilePath the target file path
      * @return the boolean
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:00
      */
     public static boolean copyFile(String sourceFilePath, String targetFilePath) throws Exception {
         try {
@@ -326,6 +358,8 @@ public class FileUtils {
      * @param filePath the file path
      * @return the boolean
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:00
      */
     public static boolean clearDirectory(String filePath) throws Exception {
         try {
@@ -345,6 +379,8 @@ public class FileUtils {
      * @param filePaths the file paths
      * @return the boolean
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:00
      */
     public static boolean deleteFile(String... filePaths) {
         try {
@@ -383,6 +419,8 @@ public class FileUtils {
      *
      * @param fileName the filename
      * @return the extension name 返回格式 ex: .exe .jpg .png
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:00
      */
     public static String getFileType(String fileName) {
         if (fileName.contains(".")) {
@@ -401,6 +439,8 @@ public class FileUtils {
      *
      * @param fileName the fileName
      * @return the file name no ex
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:00
      */
     public static String getFileName(String fileName) {
         int startIndex = formatFilePath(fileName).lastIndexOf(StaticValue.FILE_SEPARATOR);
@@ -415,6 +455,8 @@ public class FileUtils {
      *
      * @param path the path
      * @return the string
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:01
      */
     public static String formatFilePath(String path) {
         return StringUtils.replace(path, "\\", StaticValue.FILE_SEPARATOR);
@@ -425,6 +467,8 @@ public class FileUtils {
      *
      * @param path the path
      * @return the string
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:01
      */
     public static String formatDirectoryPath(String path) {
         if (path.length() == 0) {
@@ -443,6 +487,8 @@ public class FileUtils {
      * @param saveFile the save file
      * @return the boolean
      * @throws IOException the io exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:01
      */
     public static boolean downloadFileByUrl(String url, String savePath, String saveFile) throws IOException {
 
@@ -454,6 +500,16 @@ public class FileUtils {
         }
     }
 
+    /**
+     * Download file by url boolean.
+     *
+     * @param urlStr       the url str
+     * @param saveFilePath the save file path
+     * @return the boolean
+     * @throws IOException the io exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:01
+     */
     @SuppressWarnings("AlibabaRemoveCommentedCode")
     public static boolean downloadFileByUrl(String urlStr, String saveFilePath) throws IOException {
         HttpURLConnection conn = null;
@@ -505,6 +561,8 @@ public class FileUtils {
      * @param content the content
      * @return the boolean
      * @throws IOException the io exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:01
      */
     public static boolean writeContentToTxt(String pathStr, String content) throws IOException {
         try {
@@ -527,6 +585,8 @@ public class FileUtils {
      * @param target the target
      * @return the boolean
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:01
      */
     public static boolean moveFile(String source, String target) throws Exception {
         copyFile(source, target);
@@ -540,6 +600,8 @@ public class FileUtils {
      * @param request the request
      * @return the file item from request
      * @throws FileUploadException the file upload exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:01
      */
     public static FileItem getFileItemFromRequest(HttpServletRequest request) throws FileUploadException {
         try {
@@ -558,6 +620,16 @@ public class FileUtils {
         }
     }
 
+    /**
+     * File upload string.
+     *
+     * @param request  the request
+     * @param filePath the file path
+     * @return the string
+     * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:01
+     */
     public static String fileUpload(HttpServletRequest request, String filePath) throws Exception {
         String fileNameRet = "";
         String maxSize = request.getParameter("maxSize");
@@ -612,6 +684,16 @@ public class FileUtils {
     }
 
 
+    /**
+     * File upload string.
+     *
+     * @param fileItem the file item
+     * @param filePath the file path
+     * @return the string
+     * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:01
+     */
     public static String fileUpload(FileItem fileItem, String filePath) throws Exception {
         String fileNameRet = "";
         FileUtils.createDirectory(filePath);
@@ -648,6 +730,14 @@ public class FileUtils {
         return fileNameRet;
     }
 
+    /**
+     * Get file stream .
+     *
+     * @param reportPath the report path
+     * @throws IOException the io exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:01
+     */
     public static void getFileStream(String reportPath) throws IOException {
         InputStream inputStream = Files.newInputStream(Paths.get(reportPath));
 
@@ -661,6 +751,8 @@ public class FileUtils {
      * @param realName   the real name
      * @param response   the response
      * @throws IOException the io exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:01
      */
     public static void download(String reportPath, String realName, HttpServletResponse response) throws IOException {
         Path path = Paths.get(reportPath);

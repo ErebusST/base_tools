@@ -24,7 +24,7 @@ import java.util.Arrays;
  * Bean操作类
  *
  * @author 司徒彬
- * @date 2017年1月12日10:54:59
+ * @date 2017年1月12日10 :54:59
  */
 @Slf4j
 public class BeanUtils extends org.apache.commons.beanutils.BeanUtils {
@@ -37,6 +37,8 @@ public class BeanUtils extends org.apache.commons.beanutils.BeanUtils {
      * @param <T> the type parameter
      * @param obj the obj
      * @return the t
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:59
      */
     public static <T> T deepClone(Object obj) {
         try {
@@ -70,6 +72,8 @@ public class BeanUtils extends org.apache.commons.beanutils.BeanUtils {
      * @param obj the obj
      * @return the t
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:59
      */
     public static final <T> T copyBean(@Nonnull T obj) throws Exception {
         try {
@@ -89,11 +93,25 @@ public class BeanUtils extends org.apache.commons.beanutils.BeanUtils {
      * @return the t
      * @throws IllegalAccessException the illegal access exception
      * @throws InstantiationException the instantiation exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:59
      */
     public static <T> T copyBean(@Nonnull Object sourceEntity, @Nonnull T targetEntity, @Nonnull boolean isCover) {
         return copyBean(sourceEntity, targetEntity, isCover, false);
     }
 
+    /**
+     * Copy bean t.
+     *
+     * @param <T>          the type parameter
+     * @param sourceEntity the source entity
+     * @param targetEntity the target entity
+     * @param isCover      the is cover
+     * @param ignoreType   the ignore type
+     * @return the t
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:59
+     */
     public static <T> T copyBean(@Nonnull Object sourceEntity, @Nonnull T targetEntity, @Nonnull boolean isCover, @Nonnull boolean ignoreType) {
         try {
             //把目标实体的继承实体中的属性，与目标实体中的属性合并成一个list
@@ -146,6 +164,8 @@ public class BeanUtils extends org.apache.commons.beanutils.BeanUtils {
      * @return the t
      * @throws IllegalAccessException the illegal access exception
      * @throws InstantiationException the instantiation exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:59
      */
     public static <T> T copyBean(@Nonnull Object sourceEntity, Class<T> clazz) {
         try {
@@ -166,6 +186,8 @@ public class BeanUtils extends org.apache.commons.beanutils.BeanUtils {
      * @return the t
      * @throws IllegalAccessException the illegal access exception
      * @throws InstantiationException the instantiation exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:59
      */
     public static <T> T copyBean(@Nonnull Object sourceEntity, Class<T> clazz, boolean ignoreType) {
         try {

@@ -19,14 +19,41 @@ import java.util.stream.Collectors;
  * @date 2020 /4/16 23:51
  */
 public class ListUtils extends org.apache.commons.collections.ListUtils {
+    /**
+     * New array list list.
+     *
+     * @param <T> the type parameter
+     * @param t   the t
+     * @return the list
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:01
+     */
     public static <T> List<T> newArrayList(T... t) {
         return Arrays.stream(t).collect(Collectors.toList());
     }
 
+    /**
+     * Union all list.
+     *
+     * @param <T>   the type parameter
+     * @param lists the lists
+     * @return the list
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:01
+     */
     public static <T> List<T> unionAll(List<T>... lists) {
         return Arrays.stream(lists).flatMap(list -> list.stream()).collect(Collectors.toList());
     }
 
+    /**
+     * Last t.
+     *
+     * @param <T>  the type parameter
+     * @param list the list
+     * @return the t
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:01
+     */
     public static <T> T last(List<T> list) {
         int size = list.size();
         if (size == 0) {
@@ -39,6 +66,15 @@ public class ListUtils extends org.apache.commons.collections.ListUtils {
     }
 
 
+    /**
+     * First t.
+     *
+     * @param <T> the type parameter
+     * @param day the day
+     * @return the t
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:01
+     */
     public static <T> T first(List<T> day) {
         int size = day.size();
         if (size > 0) {

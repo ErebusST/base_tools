@@ -37,6 +37,8 @@ public class Pager implements Serializable {
      * Gets page number.
      *
      * @return the page number
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:07
      */
     public Integer getPageNumber() {
         return pageNumber;
@@ -55,6 +57,8 @@ public class Pager implements Serializable {
      * Gets page size.
      *
      * @return the page size
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:07
      */
     public Integer getPageSize() {
         return pageSize;
@@ -73,6 +77,8 @@ public class Pager implements Serializable {
      * Gets total.
      *
      * @return the total
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:07
      */
     public Integer getTotal() {
         return total;
@@ -91,6 +97,8 @@ public class Pager implements Serializable {
      * Gets rows.
      *
      * @return the rows
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:07
      */
     public List<Map<String, Object>> getRows() {
         return rows;

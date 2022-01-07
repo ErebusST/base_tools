@@ -12,8 +12,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
+ * The type Message.
+ *
+ * @param <T> the type parameter
  * @author 司徒彬
- * @date 2020/4/8 13:35
+ * @date 2020 /4/8 13:35
  */
 @Setter
 @Getter

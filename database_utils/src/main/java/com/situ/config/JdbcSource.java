@@ -15,8 +15,10 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 /**
+ * The type Jdbc source.
+ *
  * @author 司徒彬
- * @date 2021/12/20 15:43
+ * @date 2021 /12/20 15:43
  */
 @Component
 @ConfigurationProperties(prefix = "spring.datasource")
@@ -25,11 +27,26 @@ public class JdbcSource {
 
     private List<Source> sources;
 
+    /**
+     * The type Source.
+     */
     @Data
     public static class Source {
+        /**
+         * The Key.
+         */
         String key;
+        /**
+         * The Url.
+         */
         String url;
+        /**
+         * The Username.
+         */
         String username;
+        /**
+         * The Password.
+         */
         String password;
     }
 

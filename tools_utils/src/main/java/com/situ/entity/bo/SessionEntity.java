@@ -18,7 +18,7 @@ import javax.annotation.Nonnull;
  * ${description}
  *
  * @author 司徒彬
- * @date 2017-11-24 11:56
+ * @date 2017 -11-24 11:56
  */
 @Setter
 @Getter
@@ -30,6 +30,15 @@ public class SessionEntity {
     private Long expire;//秒
 
 
+    /**
+     * Get instance session entity.
+     *
+     * @param value  the value
+     * @param expire the expire
+     * @return the instance
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:09
+     */
     public static SessionEntity getInstance(Object value, @Nonnull long expire) {
         SessionEntity sessionEntity = new SessionEntity();
         sessionEntity.setTimeStamp(System.currentTimeMillis());

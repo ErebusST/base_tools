@@ -14,7 +14,7 @@ import java.lang.annotation.*;
  * 跳过签名
  *
  * @author 司徒彬
- * @date 2020/10/28 16:18
+ * @date 2020 /10/28 16:18
  */
 @Documented //文档
 @Retention(RetentionPolicy.RUNTIME) //在运行时可以获取

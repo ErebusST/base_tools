@@ -14,8 +14,34 @@ package com.situ.enumeration;
  * @author ：司徒彬 @date：2016/10/18 13:05
  */
 public enum DateFormatEnum {
-    YYYY_MM_DD("yyyy-MM-dd"), YYYY_MM_DD_HH_MM_SS("yyyy-MM-dd HH:mm:ss"), YYYYMMDDHHMMSS("yyyy_MM_dd_HH_mm_ss"), YYYY_MM_DD_HH_MM("yyyy-MM-dd HH:mm"), YYYYMMDDHHMMSSsss("yyyyMMddHHmmssS"),
-    YYYYMMDD("yyyyMMdd"), YYYYNMMYDDR("yyyy年MM月dd日");
+    /**
+     * Yyyy mm dd date format enum.
+     */
+    YYYY_MM_DD("yyyy-MM-dd"),
+    /**
+     * The Yyyy mm dd hh mm ss.
+     */
+    YYYY_MM_DD_HH_MM_SS("yyyy-MM-dd HH:mm:ss"),
+    /**
+     * Yyyymmddhhmmss date format enum.
+     */
+    YYYYMMDDHHMMSS("yyyy_MM_dd_HH_mm_ss"),
+    /**
+     * The Yyyy mm dd hh mm.
+     */
+    YYYY_MM_DD_HH_MM("yyyy-MM-dd HH:mm"),
+    /**
+     * Yyyymmddhhmms ssss date format enum.
+     */
+    YYYYMMDDHHMMSSsss("yyyyMMddHHmmssS"),
+    /**
+     * Yyyymmdd date format enum.
+     */
+    YYYYMMDD("yyyyMMdd"),
+    /**
+     * Yyyynmmyddr date format enum.
+     */
+    YYYYNMMYDDR("yyyy年MM月dd日");
 
     //    YYYY_MM_DD {public String getValue(){return "yyyy-MM-dd HH:mm:ss";}},
     //    YYYY_MM_DD_HH_MM_SS {public String getValue(){return "yyyy-MM-dd HH:mm:ss";}},
@@ -27,6 +53,13 @@ public enum DateFormatEnum {
         this.value = value;
     }
 
+    /**
+     * Get value string.
+     *
+     * @return the value
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:10
+     */
     public String getValue() {
         return value;
     }

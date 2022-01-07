@@ -14,8 +14,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
+ * The type Redis config.
+ *
  * @author 司徒彬
- * @date 2021/9/22 21:30
+ * @date 2021 /9/22 21:30
  */
 @Component
 @Getter

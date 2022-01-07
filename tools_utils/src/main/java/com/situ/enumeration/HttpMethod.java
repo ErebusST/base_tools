@@ -9,15 +9,32 @@
 package com.situ.enumeration;
 
 /**
+ * The enum Http method.
+ *
  * @author 司徒彬
- * @date 2020/6/26 19:42
+ * @date 2020 /6/26 19:42
  */
 public enum HttpMethod {
-        Post("POST"),
-        Get("Get"),
-        Put("PUT"),
-        Delete("DELETE"),
-        Options("OPTIONS"),
+    /**
+     * Post http method.
+     */
+    Post("POST"),
+    /**
+     * Get http method.
+     */
+    Get("Get"),
+    /**
+     * Put http method.
+     */
+    Put("PUT"),
+    /**
+     * Delete http method.
+     */
+    Delete("DELETE"),
+    /**
+     * Options http method.
+     */
+    Options("OPTIONS"),
 
     ;
     private String method;
@@ -26,6 +43,13 @@ public enum HttpMethod {
         this.method = method;
     }
 
+    /**
+     * Get method string.
+     *
+     * @return the string
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:10
+     */
     public String getMethod(){
         return method.toUpperCase();
     }

@@ -12,8 +12,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
+ * The type Request device info.
+ *
  * @author 司徒彬
- * @date 2021/5/31 18:31
+ * @date 2021 /5/31 18:31
  */
 @Getter
 @Setter

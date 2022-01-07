@@ -14,7 +14,7 @@ import java.lang.annotation.*;
  * 在controller层中 用于标识是否需要记录日志
  *
  * @author 司徒彬
- * @date 2017-08-20 10:16
+ * @date 2017 -08-20 10:16
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

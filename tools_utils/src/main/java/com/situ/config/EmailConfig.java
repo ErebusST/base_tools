@@ -16,8 +16,10 @@ import org.springframework.stereotype.Component;
 import java.util.Map;
 
 /**
+ * The type Email config.
+ *
  * @author 司徒彬
- * @date 2020/5/19 14:50
+ * @date 2020 /5/19 14:50
  */
 @Component
 @ConfigurationProperties(prefix = "email")

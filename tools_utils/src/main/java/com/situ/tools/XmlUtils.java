@@ -19,14 +19,18 @@ import java.util.Optional;
  * XML文件操作类
  *
  * @author 司徒彬
- * @date 2016/10/17 22:53
+ * @date 2016 /10/17 22:53
  */
 public class XmlUtils {
     /**
      * Gets filter entities.
      *
+     * @param key    the key
+     * @param xmlStr the xml str
      * @return the filter entities
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:59
      */
     public static String getKeyValue(String key, String xmlStr) throws Exception {
         try {

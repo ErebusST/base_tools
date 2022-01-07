@@ -24,28 +24,55 @@ import java.util.*;
  * 邮件服务工具类
  *
  * @author ErebusST
- * @date 2017/6/15 13:56
+ * @date 2017 /6/15 13:56
  */
 @Component
 public class EmailUtils {
 
+    /**
+     * The Email config.
+     */
     @Autowired
     EmailConfig emailConfig;
+    /**
+     * The From.
+     */
     @Setter
     String from = "";//设置邮件发送源邮箱
+    /**
+     * The To.
+     */
     @Setter
     String to = "";// 设置邮件发送目的邮箱
+    /**
+     * The Cc.
+     */
     @Setter
     String cc = "";// 设置邮件发送抄送
+    /**
+     * The Username.
+     */
     @Setter
     String username = "";//设置登录服务器校验用户
+    /**
+     * The Password.
+     */
     @Setter
     String password = "";//设置登录服务器校验密码
+    /**
+     * The Subject.
+     */
     @Setter
     String subject = "";// 邮件主题
+    /**
+     * The Content.
+     */
     @Setter
     String content = "";// 邮件正文
 
+    /**
+     * The Attachment files.
+     */
     List<String> attachmentFiles = new ArrayList<>();// 附件文件集合
 
 
@@ -54,6 +81,10 @@ public class EmailUtils {
      * 方法说明：往附件组合中添加附件 <br>
      * 输入参数： <br>
      * 返回类型：
+     *
+     * @param fname the fname
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:06
      */
     public void addAttachmentFile(String fname) {
         attachmentFiles.add(fname);
@@ -65,6 +96,12 @@ public class EmailUtils {
      * 方法说明：乱码处理 <br>
      * 输入参数：String strText <br>
      * 返回类型：
+     *
+     * @param strText the str text
+     * @return the string
+     * @throws UnsupportedEncodingException the unsupported encoding exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:06
      */
     public String transferChinese(String strText) throws UnsupportedEncodingException {
         try {
@@ -75,6 +112,14 @@ public class EmailUtils {
     }
 
 
+    /**
+     * Send mail boolean.
+     *
+     * @return the boolean
+     * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:06
+     */
     public boolean sendMail() throws Exception {
         try {
             Map<String, String> setting = emailConfig.getSetting();
@@ -134,7 +179,9 @@ public class EmailUtils {
     }
 
 
-
+    /**
+     * The Line separator.
+     */
     String LINE_SEPARATOR = "<br/>";
 
 

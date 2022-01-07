@@ -34,6 +34,8 @@ public class MessageDigestUtils {
      * @return the signature by md 5
      * @throws UnsupportedEncodingException the unsupported encoding exception
      * @throws NoSuchAlgorithmException     the no such algorithm exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:08
      */
     public static String getSignatureByMd5(Map<String, Object> signParameters)
             throws UnsupportedEncodingException, NoSuchAlgorithmException {
@@ -51,6 +53,8 @@ public class MessageDigestUtils {
      * @return the signature by sha 1
      * @throws UnsupportedEncodingException the unsupported encoding exception
      * @throws NoSuchAlgorithmException     the no such algorithm exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:08
      */
     public static String getSignatureBySha1(Map<String, Object> signParameters)
             throws UnsupportedEncodingException, NoSuchAlgorithmException {
@@ -69,6 +73,8 @@ public class MessageDigestUtils {
      * @return the signature
      * @throws UnsupportedEncodingException the unsupported encoding exception
      * @throws NoSuchAlgorithmException     the no such algorithm exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:08
      */
     public static String getSignature(Map<String, Object> signParameters, MessageDigestEnum messageDigestEnum)
             throws UnsupportedEncodingException, NoSuchAlgorithmException {
@@ -84,6 +90,8 @@ public class MessageDigestUtils {
      * @return the signature
      * @throws UnsupportedEncodingException the unsupported encoding exception
      * @throws NoSuchAlgorithmException     the no such algorithm exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:08
      */
     public static String getSignature(Map<String, Object> signParameters, MessageDigestEnum messageDigestEnum, boolean isContainSplitChar)
             throws UnsupportedEncodingException, NoSuchAlgorithmException {
@@ -115,6 +123,8 @@ public class MessageDigestUtils {
      * @return the string
      * @throws NoSuchAlgorithmException     the no such algorithm exception
      * @throws UnsupportedEncodingException the unsupported encoding exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:08
      */
     public static String md5(String str) throws NoSuchAlgorithmException, UnsupportedEncodingException {
         return messageDigest(str, MessageDigestEnum.MD5);
@@ -127,6 +137,8 @@ public class MessageDigestUtils {
      * @return the string
      * @throws UnsupportedEncodingException the unsupported encoding exception
      * @throws NoSuchAlgorithmException     the no such algorithm exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:08
      */
     public static String sha1(String str) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         return messageDigest(str, MessageDigestEnum.SHA1);
@@ -140,6 +152,8 @@ public class MessageDigestUtils {
      * @return the string
      * @throws UnsupportedEncodingException the unsupported encoding exception
      * @throws NoSuchAlgorithmException     the no such algorithm exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:08
      */
     public static String messageDigest(String str, MessageDigestEnum messageDigestEnum)
             throws UnsupportedEncodingException, NoSuchAlgorithmException {
@@ -157,6 +171,15 @@ public class MessageDigestUtils {
         }
     }
 
+    /**
+     * Create message digest message digest.
+     *
+     * @param messageDigestEnum the message digest enum
+     * @return the message digest
+     * @throws NoSuchAlgorithmException the no such algorithm exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:08
+     */
     public static MessageDigest createMessageDigest(MessageDigestEnum messageDigestEnum) throws NoSuchAlgorithmException {
         try {
             MessageDigest messageDigest = MessageDigest.getInstance(messageDigestEnum.getValue());
@@ -173,6 +196,8 @@ public class MessageDigestUtils {
      * @return the string
      * @throws IOException              the io exception
      * @throws NoSuchAlgorithmException the no such algorithm exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:08
      */
     public static String countFileMD5(String inputFile) throws IOException, NoSuchAlgorithmException {
         // 缓冲区大小（这个可以抽出一个参数）
@@ -239,7 +264,9 @@ public class MessageDigestUtils {
      * 转换字节数组为16进制字串
      *
      * @param b 字节数组
-     * @return 16进制字串
+     * @return 16进制字串 string
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:09
      */
     public static String byteArrayToHexString(byte[] b) {
         StringBuilder resultSb = new StringBuilder();
@@ -269,7 +296,9 @@ public class MessageDigestUtils {
      * MD5编码
      *
      * @param origin 原始字符串
-     * @return 经过MD5加密之后的结果
+     * @return 经过MD5加密之后的结果 string
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:09
      */
     public static String WeChatMD5Encode(String origin) {
         String resultString = null;

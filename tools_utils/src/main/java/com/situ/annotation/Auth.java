@@ -14,7 +14,7 @@ import java.lang.annotation.*;
  * 自定义注解，用于auth授权时的权限控制
  *
  * @author 司徒彬
- * @date 2020/7/24 10:46
+ * @date 2020 /7/24 10:46
  */
 @Documented //文档
 @Retention(RetentionPolicy.RUNTIME) //在运行时可以获取
@@ -25,6 +25,8 @@ public @interface Auth {
      * Value string.
      *
      * @return the string
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:09
      */
     String code() default "";
 }

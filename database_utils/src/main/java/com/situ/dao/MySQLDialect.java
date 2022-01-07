@@ -19,10 +19,13 @@ import java.sql.Types;
  * 自定义的mysql方言
  *
  * @author 司徒彬
- * @date 2020/3/12 18:32
+ * @date 2020 /3/12 18:32
  */
 public class MySQLDialect extends MySQL57Dialect {
 
+    /**
+     * Instantiates a new My sql dialect.
+     */
     public MySQLDialect() {
         super(); //调用父类的构造方法（super()一定要放在方法的首个语句）
         registerHibernateType(Types.NULL, Object.class.getName());

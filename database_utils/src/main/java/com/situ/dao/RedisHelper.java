@@ -56,6 +56,8 @@ public class RedisHelper {
      * Gets instance.
      *
      * @return the instance
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:05
      */
     public static RedisHelper getInstance() {
         if (instance == null) {
@@ -77,6 +79,12 @@ public class RedisHelper {
     @Autowired
     private RedisConfig redisConfigTemp;
 
+    /**
+     * Before init .
+     *
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:05
+     */
     @PostConstruct
     public void beforeInit(){
         redisConfig = redisConfigTemp;
@@ -167,6 +175,8 @@ public class RedisHelper {
      * Exec.
      *
      * @param callables the callables
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:05
      */
     public void exec(Callable... callables) {
 
@@ -193,6 +203,8 @@ public class RedisHelper {
      * @param key   the key
      * @param value the value
      * @return the string
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:05
      */
     public String putString(@Nonnull String key, @Nonnull String value) {
         try {
@@ -209,6 +221,8 @@ public class RedisHelper {
      * @param value   the value
      * @param seconds the seconds
      * @return the string
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:05
      */
     public String putString(@Nonnull String key, @Nonnull String value, Integer seconds) {
         return putString(key, value, seconds, null);
@@ -223,6 +237,8 @@ public class RedisHelper {
      * @param seconds the seconds
      * @param dbIndex the db index
      * @return the string
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:05
      */
     public String putString(@Nonnull String key, @Nonnull String value, Integer seconds, Integer dbIndex) {
         return putString(key, value, seconds, dbIndex, true);
@@ -237,6 +253,8 @@ public class RedisHelper {
      * @param dbIndex the db index
      * @param fixKey  the fix key
      * @return the string
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:05
      */
     public String putString(@Nonnull String key, @Nonnull String value, Integer seconds, Integer dbIndex, boolean fixKey) {
         Jedis client = null;
@@ -270,6 +288,8 @@ public class RedisHelper {
      * @param key   the key
      * @param value the value
      * @return the string
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:05
      */
     public String putObject(@Nonnull String key, @Nonnull Object value) {
         try {
@@ -287,6 +307,8 @@ public class RedisHelper {
      * @param value   the value
      * @param seconds the seconds
      * @return the string
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:05
      */
     public String putObject(@Nonnull String key, @Nonnull Object value, Integer seconds) {
         try {
@@ -304,6 +326,8 @@ public class RedisHelper {
      * @param seconds the seconds
      * @param dbIndex the db index
      * @return the string
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:05
      */
     public String putObject(@Nonnull String key, @Nonnull Object value, Integer seconds, Integer dbIndex) {
         return putObject(key, value, seconds, dbIndex, true);
@@ -318,6 +342,8 @@ public class RedisHelper {
      * @param dbIndex the db index
      * @param fixKey  the fix key
      * @return the string
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:05
      */
     public String putObject(@Nonnull String key, @Nonnull Object value, Integer seconds, Integer dbIndex, boolean fixKey) {
         try {
@@ -344,6 +370,8 @@ public class RedisHelper {
      * @param clazz the clazz
      * @param key   the key
      * @return the entity
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:06
      */
     public <T> T getEntity(@Nonnull Class<T> clazz, @Nonnull String key) {
         return getEntity(clazz, key, null);
@@ -357,6 +385,8 @@ public class RedisHelper {
      * @param key     the key
      * @param dbIndex the db index
      * @return the entity
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:06
      */
     public <T> T getEntity(@Nonnull Class<T> clazz, @Nonnull String key, Integer dbIndex) {
         return getEntity(clazz, key, dbIndex, true);
@@ -371,6 +401,8 @@ public class RedisHelper {
      * @param dbIndex the db index
      * @param fixKey  the fix key
      * @return the entity
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:06
      */
     public <T> T getEntity(@Nonnull Class<T> clazz, @Nonnull String key, Integer dbIndex, boolean fixKey) {
         String string = getString(key, dbIndex, fixKey);
@@ -386,6 +418,8 @@ public class RedisHelper {
      *
      * @param key the key
      * @return the json object
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:06
      */
     public JsonObject getJsonObject(@Nonnull String key) {
         return getJsonObject(key, null);
@@ -397,6 +431,8 @@ public class RedisHelper {
      * @param key     the key
      * @param dbIndex the db index
      * @return the json object
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:06
      */
     public JsonObject getJsonObject(@Nonnull String key, Integer dbIndex) {
         return getJsonElement(key, dbIndex).getAsJsonObject();
@@ -407,6 +443,8 @@ public class RedisHelper {
      *
      * @param key the key
      * @return the json array
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:06
      */
     public JsonArray getJsonArray(@Nonnull String key) {
         return getJsonArray(key, null);
@@ -418,6 +456,8 @@ public class RedisHelper {
      * @param key     the key
      * @param dbIndex the db index
      * @return the json array
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:06
      */
     public JsonArray getJsonArray(@Nonnull String key, Integer dbIndex) {
         JsonElement jsonElement = getJsonElement(key, dbIndex);
@@ -433,6 +473,8 @@ public class RedisHelper {
      *
      * @param key the key
      * @return the json element
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:06
      */
     public JsonElement getJsonElement(@Nonnull String key) {
         return getJsonElement(key, null);
@@ -444,6 +486,8 @@ public class RedisHelper {
      * @param key     the key
      * @param dbIndex the db index
      * @return the json element
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:06
      */
     public JsonElement getJsonElement(@Nonnull String key, Integer dbIndex) {
         String string = getString(key, dbIndex);
@@ -458,6 +502,8 @@ public class RedisHelper {
      *
      * @param key the key
      * @return the string
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:06
      */
     public String getString(@Nonnull String key) {
         try {
@@ -473,6 +519,8 @@ public class RedisHelper {
      * @param key     the key
      * @param dbIndex the db index
      * @return the string
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:06
      */
     public String getString(@Nonnull String key, Integer dbIndex) {
         return getString(key, dbIndex, true);
@@ -485,6 +533,8 @@ public class RedisHelper {
      * @param dbIndex the db index
      * @param fixKey  the fix key
      * @return the string
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:06
      */
     public String getString(@Nonnull String key, Integer dbIndex, Boolean fixKey) {
         Jedis client = null;
@@ -528,6 +578,8 @@ public class RedisHelper {
      *
      * @param keys the keys
      * @return the long
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:06
      */
     public Long remove(String... keys) {
         try {
@@ -543,6 +595,8 @@ public class RedisHelper {
      * @param dbIndex the db index
      * @param keys    the keys
      * @return the long
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:06
      */
     public Long remove(Integer dbIndex, String... keys) {
         Jedis client = null;
@@ -566,6 +620,8 @@ public class RedisHelper {
      * @param pattern the pattern
      * @param dbIndex the db index
      * @return the result by pattern
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:06
      */
     public List<String> getResultByPattern(String pattern, Integer dbIndex) {
         Jedis client = null;
@@ -597,6 +653,8 @@ public class RedisHelper {
      *
      * @param key the key
      * @return boolean boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:06
      */
     public boolean exists(String key) {
         return exists(key, 0);
@@ -608,12 +666,24 @@ public class RedisHelper {
      * @param key       the key
      * @param dataIndex the data index
      * @return boolean boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:06
      */
     public boolean exists(String key, Integer dataIndex) {
         return exists(key, dataIndex, true);
 
     }
 
+    /**
+     * Exists boolean.
+     *
+     * @param key       the key
+     * @param dataIndex the data index
+     * @param fixKey    the fix key
+     * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:06
+     */
     public boolean exists(String key, Integer dataIndex, Boolean fixKey) {
         Jedis client = null;
         try {
@@ -642,6 +712,8 @@ public class RedisHelper {
      * @param dbIndex the db indexDaySalaryController
      * @param key     the key
      * @param seconds the seconds
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:06
      */
     public void expire(int dbIndex, String key, int seconds) {
         Jedis client = null;
@@ -660,6 +732,8 @@ public class RedisHelper {
      * Flush.
      *
      * @param dbIndex the db index
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:06
      */
     public void flush(@Nonnull Integer dbIndex) {
         Jedis client = null;
@@ -676,6 +750,8 @@ public class RedisHelper {
      * Flush all.
      *
      * @param dbIndex the db index
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:06
      */
     public void flushAll(Integer... dbIndex) {
         Arrays.stream(dbIndex).filter(ObjectUtils::isNotEmpty).forEach(index -> {
@@ -688,6 +764,8 @@ public class RedisHelper {
      *
      * @param dbIndex the db index
      * @return the long
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:06
      */
     public Long getDBSize(@Nonnull Integer dbIndex) {
         Jedis client = null;

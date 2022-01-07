@@ -19,7 +19,7 @@ import java.text.ParseException;
  * 数据库主键创建类
  *
  * @author 司徒彬
- * @date 2017-08-06 19:53
+ * @date 2017 -08-06 19:53
  */
 @Component
 public class GeneratorId {
@@ -89,6 +89,11 @@ public class GeneratorId {
 
     private static long WORKER_ID;
 
+    /**
+     * Sets work id.
+     *
+     * @param workerId the worker id
+     */
     @Value("${server.work-id:1}")
     public void setWorkId(Long workerId) {
         WORKER_ID = workerId;
@@ -99,6 +104,11 @@ public class GeneratorId {
      */
     private static long DATA_CENTER_ID;
 
+    /**
+     * Sets data center id.
+     *
+     * @param dataCenterId the data center id
+     */
     @Value("${server.data-center-id:1}")
     public void setDataCenterId(Long dataCenterId) {
         DATA_CENTER_ID = dataCenterId;
@@ -140,7 +150,9 @@ public class GeneratorId {
     /**
      * 获得下一个ID (该方法是线程安全的)
      *
-     * @return SnowflakeId
+     * @return SnowflakeId long
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:06
      */
     public static synchronized long nextId() {
         checkParameters();
@@ -181,7 +193,9 @@ public class GeneratorId {
      * 阻塞到下一个毫秒，直到获得新的时间戳
      *
      * @param lastTimestamp 上次生成ID的时间截
-     * @return 当前时间戳
+     * @return 当前时间戳 long
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:06
      */
     protected static long tilNextMillis(long lastTimestamp) {
         long timestamp = timeGen();
@@ -194,7 +208,9 @@ public class GeneratorId {
     /**
      * 返回以毫秒为单位的当前时间
      *
-     * @return 当前时间(毫秒)
+     * @return 当前时间(毫秒) long
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:06
      */
     protected static long timeGen() {
         return System.currentTimeMillis();

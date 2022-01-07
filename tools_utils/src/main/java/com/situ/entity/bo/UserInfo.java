@@ -18,7 +18,7 @@ import lombok.Setter;
  * 用户信息
  *
  * @author 司徒彬
- * @date 2020/7/24 10:58
+ * @date 2020 /7/24 10:58
  */
 @Getter
 @Setter
@@ -77,6 +77,13 @@ public class UserInfo {
 
     private String invitationCode;
 
+    /**
+     * Get login info json object.
+     *
+     * @return the login info
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:09
+     */
     public JsonObject getLoginInfo() {
         JsonObject object = new JsonObject();
         object.addProperty("phone", this.getPhone());
@@ -106,6 +113,12 @@ public class UserInfo {
         return object;
     }
 
+    /**
+     * Add task count .
+     *
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:09
+     */
     public void addTaskCount() {
         if (taskCount == null) {
             taskCount = 0;

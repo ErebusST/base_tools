@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * Auth token
  *
  * @author 司徒彬
- * @date 2020/7/24 11:00
+ * @date 2020 /7/24 11:00
  */
 @Slf4j
 public class AuthHelper {
@@ -38,6 +38,8 @@ public class AuthHelper {
      * @param durationDay the duration days 天数
      * @return the string
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:01
      */
     public static String createToken(UserInfo userInfo, Long durationDay) throws Exception {
 
@@ -71,6 +73,8 @@ public class AuthHelper {
      * @param token the token
      * @return the user info
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:01
      */
     public static UserInfo verifyToken(String token) throws Exception {
         //判断特殊字符
@@ -97,6 +101,8 @@ public class AuthHelper {
      * @param authValue       the auth value
      * @param permissionCodes the permission codes
      * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:01
      */
     public static boolean validateAuthRights(String authValue, String permissionCodes) {
         List<String> permissionCodeList = StringUtils.splitToList(permissionCodes, ",")

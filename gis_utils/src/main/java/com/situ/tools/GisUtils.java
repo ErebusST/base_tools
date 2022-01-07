@@ -74,6 +74,8 @@ public class GisUtils {
      * @param hiveRadius   the hive radius
      * @param type         the type
      * @return the list
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:25
      */
     public static List<Point> generateData(Point center, BigDecimal centerRadius, BigDecimal hiveRadius, ShapeType type) {
         try {
@@ -167,6 +169,8 @@ public class GisUtils {
      * @param count  the count
      * @param type   the type
      * @return the current row points info
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:25
      */
     public static List<Point> getCurrentRowPointsInfo(Point point, BigDecimal radius, Integer count, ShapeType type) {
         List<Point> leftPoints = new ArrayList<>(count);
@@ -215,6 +219,8 @@ public class GisUtils {
      * @param center the center
      * @param radius the radius
      * @return the square point
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:25
      */
     public static List<Point> getSquarePoint(Point center, BigDecimal radius) {
         List<Point> points = new ArrayList<>(4);
@@ -236,6 +242,8 @@ public class GisUtils {
      * @param center the center
      * @param radius the radius
      * @return six point
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:25
      */
     public static List<Point> getSixPoint(Point center, BigDecimal radius) {
         List<Point> points = new ArrayList<>(6);
@@ -264,6 +272,8 @@ public class GisUtils {
      * @param type      the type
      * @param shapeType the shape type
      * @return the next center point
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:25
      */
     public static Point getNextCenterPoint(Point current, BigDecimal radius, HexagonType type, ShapeType shapeType) {
         switch (type) {
@@ -323,6 +333,8 @@ public class GisUtils {
      * @param type      the type
      * @param shapeType the shape type
      * @return the next col center point
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:25
      */
     public static Point getNextColCenterPoint(Point center, BigDecimal radius, HexagonType type, ShapeType shapeType) {
         //横坐标为 x + 根号三/2*R 纵坐标为 y + 二分之三*R
@@ -354,6 +366,8 @@ public class GisUtils {
      * @param point  the point
      * @param radius the radius
      * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:25
      */
     public static boolean checkPointInCircle(Point center, Point point, BigDecimal radius) {
         double distance = distance(center, point);
@@ -367,6 +381,8 @@ public class GisUtils {
      * @param point   the point 要判断的点
      * @param polygon the polygon 要按顺序依次排列 顺时针或者逆时针
      * @return boolean boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:25
      */
     public static boolean checkPointInPolygon(Point point, List<Point> polygon) {
         if (polygon.size() == 0 || polygon.size() == 1) {
@@ -402,6 +418,8 @@ public class GisUtils {
      * @param polygon1 the polygon 1
      * @param polygon2 the polygon 2
      * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:25
      */
     public static boolean checkPolygonsIntersect(List<Point> polygon1, List<Point> polygon2) {
         try {
@@ -459,6 +477,8 @@ public class GisUtils {
      *
      * @param area the area
      * @return the json array
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:26
      */
     public static JsonArray toJsonArray(List<Point> area) {
         return area.stream()
@@ -471,6 +491,8 @@ public class GisUtils {
      *
      * @param polygon the polygon
      * @return the list
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:26
      */
     public static List<Point> toListPoint(Object polygon) {
         if (ObjectUtils.isEmpty(polygon)) {
@@ -529,6 +551,8 @@ public class GisUtils {
      * @param point1 the point 1
      * @param point2 the point 2
      * @return the double
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:26
      */
     public static double distance(Point point1, Point point2) {
         double lat1 = point1.getLat().doubleValue();
@@ -561,6 +585,8 @@ public class GisUtils {
      * @param angle    角度，从正北顺时针方向开始计算
      * @param distance 距离，单位m
      * @return point point by radius
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:26
      */
     public static Point getPointByRadius(Point point, double angle, double distance) {
         double startLat = point.getLat().doubleValue();
@@ -629,6 +655,8 @@ public class GisUtils {
      *
      * @param point the point
      * @return map point
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:26
      */
     public static Point Mercator2BD09(Point point) {
         double x = point.getLng().doubleValue();
@@ -671,6 +699,8 @@ public class GisUtils {
      *
      * @param point the point
      * @return the point
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:26
      */
     public static Point BD092Mercator(Point point) {
         double lng = point.getLng().doubleValue();
@@ -738,6 +768,8 @@ public class GisUtils {
      *
      * @param point the point
      * @return the point
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:26
      */
     public static Point WGS84ToBD09(Point point) {
         Pair<Double, Double> pair = wgs84tobd09(point.getLng().doubleValue(), point.getLat().doubleValue());
@@ -750,7 +782,9 @@ public class GisUtils {
      * @param lng the lng
      * @param lat the lat
      * @return the pair
+     * @author ErebusST
      * @returns {*[]}
+     * @since 2022 -01-07 15:36:26
      */
     public static Pair<Double, Double> wgs84tobd09(double lng, double lat) {
         //第一次转换
@@ -796,6 +830,8 @@ public class GisUtils {
      *
      * @param point the point
      * @return the point
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:26
      */
     public static Point GaodeToBaidu(Point point) {
         Pair<BigDecimal, BigDecimal> pair = GaodeToBaidu(point.getLng(), point.getLat());
@@ -814,6 +850,8 @@ public class GisUtils {
      * @param lng the lng
      * @param lat the lat
      * @return the pair
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:26
      */
     public static Pair<BigDecimal, BigDecimal> GaodeToBaidu(BigDecimal lng, BigDecimal lat) {
         var X_PI = Math.PI * 3000.0 / 180.0;
@@ -826,6 +864,14 @@ public class GisUtils {
         return Pair.of(BigDecimal.valueOf(bd_lng), BigDecimal.valueOf(bd_lat));
     }
 
+    /**
+     * Baidu to gaode point.
+     *
+     * @param point the point
+     * @return the point
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:26
+     */
     public static Point BaiduToGaode(Point point) {
         return BaiduToGaode(point.getLng(), point.getLat());
     }
@@ -835,7 +881,9 @@ public class GisUtils {
      *
      * @param lng the lng
      * @param lat the lat
-     * @return point
+     * @return point point
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:26
      */
     public static Point BaiduToGaode(Object lng, Object lat) {
         BigDecimal lngTemp = DataSwitch.convertObjectToBigDecimal(lng, 6);
@@ -857,6 +905,8 @@ public class GisUtils {
      *
      * @param point the point
      * @return the point
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:26
      */
     public static Point WebMercatorBD90(Point point) {
         Double x = point.getLng().doubleValue();
@@ -877,6 +927,14 @@ public class GisUtils {
         return new Point(x, y);
     }
 
+    /**
+     * Bd 092 gcj 02 point.
+     *
+     * @param point the point
+     * @return the point
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:26
+     */
     public static Point BD092GCJ02(Point point) {
         double bd_lon = point.getLng().doubleValue();
         double bd_lat = point.getLat().doubleValue();
@@ -894,8 +952,10 @@ public class GisUtils {
     /**
      * 高德转WGS84
      *
-     * @param point
-     * @return
+     * @param point the point
+     * @return point
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:26
      */
     public static Point GCJ02ToWGS84(Point point) {
         double lng = point.getLng().doubleValue();
@@ -918,6 +978,8 @@ public class GisUtils {
      *
      * @param point the point
      * @return the point
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:26
      */
     public static Point BD09ToWGS84(Point point) {
         Point temp = BaiduToGaode(point.getLng(), point.getLat());
@@ -944,6 +1006,8 @@ public class GisUtils {
      *
      * @param baiGeo the bai geo
      * @return the list
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:27
      */
     public static List<Point> fixGeoInfo(String baiGeo) {
         try {
@@ -968,6 +1032,8 @@ public class GisUtils {
      *
      * @param polygon the polygon
      * @return the core of polygon
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:27
      */
     public static Point getCoreOfPolygon(List<Point> polygon) {
         double area = 0.0;//多边形面积
@@ -995,6 +1061,8 @@ public class GisUtils {
      *
      * @param polygon the polygon
      * @return the center of polygon
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:27
      */
     public static Point getCenterOfPolygon(List<Point> polygon) {
         int size = polygon.size();
@@ -1005,6 +1073,9 @@ public class GisUtils {
     }
 
 
+    /**
+     * The Earth radius.
+     */
     static double earth_radius = 6371000.0;
     /**
      * The Meters per degree.
@@ -1024,7 +1095,9 @@ public class GisUtils {
      * 结果单位：平方米
      *
      * @param polygon the polygon
-     * @return double
+     * @return double double
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:27
      */
     public static double calcSphericalPolygonArea(List<Point> polygon) {
         double totalAngle = 0.0;
@@ -1052,6 +1125,8 @@ public class GisUtils {
      *
      * @param polygon the polygon
      * @return the double 平方米
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:27
      */
     public static double calcPolygonArea(List<Point> polygon) {
         if (polygon != null && polygon.size() >= 3) {
@@ -1097,9 +1172,11 @@ public class GisUtils {
      * <p>
      * 计算两个坐标的方位角
      *
-     * @param from
-     * @param to
-     * @return
+     * @param from the from
+     * @param to   the to
+     * @return bearing
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:27
      */
     public static double getBearing(Point from, Point to) {
         double lat1 = from.getLat().doubleValue() * radiansPerDegree;
@@ -1123,6 +1200,8 @@ public class GisUtils {
      *
      * @param polygon the polygon
      * @return the double
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:27
      */
     public static double calcPlanarPolygonArea(List<Point> polygon) {
         double area = 0.0;
@@ -1149,6 +1228,8 @@ public class GisUtils {
      * @param point2 the point 2
      * @param point3 the point 3
      * @return 平方米 double
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:27
      */
     public static double calcTrigonArea(Point point1, Point point2, Point point3) {
         /**
@@ -1182,6 +1263,8 @@ public class GisUtils {
      * @param point1 the point 1
      * @param point2 the point 2
      * @return the core on line
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:27
      */
     public static Point getCoreOnLine(Point point1, Point point2) {
         double a1 = point1.getLng().doubleValue();
@@ -1200,6 +1283,8 @@ public class GisUtils {
      * @param point2 the point 2
      * @param point3 the point 3
      * @return the core in triangle
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:27
      */
     public static Point getCoreInTriangle(Point point1, Point point2, Point point3) {
         double a1 = point1.getLng().doubleValue();
@@ -1219,6 +1304,8 @@ public class GisUtils {
      * @param point1 the point 1
      * @param point2 the point 2
      * @return the center on line
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:27
      */
     public static Point getCenterOnLine(Point point1, Point point2) {
         /**
@@ -1238,6 +1325,8 @@ public class GisUtils {
      *
      * @param points the points
      * @return the coordinate [ ]
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:27
      */
     public static Coordinate[] toCoordinateArray(List<Point> points) {
         if (points.size() == 0) {
@@ -1260,6 +1349,15 @@ public class GisUtils {
         return coordinates;
     }
 
+    /**
+     * String to geometry list.
+     *
+     * @param string the string
+     * @return the list
+     * @throws ParseException the parse exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:27
+     */
     public static List<Point> StringToGeometry(String string) throws ParseException {
         GeometryFactory geometryFactory = JTSFactoryFinder.getGeometryFactory();
         WKTReader reader = new WKTReader(geometryFactory);
@@ -1273,6 +1371,8 @@ public class GisUtils {
      *
      * @param geometry the geometry
      * @return the list
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:27
      */
     public static List<Point> toListPoint(Geometry geometry) {
         Coordinate[] coordinates = geometry.getCoordinates();
@@ -1292,6 +1392,8 @@ public class GisUtils {
      * @param radius the radius
      * @param points the points
      * @return the list
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:27
      */
     public static List<Point> cycleAndPolygon(Point center, double radius, List<Point> points) {
         try {
@@ -1310,6 +1412,8 @@ public class GisUtils {
      * @param polygon1 the polygon 1
      * @param polygon2 the polygon 2
      * @return the list
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:27
      */
     public static List<Point> intersection(List<Point> polygon1, List<Point> polygon2) {
         Geometry geometry1 = toPolygon(polygon1);
@@ -1320,6 +1424,14 @@ public class GisUtils {
     }
 
 
+    /**
+     * To polygon polygon.
+     *
+     * @param points the points
+     * @return the polygon
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:28
+     */
     public static Polygon toPolygon(List<Point> points) {
         Coordinate[] coordinates = toCoordinateArray(points);
         Polygon polygon = new GeometryFactory().createPolygon(coordinates);
@@ -1336,6 +1448,8 @@ public class GisUtils {
      * @return the area
      * @throws FactoryException   the factory exception
      * @throws TransformException the transform exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:28
      */
     public static double getArea(List<Point> points) throws FactoryException, TransformException {
         Polygon polygon = toPolygon(points);
@@ -1350,6 +1464,14 @@ public class GisUtils {
     //endregion
 
 
+    /**
+     * Get polygon square range list.
+     *
+     * @param polygon the polygon
+     * @return the polygon square range
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:28
+     */
     public static List<Point> getPolygonSquareRange(List<Point> polygon) {
         try {
             Optional<BigDecimal> lngMaxOptional = polygon
@@ -1391,6 +1513,16 @@ public class GisUtils {
         }
     }
 
+    /**
+     * Check cycle in square boolean.
+     *
+     * @param center the center
+     * @param radius the radius
+     * @param square the square
+     * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:28
+     */
     public static boolean checkCycleInSquare(Point center, BigDecimal radius, List<Point> square) {
         Point north = getPointByRadius(center, 0, radius.doubleValue());
         Point north1 = getPointByRadius(center, 45, radius.doubleValue());
@@ -1410,8 +1542,10 @@ public class GisUtils {
      * @param x      中心点经度
      * @param y      中心点纬度
      * @param radius 半径（米）
-     * @return
-     **/
+     * @return polygon
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:28
+     */
     public static Polygon toCycle(BigDecimal x, BigDecimal y, final double radius) {
         //Point temp = BD09ToWGS84(Point.get(x, y));
         Point temp = Point.get(x, y);

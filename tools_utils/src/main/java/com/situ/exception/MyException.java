@@ -36,6 +36,13 @@ public class MyException extends Exception {
     private static String pageMessageDefault = "系统异常，请联系系统管理员！";
     private static String pageMessage = "系统异常，请联系系统管理员！";
 
+    /**
+     * Get page message json object.
+     *
+     * @return the page message
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:09
+     */
     public JsonObject getPageMessage() {
         JsonObject jObject = new JsonObject();
         jObject.addProperty("result", "failed");
@@ -49,6 +56,7 @@ public class MyException extends Exception {
      * @param exception 错误信息
      * @param clazz     错误发生地点
      * @param msgString 自己定义的错误提示，方便log4错误日志查找
+     * @param params    the params
      */
     public MyException(Exception exception, Class clazz, String msgString, Object... params) {
 

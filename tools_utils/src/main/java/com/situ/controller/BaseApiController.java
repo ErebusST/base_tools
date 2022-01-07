@@ -21,9 +21,12 @@ import javax.servlet.http.HttpServletRequest;
  * 基础api类
  *
  * @author 司徒彬
- * @date 2020/6/20 17:40
+ * @date 2020 /6/20 17:40
  */
 public class BaseApiController {
+    /**
+     * The constant FAILED_STR.
+     */
     public static final String FAILED_STR = "failed";
     /**
      * The constant SUCCESS_STR.
@@ -34,6 +37,9 @@ public class BaseApiController {
      */
     public static final String RESULT_KEY = "result";
     private static final String MESSAGE_KEY = "message";
+    /**
+     * The constant DATA_KEY.
+     */
     public static final String DATA_KEY = "data";
 
 
@@ -42,6 +48,8 @@ public class BaseApiController {
      *
      * @param object the object
      * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:09
      */
     public boolean check(JsonObject object) {
         if (object.has(RESULT_KEY)) {
@@ -56,6 +64,8 @@ public class BaseApiController {
      * Gets is used result.
      *
      * @return the is used result
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:09
      */
     public JsonObject getIsUsedResult() {
         return this.getIsUsedResult("");
@@ -66,6 +76,8 @@ public class BaseApiController {
      *
      * @param message the message
      * @return the is used result
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:09
      */
     public JsonObject getIsUsedResult(String message) {
         JsonObject jsonObject = this.getResultJson("isUsed");
@@ -81,6 +93,8 @@ public class BaseApiController {
      *
      * @param isSuccess the is success
      * @return the operation result json
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:09
      */
     public JsonObject getOperationResultJson(boolean isSuccess) {
         return isSuccess ? getSuccessJson() : getFailedJson();
@@ -91,6 +105,8 @@ public class BaseApiController {
      *
      * @param isExist the is exist
      * @return the validate exist result json
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:09
      */
     public JsonObject getValidateExistResultJson(boolean isExist) {
         return isExist ? getExistJson() : getNotExistJson();
@@ -100,6 +116,8 @@ public class BaseApiController {
      * Gets success json.
      *
      * @return the success json
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:09
      */
     public JsonObject getSuccessJson() {
         return getResultJson(SUCCESS_STR);
@@ -110,6 +128,8 @@ public class BaseApiController {
      *
      * @param message the message
      * @return the success json
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:09
      */
     public JsonObject getSuccessJson(String message) {
         return this.getResultJson(SUCCESS_STR, message);
@@ -121,6 +141,8 @@ public class BaseApiController {
      *
      * @param jsonElement the json element
      * @return the result json
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:09
      */
     public JsonObject getSuccessJson(JsonElement jsonElement) {
         return this.getResultJson(SUCCESS_STR, jsonElement);
@@ -131,6 +153,8 @@ public class BaseApiController {
      *
      * @param jsonElement the result
      * @return the result json
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:09
      */
     public JsonObject getFailedJson(JsonElement jsonElement) {
         return this.getResultJson(FAILED_STR, jsonElement);
@@ -141,6 +165,8 @@ public class BaseApiController {
      *
      * @param result the result
      * @return the result json
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:09
      */
     public JsonObject getResultJson(String result) {
         JsonObject jsonObject = new JsonObject();
@@ -154,6 +180,8 @@ public class BaseApiController {
      * @param result  the result
      * @param message the message
      * @return the result json
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:09
      */
     public JsonObject getResultJson(String result, String message) {
         JsonObject jsonObject = getResultJson(result);
@@ -167,6 +195,8 @@ public class BaseApiController {
      * @param result      the result
      * @param jsonElement the json element
      * @return the result json
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:09
      */
     public JsonObject getResultJson(String result, JsonElement jsonElement) {
         JsonObject jsonObject = this.getResultJson(result);
@@ -179,6 +209,8 @@ public class BaseApiController {
      * Gets exist json.
      *
      * @return the exist json
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:09
      */
     public JsonObject getExistJson() {
         return getResultJson("exist");
@@ -189,6 +221,8 @@ public class BaseApiController {
      *
      * @param field the field
      * @return the exist json
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:09
      */
     public JsonObject getExistJson(String field) {
         JsonObject jsonObject = getExistJson();
@@ -203,6 +237,8 @@ public class BaseApiController {
      * Gets not exist json.
      *
      * @return the not exist json
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:09
      */
     public JsonObject getNotExistJson() {
         return getResultJson("no_exist");
@@ -212,6 +248,8 @@ public class BaseApiController {
      * Gets failed json.
      *
      * @return the failed json
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:09
      */
     public JsonObject getFailedJson() {
         return getResultJson(FAILED_STR);
@@ -222,6 +260,8 @@ public class BaseApiController {
      *
      * @param message the message
      * @return the failed json
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:09
      */
     public JsonObject getFailedJson(String message) {
         JsonObject jsonObject = getFailedJson();
@@ -238,6 +278,8 @@ public class BaseApiController {
      * @param message the message
      * @param params  the params
      * @return the result json
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:09
      */
     public JsonObject getFailedJson(Exception e, Class clazz, String message, Object... params) {
         return new MyException(e, clazz, message, params).getPageMessage();
@@ -253,6 +295,8 @@ public class BaseApiController {
      * @return the t
      * @throws IllegalAccessException the illegal access exception
      * @throws InstantiationException the instantiation exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:10
      */
     public <T> T convertRequestToEntity(Class<T> clazz, HttpServletRequest request) {
         try {

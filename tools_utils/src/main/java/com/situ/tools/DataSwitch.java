@@ -44,6 +44,8 @@ public class DataSwitch {
      * @param value the value
      * @param type  the type
      * @return the default value
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:45
      */
     public static Object getDefaultValue(Object value, Type type) {
         try {
@@ -89,6 +91,8 @@ public class DataSwitch {
      *
      * @param value the value
      * @return the integer
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:45
      */
     public static Integer convertObjectToInteger(Object value) {
         return convertObjectToInteger(value, null);
@@ -100,6 +104,8 @@ public class DataSwitch {
      * @param value        the value
      * @param defaultValue the default value
      * @return the integer
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:45
      */
     public static Integer convertObjectToInteger(Object value, Integer defaultValue) {
         try {
@@ -119,6 +125,8 @@ public class DataSwitch {
      *
      * @param value the value
      * @return the double
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:45
      */
     public static Double convertObjectToDouble(Object value) {
         return convertObjectToDouble(value, null);
@@ -131,6 +139,8 @@ public class DataSwitch {
      * @param value        the value
      * @param defaultValue the default value
      * @return the double
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:45
      */
     public static Double convertObjectToDouble(Object value, Double defaultValue) {
         try {
@@ -150,6 +160,8 @@ public class DataSwitch {
      *
      * @param value ： 传入参数值
      * @return the long
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:45
      */
     public static Long convertObjectToLong(Object value) {
         return convertObjectToLong(value, null);
@@ -161,6 +173,8 @@ public class DataSwitch {
      * @param value        the value
      * @param defaultValue the default value
      * @return the long
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:45
      */
     public static Long convertObjectToLong(Object value, Long defaultValue) {
         try {
@@ -180,6 +194,8 @@ public class DataSwitch {
      *
      * @param value the value
      * @return the float
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:45
      */
     public static Float convertObjectToFloat(Object value) {
         return convertObjectToFloat(value, null);
@@ -191,6 +207,8 @@ public class DataSwitch {
      * @param value        the value
      * @param defaultValue the default value
      * @return the float
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:45
      */
     public static Float convertObjectToFloat(Object value, Float defaultValue) {
         try {
@@ -209,6 +227,8 @@ public class DataSwitch {
      *
      * @param value the value
      * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:45
      */
     public static BigDecimal convertObjectToBigDecimal(Object value) {
         return convertObjectToBigDecimal(value, null);
@@ -220,6 +240,8 @@ public class DataSwitch {
      * @param value the value
      * @param scale the scale
      * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:45
      */
     public static BigDecimal convertObjectToBigDecimal(Object value, Integer scale) {
         return convertObjectToBigDecimal(value, scale, null);
@@ -232,6 +254,8 @@ public class DataSwitch {
      * @param scale        the scale
      * @param defaultValue the default value
      * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:45
      */
     public static BigDecimal convertObjectToBigDecimal(Object value, Integer scale, BigDecimal defaultValue) {
         try {
@@ -254,6 +278,8 @@ public class DataSwitch {
      *
      * @param value the value
      * @return the short
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:45
      */
     public static Short convertObjectToShort(Object value) {
         return convertObjectToShort(value, null);
@@ -265,6 +291,8 @@ public class DataSwitch {
      * @param value        the value
      * @param defaultValue the default value
      * @return the short
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:46
      */
     public static Short convertObjectToShort(Object value, Short defaultValue) {
         try {
@@ -284,6 +312,8 @@ public class DataSwitch {
      *
      * @param value the value
      * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:46
      */
     public static Boolean convertObjectToBoolean(Object value) {
         return convertObjectToBoolean(value, false);
@@ -295,6 +325,8 @@ public class DataSwitch {
      * @param value        the value
      * @param defaultValue the default value
      * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:46
      */
     public static Boolean convertObjectToBoolean(Object value, Boolean defaultValue) {
         try {
@@ -323,6 +355,8 @@ public class DataSwitch {
      *
      * @param value the value
      * @return the string
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:46
      */
     public static String convertObjectToString(Object value) {
         try {
@@ -342,6 +376,9 @@ public class DataSwitch {
      *
      * @param time the time
      * @return the date
+     * @throws ParseException the parse exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:46
      */
     public static Date convertObjectToDate(Object time) throws ParseException {
         try {
@@ -380,6 +417,8 @@ public class DataSwitch {
      * @param map   the map
      * @return the t
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:46
      */
     public static <T> T convertMapObjToEntity(Class<T> clazz, Map<String, Object> map) throws Exception {
         try {
@@ -415,9 +454,9 @@ public class DataSwitch {
      *
      * @param entityObject :目标实体对象
      * @return the map
-     * @throws IllegalAccessException    the illegal access exception
-     * @throws IntrospectionException    the introspection exception
-     * @throws InvocationTargetException the invocation target exception
+     * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:46
      */
     public static Map<String, Object> convertEntityToMap(Object entityObject) throws Exception {
         try {
@@ -460,7 +499,9 @@ public class DataSwitch {
      * @param listEntityObject the list toolsentity object
      * @return the list
      * @throws Exception the exception
+     * @author ErebusST
      * @功能简介：将listEntity转换成listMap
+     * @since 2022 -01-07 15:34:46
      */
     public static List<Map<String, Object>> convertListEntityToListMap(List<Object> listEntityObject) throws Exception {
         try {
@@ -490,6 +531,13 @@ public class DataSwitch {
 
     //region Json与实体转换
 
+    /**
+     * Get gson instance gson.
+     *
+     * @return the gson instance
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:46
+     */
     public static Gson getGsonInstance() {
         return getGsonInstance(true);
     }
@@ -511,6 +559,16 @@ public class DataSwitch {
     }
 
 
+    /**
+     * Convert json string to entity t.
+     *
+     * @param <T>        the type parameter
+     * @param jsonString the json string
+     * @param clazz      the clazz
+     * @return the t
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:46
+     */
     public static <T> T convertJsonStringToEntity(String jsonString, Class<T> clazz) {
         JsonObject jsonObject = convertStringToJsonObject(jsonString);
         return convertJsonObjectToEntity(jsonObject, clazz);
@@ -525,6 +583,8 @@ public class DataSwitch {
      * @return the t
      * @throws IllegalAccessException the illegal access exception
      * @throws InstantiationException the instantiation exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:46
      */
     public static <T> T convertJsonObjectToEntity(JsonObject json, Class<T> clazz) {
         try {
@@ -545,6 +605,8 @@ public class DataSwitch {
      * @param obj the obj
      * @return the json object
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:47
      */
     public static JsonObject convertObjectToJsonObject(Object obj) {
         try {
@@ -562,6 +624,8 @@ public class DataSwitch {
      * @param value the value
      * @return the json object
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:47
      */
     public static JsonObject convertStringToJsonObject(Object value) {
         try {
@@ -579,6 +643,8 @@ public class DataSwitch {
      *
      * @param value the value
      * @return the json array
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:47
      */
     public static JsonArray convertStringToJsonArray(Object value) {
         if (ObjectUtils.isEmpty(value)) {
@@ -594,6 +660,8 @@ public class DataSwitch {
      * @param value the value
      * @return the json object
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:47
      */
     public static JsonElement convertStringToJsonElement(String value) {
         try {
@@ -614,6 +682,8 @@ public class DataSwitch {
      * @param value the value
      * @return the json object
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:47
      */
     public static JsonElement convertStringToJsonElement(Object value) {
         try {
@@ -636,6 +706,8 @@ public class DataSwitch {
      * @param obj              the obj
      * @param isSerializeNulls the is serialize nulls
      * @return the json object
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:47
      */
     public static JsonObject convertObjectToJsonObject(Object obj, boolean isSerializeNulls) {
         try {
@@ -651,6 +723,8 @@ public class DataSwitch {
      *
      * @param value the value
      * @return the json element
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:47
      */
     public static JsonElement convertObjectToJsonElement(Object value) {
         try {
@@ -667,6 +741,8 @@ public class DataSwitch {
      * @param value            the value
      * @param isSerializeNulls the is serialize nulls
      * @return the json element
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:47
      */
     public static JsonElement convertObjectToJsonElement(Object value, boolean isSerializeNulls) {
         try {
@@ -686,6 +762,8 @@ public class DataSwitch {
      *
      * @param value the value
      * @return the string
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:47
      */
     public static String convertObjectToJsonString(Object value) {
         Gson gson = getGsonInstance();
@@ -699,7 +777,10 @@ public class DataSwitch {
      * @param jsonArrayStr the json str
      * @return the list
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:47
      */
+    @Deprecated
     public static List<Object> convertJsonArrayStrToList(String jsonArrayStr) {
         if (StringUtils.isEmpty(jsonArrayStr)) {
             return null;
@@ -715,13 +796,15 @@ public class DataSwitch {
      * @param jsonObjectStr the json str
      * @return the map
      * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:47
      */
     public static Map<String, Object> convertJsonStringToMap(String jsonObjectStr) {
         if (StringUtils.isEmpty(jsonObjectStr)) {
             return null;
         } else {
             JsonObject jsonObj = convertStringToJsonObject(jsonObjectStr);
-            return convertJsonToMap(jsonObj);
+            return convertJsonObjectToMap(jsonObj);
         }
     }
 
@@ -730,8 +813,10 @@ public class DataSwitch {
      *
      * @param json the json
      * @return the map
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:47
      */
-    public static Map<String, Object> convertJsonToMap(JsonObject json) {
+    public static Map<String, Object> convertJsonObjectToMap(JsonObject json) {
         Map<String, Object> map = new HashMap<>();
         Set<Entry<String, JsonElement>> entrySet = json.entrySet();
         entrySet.forEach(stringJsonElementEntry -> {
@@ -741,7 +826,7 @@ public class DataSwitch {
                 map.put(key, convertJsonArrayToList(value.getAsJsonArray()));
             } else if (value instanceof JsonObject) {
 
-                map.put(key, convertJsonToMap(value.getAsJsonObject()));
+                map.put(key, convertJsonObjectToMap(value.getAsJsonObject()));
             } else {
                 map.put(key, value.toString().replaceAll("\"", ""));
             }
@@ -754,14 +839,17 @@ public class DataSwitch {
      *
      * @param jsonArray the json
      * @return the list
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:47
      */
+    @Deprecated
     public static List<Object> convertJsonArrayToList(JsonArray jsonArray) {
         List<Object> list = new ArrayList<>();
         jsonArray.forEach(jsonElement -> {
             if (jsonElement instanceof JsonArray) {
                 list.add(convertJsonArrayToList(jsonElement.getAsJsonArray()));
             } else if (jsonElement instanceof JsonObject) {
-                list.add(convertJsonToMap(jsonElement.getAsJsonObject()));
+                list.add(convertJsonObjectToMap(jsonElement.getAsJsonObject()));
             } else if (jsonElement instanceof JsonPrimitive) {
                 list.add(jsonElement.getAsJsonPrimitive());
             } else {
@@ -771,64 +859,26 @@ public class DataSwitch {
         return list;
     }
 
+
     /**
      * Convert list t to json object json array.
      *
      * @param <T>  the type parameter
      * @param list the list
      * @return the json array
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:37
      */
-    public static <T> JsonArray convertListToJsonArray(List<T> list) {
+    public static <T> JsonArray convertObjectToJsonArray(List<T> list) {
         try {
-            JsonElement element = convertListToJsonArray(list, null);
+            JsonElement element = convertObjectToJsonElement(list);
             return element.getAsJsonArray();
         } catch (Exception ex) {
             throw ex;
         }
     }
 
-    /**
-     * Convert list t to json object json array.
-     *
-     * @param <T>        the type parameter
-     * @param list       the list
-     * @param dateFormat the date format
-     * @return the json array
-     */
-    public static <T> JsonArray convertListToJsonArray(List<T> list, DateFormatEnum dateFormat) {
-        try {
-            JsonElement element = convertListToJsonElement(list, dateFormat);
-            return element.getAsJsonArray();
-        } catch (Exception ex) {
-            throw ex;
-        }
-    }
 
-    /**
-     * Convert list to json element json element.
-     *
-     * @param list the list
-     * @return the json element
-     */
-    public static JsonElement convertListToJsonElement(List list) {
-        return convertListToJsonElement(list, null);
-    }
-
-    /**
-     * Convert list to json element json element.
-     *
-     * @param list       the list
-     * @param dateFormat the date format
-     * @return the json element
-     */
-    public static JsonElement convertListToJsonElement(List list, DateFormatEnum dateFormat) {
-        try {
-            Gson gson = getGsonInstance(true, dateFormat);
-            return gson.toJsonTree(list);
-        } catch (Exception ex) {
-            throw ex;
-        }
-    }
 
 
     //endregion
@@ -838,6 +888,8 @@ public class DataSwitch {
      * 生成UUID
      *
      * @return the uuid
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:48
      */
     public static String getUUID() {
         return UUID.randomUUID().toString().replace("-", "");
@@ -850,6 +902,8 @@ public class DataSwitch {
      * @param clazz the clazz
      * @param data  the data
      * @return the list
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:48
      */
     public static <T> List<T> convertListMapToListEntity(Class<T> clazz, List<Map<String, Object>> data) {
         return data.stream()
@@ -871,6 +925,9 @@ public class DataSwitch {
      *
      * @param strValue the str value
      * @return the string
+     * @throws UnsupportedEncodingException the unsupported encoding exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:48
      */
     public String httpUrlDecodeUTF8(String strValue) throws UnsupportedEncodingException {
         try {
@@ -883,9 +940,11 @@ public class DataSwitch {
     /**
      * Gets random num.
      *
-     * @param max the max
      * @param min the min
+     * @param max the max
      * @return the random num
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:48
      */
     public static int getRandomNum(int min, int max) {
         int random = new Random(System.nanoTime()).nextInt(max) % (max - min + 1) + min;
@@ -901,6 +960,8 @@ public class DataSwitch {
      * @return the t
      * @throws IllegalAccessException the illegal access exception
      * @throws InstantiationException the instantiation exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:34:48
      */
     public static <T> T convertJsonToEntity(JsonObject json, Class<T> clazz) {
         try {
@@ -924,8 +985,11 @@ public class DataSwitch {
     /**
      * 获取八位随机数
      *
+     * @return the string
+     * @author ErebusST
      * @author：赵亮
-     * @date：2020-07-27 14:13
+     * @date：2020-07-27 14 :13
+     * @since 2022 -01-07 15:34:48
      */
     public static String generateShortUuid() {
         StringBuffer shortBuffer = new StringBuffer();
@@ -939,19 +1003,5 @@ public class DataSwitch {
 
     }
 
-    /**
-     * 将实体对象转换成jsonObj对象
-     *
-     * @param obj the obj
-     * @return the json object
-     * @throws Exception the exception
-     */
-    public static JsonObject convertObjectToJson(Object obj) {
-        try {
-            JsonElement jsonElement = convertObjectToJsonElement(obj);
-            return jsonElement == null ? null : jsonElement.getAsJsonObject();
-        } catch (Exception e) {
-            throw e;
-        }
-    }
+
 }

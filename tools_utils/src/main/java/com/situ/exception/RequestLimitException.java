@@ -12,24 +12,51 @@ package com.situ.exception;
  * 请求上限异常
  *
  * @author 司徒彬
- * @date 2020/6/22 00:31
+ * @date 2020 /6/22 00:31
  */
 public class RequestLimitException extends Exception {
+    /**
+     * Instantiates a new Request limit exception.
+     */
     public RequestLimitException() {
     }
 
+    /**
+     * Instantiates a new Request limit exception.
+     *
+     * @param message the message
+     */
     public RequestLimitException(String message) {
         super(message);
     }
 
+    /**
+     * Instantiates a new Request limit exception.
+     *
+     * @param message the message
+     * @param cause   the cause
+     */
     public RequestLimitException(String message, Throwable cause) {
         super(message, cause);
     }
 
+    /**
+     * Instantiates a new Request limit exception.
+     *
+     * @param cause the cause
+     */
     public RequestLimitException(Throwable cause) {
         super(cause);
     }
 
+    /**
+     * Instantiates a new Request limit exception.
+     *
+     * @param message            the message
+     * @param cause              the cause
+     * @param enableSuppression  the enable suppression
+     * @param writableStackTrace the writable stack trace
+     */
     public RequestLimitException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }

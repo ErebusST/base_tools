@@ -13,14 +13,19 @@ import java.io.OutputStream;
 import java.io.Writer;
 
 /**
+ * The type Base 64.
+ *
  * @author 司徒彬
- * @date 2020/7/17 10:55
+ * @date 2020 /7/17 10:55
  */
 public class Base64 {
     private static final char[] S_BASE64CHAR = new char[]{'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'};
     private static final char S_BASE64PAD = '=';
     private static final byte[] S_DECODETABLE = new byte[128];
 
+    /**
+     * Instantiates a new Base 64.
+     */
     public Base64() {
     }
 
@@ -56,6 +61,16 @@ public class Base64 {
         }
     }
 
+    /**
+     * Decode byte [ ].
+     *
+     * @param data the data
+     * @param off  the off
+     * @param len  the len
+     * @return the byte [ ]
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     */
     public static byte[] decode(char[] data, int off, int len) {
         char[] ibuf = new char[4];
         int ibufcount = 0;
@@ -82,6 +97,14 @@ public class Base64 {
         }
     }
 
+    /**
+     * Decode byte [ ].
+     *
+     * @param data the data
+     * @return the byte [ ]
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     */
     public static byte[] decode(String data) {
         char[] ibuf = new char[4];
         int ibufcount = 0;
@@ -108,6 +131,17 @@ public class Base64 {
         }
     }
 
+    /**
+     * Decode .
+     *
+     * @param data    the data
+     * @param off     the off
+     * @param len     the len
+     * @param ostream the ostream
+     * @throws IOException the io exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     */
     public static void decode(char[] data, int off, int len, OutputStream ostream) throws IOException {
         char[] ibuf = new char[4];
         int ibufcount = 0;
@@ -127,6 +161,15 @@ public class Base64 {
 
     }
 
+    /**
+     * Decode .
+     *
+     * @param data    the data
+     * @param ostream the ostream
+     * @throws IOException the io exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     */
     public static void decode(String data, OutputStream ostream) throws IOException {
         char[] ibuf = new char[4];
         int ibufcount = 0;
@@ -146,10 +189,28 @@ public class Base64 {
 
     }
 
+    /**
+     * Encode string.
+     *
+     * @param data the data
+     * @return the string
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     */
     public static String encode(byte[] data) {
         return encode(data, 0, data.length);
     }
 
+    /**
+     * Encode string.
+     *
+     * @param data the data
+     * @param off  the off
+     * @param len  the len
+     * @return the string
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     */
     public static String encode(byte[] data, int off, int len) {
         if (len <= 0) {
             return "";
@@ -187,6 +248,17 @@ public class Base64 {
         }
     }
 
+    /**
+     * Encode .
+     *
+     * @param data    the data
+     * @param off     the off
+     * @param len     the len
+     * @param ostream the ostream
+     * @throws IOException the io exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     */
     public static void encode(byte[] data, int off, int len, OutputStream ostream) throws IOException {
         if (len > 0) {
             byte[] out = new byte[4];
@@ -223,6 +295,17 @@ public class Base64 {
         }
     }
 
+    /**
+     * Encode .
+     *
+     * @param data   the data
+     * @param off    the off
+     * @param len    the len
+     * @param writer the writer
+     * @throws IOException the io exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
+     */
     public static void encode(byte[] data, int off, int len, Writer writer) throws IOException {
         if (len > 0) {
             char[] out = new char[4];

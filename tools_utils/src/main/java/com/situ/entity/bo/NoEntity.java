@@ -7,7 +7,7 @@ import lombok.Setter;
  * 编号实体
  *
  * @author 司徒彬
- * @date 2017-08-20 11:03
+ * @date 2017 -08-20 11:03
  */
 @Setter
 @Getter
@@ -21,6 +21,13 @@ public class NoEntity {
     private Long count = 1L;
 
 
+    /**
+     * Get no string.
+     *
+     * @return the no
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:09
+     */
     public String getNO() {
         String countStr = count.toString();
         int length = countStr.length();

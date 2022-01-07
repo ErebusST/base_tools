@@ -12,14 +12,29 @@ package com.situ.enumeration;
  * ContentType枚举 枚举
  *
  * @author 司徒彬
- * @date 2017-04-28 11:28
+ * @date 2017 -04-28 11:28
  */
 public enum ContentType {
 
+    /**
+     * Application json content type.
+     */
     application_json("application/json"),
+    /**
+     * Application x www form urlencoded content type.
+     */
     application_x_www_form_urlencoded("application/x-www-form-urlencoded"),
+    /**
+     * Text xml content type.
+     */
     text_xml("text/xml"),
+    /**
+     * Text plain content type.
+     */
     text_plain("text/plain"),
+    /**
+     * Other content type.
+     */
     other("other"),
     ;
 
@@ -29,6 +44,13 @@ public enum ContentType {
         this.value = value;
     }
 
+    /**
+     * Get value string.
+     *
+     * @return the value
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:10
+     */
     public String getValue() {
         return value;
     }

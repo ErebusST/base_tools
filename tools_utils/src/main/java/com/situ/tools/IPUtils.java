@@ -15,7 +15,7 @@ import java.net.InetAddress;
  * IP Util
  *
  * @author 司徒彬
- * @date 2017-03-10 13:55
+ * @date 2017 -03-10 13:55
  */
 public class IPUtils {
 
@@ -23,6 +23,8 @@ public class IPUtils {
      * 获取本机IP
      *
      * @return ip addr
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
      */
     public static String getIpAddr() {
         String hostAddress = InetAddress.getLoopbackAddress().getHostAddress();
@@ -32,8 +34,10 @@ public class IPUtils {
     /**
      * 获取访问端IP ErebusST 2017年2月15日23:43:57
      *
-     * @param request
-     * @return
+     * @param request the request
+     * @return ip addr
+     * @author ErebusST
+     * @since 2022 -01-07 15:35:58
      */
     public static String getIpAddr(HttpServletRequest request) {
         String ip = request.getHeader("x-forwarded-for");

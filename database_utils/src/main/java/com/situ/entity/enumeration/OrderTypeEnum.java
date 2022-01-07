@@ -13,10 +13,17 @@ package com.situ.entity.enumeration;
  * 排序 枚举
  *
  * @author 司徒彬
- * @date 2017-03-31 19:58
+ * @date 2017 -03-31 19:58
  */
 public enum OrderTypeEnum {
-    ASC("ASC"), DESC("DESC"),
+    /**
+     * Asc order type enum.
+     */
+    ASC("ASC"),
+    /**
+     * Desc order type enum.
+     */
+    DESC("DESC"),
     ;
 
     private String value;
@@ -25,6 +32,13 @@ public enum OrderTypeEnum {
         this.value = value;
     }
 
+    /**
+     * Get value string.
+     *
+     * @return the value
+     * @author ErebusST
+     * @since 2022 -01-07 15:39:07
+     */
     public String getValue() {
         return value;
     }

@@ -16,14 +16,16 @@ import java.util.jar.JarFile;
  * ClassUtils
  *
  * @author 司徒彬
- * @date 2017-08-22 23:01
+ * @date 2017 -08-22 23:01
  */
 public class ClassUtils {
     /**
      * 从包package中获取所有的Class
      *
-     * @param packageName
-     * @return
+     * @param packageName the package name
+     * @return classes classes
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:01
      */
     public static List<Class<?>> getClasses(String packageName) {
 
@@ -107,12 +109,13 @@ public class ClassUtils {
     /**
      * 以文件的形式来获取包下的所有Class
      *
-     * @param packageName
-     * @param packagePath
-     * @param recursive
-     * @param classes
+     * @param packageName the package name
+     * @param packagePath the package path
+     * @param recursive   the recursive
+     * @param classes     the classes
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:01
      */
-
     public static void findAndAddClassesInPackageByFile(String packageName, String packagePath, final boolean recursive, List<Class<?>> classes) {
         //获取此包的目录 建立一个File
         File dir = new File(packagePath);

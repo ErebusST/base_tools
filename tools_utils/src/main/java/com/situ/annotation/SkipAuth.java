@@ -14,7 +14,7 @@ import java.lang.annotation.*;
  * 标识跳过auth拦截器
  *
  * @author 司徒彬
- * @date 2019-12-29 16:07
+ * @date 2019 -12-29 16:07
  */
 @Documented //文档
 @Retention(RetentionPolicy.RUNTIME) //在运行时可以获取
