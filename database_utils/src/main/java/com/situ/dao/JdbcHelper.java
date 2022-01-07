@@ -11,6 +11,7 @@ package com.situ.dao;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.google.gson.JsonObject;
+import com.situ.entity.enumeration.Databases;
 import com.situ.tools.DataSwitch;
 import com.situ.tools.ObjectUtils;
 import com.situ.tools.ReflectionUtils;
@@ -63,6 +64,11 @@ public class JdbcHelper {
      */
     public Execute get() {
         return get(DruidPool.DEFAULT);
+    }
+
+    public Execute get(Databases databases) {
+        String database = databases.getDatabase();
+        return get(database);
     }
 
     /**
@@ -770,7 +776,7 @@ public class JdbcHelper {
         public boolean isExist(String tableName, Map<String, Object> parameters) throws Exception {
             DruidPooledConnection connection = null;
             try {
-                connection =  getConnection(false);
+                connection = getConnection(false);
                 return isExist(connection, tableName, parameters);
             } catch (Exception ex) {
                 throw ex;
