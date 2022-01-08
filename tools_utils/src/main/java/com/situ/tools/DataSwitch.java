@@ -12,10 +12,8 @@ import com.google.gson.*;
 import com.situ.enumeration.DateFormatEnum;
 import lombok.extern.slf4j.Slf4j;
 
-import java.beans.IntrospectionException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -420,32 +418,37 @@ public class DataSwitch {
      * @author ErebusST
      * @since 2022 -01-07 15:34:46
      */
-    public static <T> T convertMapObjToEntity(Class<T> clazz, Map<String, Object> map) throws Exception {
-        try {
-            T t = clazz.newInstance();
-            Field[] fields = ReflectionUtils.getFields(clazz);
-            Arrays.stream(fields).forEach(field ->
-            {
-                String name = field.getName();
-                Optional<String> keyOptional =
-                        map.keySet().stream().filter(key -> key.equalsIgnoreCase(name)).findFirst();
-                if (!keyOptional.equals(Optional.empty())) {
-                    Type type = field.getType();
-                    String keyName = keyOptional.get();
-                    try {
-                        ReflectionUtils.setFieldValue(t, name, getDefaultValue(map.get(keyName), type));
-                    } catch (IllegalArgumentException ex) {
-                        throw ex;
-                    } catch (Exception ex) {
-                        throw ex;
-                    }
-                    //map.remove(keyName);
-                }
-            });
-            return t;
-        } catch (Exception e) {
-            throw e;
+    public static <T> T convertMapObjToEntity(Class<T> clazz, Map<String, Object> map) {
+        if (ObjectUtils.isNull(map)) {
+            return null;
         }
+        T t;
+        try {
+            t = clazz.newInstance();
+        } catch (Exception ex) {
+            log.error("convertMapObjToEntity 出现异常", ex);
+            return null;
+        }
+        Field[] fields = ReflectionUtils.getFields(clazz);
+        Arrays.stream(fields).forEach(field ->
+        {
+            String name = field.getName();
+            Optional<String> keyOptional =
+                    map.keySet().stream().filter(key -> key.equalsIgnoreCase(name)).findFirst();
+            if (!keyOptional.equals(Optional.empty())) {
+                Type type = field.getType();
+                String keyName = keyOptional.get();
+                try {
+                    ReflectionUtils.setFieldValue(t, name, getDefaultValue(map.get(keyName), type));
+                } catch (IllegalArgumentException ex) {
+                    throw ex;
+                } catch (Exception ex) {
+                    throw ex;
+                }
+                //map.remove(keyName);
+            }
+        });
+        return t;
 
     }
 
@@ -879,8 +882,6 @@ public class DataSwitch {
     }
 
 
-
-
     //endregion
 
 
@@ -908,12 +909,8 @@ public class DataSwitch {
     public static <T> List<T> convertListMapToListEntity(Class<T> clazz, List<Map<String, Object>> data) {
         return data.stream()
                 .map(row -> {
-                    try {
-                        T t = DataSwitch.convertMapObjToEntity(clazz, row);
-                        return t;
-                    } catch (Exception e) {
-                        return null;
-                    }
+                    T t = DataSwitch.convertMapObjToEntity(clazz, row);
+                    return t;
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());

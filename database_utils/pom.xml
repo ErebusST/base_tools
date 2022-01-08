@@ -67,7 +67,7 @@
         <dependency>
             <groupId>com.situ</groupId>
             <artifactId>tools_utils</artifactId>
-            <version>1.0</version>
+            <version>1.1</version>
             <exclusions>
                 <exclusion>
                     <artifactId>gson</artifactId>

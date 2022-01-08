@@ -1441,21 +1441,14 @@ public class BaseDBDao {
      * @since 2022 -01-07 15:38:55
      */
     public <T> T findById(@Nonnull Class<T> clazz, @Nonnull Serializable primaryId) throws Exception {
-        //Session session = null;
-        try {
-            String sql = this.getFindByIdSql(clazz);
-            Map<String, Object> parameters = new HashMap();
-            parameters.put("primaryKey", primaryId);
-            final Map<String, Object> map = findFirstOneBySql(sql, parameters);
-            if (ObjectUtils.isNull(map)) {
-                return null;
-            }
-            return DataSwitch.convertMapObjToEntity(clazz, map);
-        } catch (Exception ex) {
-            throw ex;
-        } finally {
-            //sessionFlush(session);
+        String sql = this.getFindByIdSql(clazz);
+        Map<String, Object> parameters = new HashMap();
+        parameters.put("primaryKey", primaryId);
+        final Map<String, Object> map = findFirstOneBySql(sql, parameters);
+        if (ObjectUtils.isNull(map)) {
+            return null;
         }
+        return DataSwitch.convertMapObjToEntity(clazz, map);
     }
 
     private <T> String getFindByIdSql(@Nonnull Class<T> clazz) {
@@ -1936,31 +1929,13 @@ public class BaseDBDao {
      */
     public <T> List<T> findList(@Nonnull Class<T> clazz, Map<String, Object> parameters, Integer pageNumber, Integer pageSize, Order... orders)
             throws Exception {
-        try {
-            List<Map<String, Object>> data = findListMap(clazz, parameters, pageNumber, pageSize, orders);
-            List<Exception> errors = new ArrayList<>(data.size());
-            List<T> result = data.stream().map(row -> {
-                T t = null;
-                if (errors.size() > 0) {
-                    return null;
-                }
-                try {
-                    t = DataSwitch.convertMapObjToEntity(clazz, row);
-                } catch (Exception e) {
-                    errors.add(e);
-                }
-                return t;
-            }).collect(Collectors.toList());
-
-            if (errors.size() > 0) {
-                throw errors.get(0);
-            }
-            return result;
-        } catch (Exception e) {
-            throw e;
-        } finally {
-            //sessionFlush(session);
-        }
+        List<Map<String, Object>> data = findListMap(clazz, parameters, pageNumber, pageSize, orders);
+        List<Exception> errors = new ArrayList<>(data.size());
+        List<T> result = data.stream().map(row -> {
+            T t = DataSwitch.convertMapObjToEntity(clazz, row);
+            return t;
+        }).filter(ObjectUtils::isNotNull).collect(Collectors.toList());
+        return result;
     }
 
 
@@ -2452,7 +2427,6 @@ public class BaseDBDao {
      * @param parameters    the parameters
      * @param primaryValues
      * @return the string/
-     *
      */
     private <T> String createCountSql(@Nonnull Class<T> clazz, Map<String, Object> parameters, List<Long> primaryValues) throws Exception {
         try {

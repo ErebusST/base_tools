@@ -11,7 +11,7 @@ package com.situ.dao;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.google.gson.JsonObject;
-import com.situ.entity.enumeration.Databases;
+import com.situ.entity.enumeration.DatabaseSetting;
 import com.situ.tools.DataSwitch;
 import com.situ.tools.ObjectUtils;
 import com.situ.tools.ReflectionUtils;
@@ -66,7 +66,7 @@ public class JdbcHelper {
         return get(DruidPool.DEFAULT);
     }
 
-    public Execute get(Databases databases) {
+    public Execute get(DatabaseSetting databases) {
         String database = databases.getDatabase();
         return get(database);
     }
@@ -332,11 +332,7 @@ public class JdbcHelper {
             String name = table.name();
             String sql = "select * from " + name + " limit 1";
             Map<String, Object> first = findFirst(sql);
-            if (ObjectUtils.isNotNull(first)) {
-                return DataSwitch.convertMapObjToEntity(clazz, first);
-            } else {
-                return null;
-            }
+            return DataSwitch.convertMapObjToEntity(clazz, first);
         }
 
         /**
@@ -353,11 +349,7 @@ public class JdbcHelper {
          */
         public <T> T findFirst(Class<T> clazz, String sql, Map<String, Object> parameters) throws Exception {
             Map<String, Object> first = findFirst(sql, parameters);
-            if (ObjectUtils.isNull(first)) {
-                return null;
-            } else {
-                return DataSwitch.convertMapObjToEntity(clazz, first);
-            }
+            return DataSwitch.convertMapObjToEntity(clazz, first);
         }
 
         /**

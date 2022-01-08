@@ -12,7 +12,7 @@ package com.situ.entity.enumeration;
  * @author 司徒彬
  * @date 2022/1/7 17:25
  */
-public interface Databases {
+public interface DatabaseSetting {
 
     String getDatabase();
 
