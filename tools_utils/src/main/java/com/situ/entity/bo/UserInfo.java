@@ -11,8 +11,13 @@ package com.situ.entity.bo;
 import com.google.gson.JsonObject;
 import com.situ.tools.DataSwitch;
 import com.situ.tools.ObjectUtils;
+import com.situ.tools.ReflectionUtils;
+import com.situ.tools.StringUtils;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.lang.reflect.Field;
+import java.util.Arrays;
 
 /**
  * 用户信息
@@ -27,19 +32,10 @@ public class UserInfo {
     private Long userId;
     private String name;
     private String userName;
+    private String password;
     private String type;
     private String phone;
     private String sex;
-    private Boolean focusGift;
-    //老用户调研
-    private Boolean customerResearch1;
-    private String openId;
-    private String userCode;
-    private String headerUrl;
-    private Boolean focusOfficialAccounts;
-    private Integer taskCount;
-    private Integer rechargeCount;
-    private Boolean hiddenSpread;
 
     private String permissionCodes;
     private String requestIp;
@@ -49,33 +45,33 @@ public class UserInfo {
     private PayloadEntity payloadEntity;
     private String unionId;
 
+
     private Long loginTime = 0L;
     private Long lastOperationTime = 0L;
-    private Boolean register = false;
-    private Boolean showExample = false;
-    private Boolean showGuideInDesktop = false;
-    private Boolean showGuideInViews = false;
-    private Boolean showGuideInAdd = false;
+
 
     @Override
     public String toString() {
-        if (ObjectUtils.isNull(this)) {
-            return "";
-        }
         return "UserInfo{" +
-                "userId=" + userId +
+                "uKey='" + uKey + '\'' +
+                ", userId=" + userId +
+                ", name='" + name + '\'' +
                 ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
                 ", type='" + type + '\'' +
+                ", phone='" + phone + '\'' +
+                ", sex='" + sex + '\'' +
                 ", permissionCodes='" + permissionCodes + '\'' +
                 ", requestIp='" + requestIp + '\'' +
                 ", requestUrl='" + requestUrl + '\'' +
                 ", payloadEntity=" + payloadEntity +
+                ", unionId='" + unionId + '\'' +
                 ", loginTime=" + loginTime +
                 ", lastOperationTime=" + lastOperationTime +
                 '}';
     }
 
-    private String invitationCode;
+
 
     /**
      * Get login info json object.
@@ -87,42 +83,13 @@ public class UserInfo {
     public JsonObject getLoginInfo() {
         JsonObject object = new JsonObject();
         object.addProperty("phone", this.getPhone());
-        object.addProperty("loginName", this.getPhone());
+        object.addProperty("loginName", this.getUserName());
         object.addProperty("sex", this.getSex());
         object.addProperty("type", this.getType());
         object.addProperty("name", this.getName());
         object.addProperty("userId", DataSwitch.convertObjectToString(this.getUserId()));
-        object.addProperty("userCode", this.getUserCode());
-        object.addProperty("focusGift", ObjectUtils.isNull(this.getFocusGift()) ? false : this.getFocusGift());
-        object.addProperty("customerResearch1", ObjectUtils.isNull(this.getCustomerResearch1()) ?
-                false : this.getCustomerResearch1());
-        object.addProperty("focusOfficialAccounts", this.getFocusOfficialAccounts());
-        object.addProperty("openId", this.getOpenId());
-        object.addProperty("ukey", this.getUKey());
-        object.addProperty("register", this.getRegister());
-        object.addProperty("headerUrl", headerUrl);
-        object.addProperty("showExample", showExample);
-        object.addProperty("showGuideInDesktop", showGuideInDesktop);
-        object.addProperty("showGuideInViews", showGuideInViews);
-        object.addProperty("showGuideInAdd", showGuideInAdd);
-        object.addProperty("taskCount", taskCount);
-        object.addProperty("rechargeCount", rechargeCount);
         object.addProperty("unionId", unionId);
-        object.addProperty("hiddenSpread", hiddenSpread);
-        object.addProperty("invitationCode",invitationCode);
         return object;
     }
 
-    /**
-     * Add task count .
-     *
-     * @author ErebusST
-     * @since 2022 -01-07 15:36:09
-     */
-    public void addTaskCount() {
-        if (taskCount == null) {
-            taskCount = 0;
-        }
-        taskCount = taskCount + 1;
-    }
 }

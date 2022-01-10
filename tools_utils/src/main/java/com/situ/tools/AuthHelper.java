@@ -76,7 +76,7 @@ public class AuthHelper {
      * @author ErebusST
      * @since 2022 -01-07 15:36:01
      */
-    public static UserInfo verifyToken(String token) throws Exception {
+    public static <T extends UserInfo> T verifyToken(Class<T> clazz, String token) throws Exception {
         //判断特殊字符
         if (token.indexOf(SIGNING_KEY) == -1) {
             log.error("没有包含特定的头信息,非法访问 :{} token:{}", SIGNING_KEY, token);
@@ -85,7 +85,7 @@ public class AuthHelper {
             token = token.substring(SIGNING_KEY.length());
 
             String sign = DesUtils.decrypt(token, 0);
-            UserInfo userInfo = DataSwitch.convertJsonStringToEntity(sign, UserInfo.class);
+            T userInfo = DataSwitch.convertJsonStringToEntity(sign, clazz);
             PayloadEntity payloadEntity = userInfo.getPayloadEntity();
             if (StringUtils.equalsIgnoreCase(payloadEntity.getIss(), ISSUER)) {
                 return userInfo;
