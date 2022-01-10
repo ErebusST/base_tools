@@ -1170,12 +1170,14 @@ public class JdbcHelper {
             boolean autoGenerate;//GeneratedValue
         }
 
-        private JdbcField getPrimaryKeySetting(Object entity) throws Exception {
-            Class<?> clazz = entity.getClass();
+        private JdbcField getPrimaryKeySetting(Class<?> clazz) throws Exception {
             JdbcField primaryKey = Arrays.stream(ReflectionUtils.getFields(clazz)).filter(field -> {
                 Id id = field.getAnnotation(Id.class);
                 if (ObjectUtils.isNull(id)) {
                     Method getterMethod = ReflectionUtils.getGetterMethod(clazz, field.getName());
+                    if (ObjectUtils.isNull(getterMethod)) {
+                        return false;
+                    }
                     id = getterMethod.getAnnotation(Id.class);
                 }
                 return ObjectUtils.isNotNull(id);
@@ -1307,7 +1309,7 @@ public class JdbcHelper {
             Map<String, Object> parameters = new HashMap<>();
 
             Field[] entityFields = ReflectionUtils.getFields(clazz);
-            JdbcField primaryKeySetting = getPrimaryKeySetting(entity);
+            JdbcField primaryKeySetting = getPrimaryKeySetting(entity.getClass());
 
             String primaryId = primaryKeySetting.getField().getName();
             boolean autoGenerate = primaryKeySetting.isAutoGenerate();
@@ -1454,7 +1456,7 @@ public class JdbcHelper {
             Map<String, Object> parameters = new HashMap<>();
 
             Field[] entityFields = ReflectionUtils.getFields(clazz);
-            JdbcField primaryKeySetting = getPrimaryKeySetting(entity);
+            JdbcField primaryKeySetting = getPrimaryKeySetting(entity.getClass());
             String primaryId = primaryKeySetting.getField().getName();
             String primaryKeyInDb = primaryKeySetting.getFieldInDb();
             boolean autoGenerate = primaryKeySetting.isAutoGenerate();
@@ -1573,7 +1575,7 @@ public class JdbcHelper {
             Map<String, Object> parameters = new HashMap<>();
 
             Field[] entityFields = ReflectionUtils.getFields(clazz);
-            JdbcField primaryKey = getPrimaryKeySetting(entity);
+            JdbcField primaryKey = getPrimaryKeySetting(entity.getClass());
             String primaryId = primaryKey.getFieldInDb();
 
 
