@@ -95,6 +95,20 @@ public class AuthHelper {
         }
     }
 
+
+    /**
+     * Verify token user info.
+     *
+     * @param token the token
+     * @return the user info
+     * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -01-10 11:45:12
+     */
+    public static UserInfo verifyToken(String token) throws Exception {
+        return verifyToken(UserInfo.class, token);
+    }
+
     /**
      * Validate auth rights boolean.
      *
