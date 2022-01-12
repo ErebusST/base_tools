@@ -394,7 +394,15 @@ public class GisUtils {
         Point2D.Double point2D = new Point2D.Double(pointLon, pointLat);
         GeneralPath border = pointsToPolygon(polygon);
         return border.contains(point2D);
+
+        /**
+         *  Coordinate temp = new Coordinate(point.getLng().doubleValue(), point.getLat().doubleValue());
+         *         org.locationtech.jts.geom.Point pointTemp = new GeometryFactory().createPoint(temp);
+         *         Polygon polygonTemp = toPolygon(polygon);
+         *         return polygonTemp.contains(pointTemp);
+         */
     }
+
 
     private static GeneralPath pointsToPolygon(List<Point> polygon) {
         GeneralPath border = new GeneralPath();
@@ -483,7 +491,7 @@ public class GisUtils {
     public static JsonArray toJsonArray(List<Point> area) {
         return area.stream()
                 .map(point -> ListUtils.newArrayList(point.getLng(), point.getLat()))
-                .collect(Collectors.collectingAndThen(Collectors.toList(), DataSwitch::convertListToJsonArray));
+                .collect(Collectors.collectingAndThen(Collectors.toList(), DataSwitch::convertObjectToJsonArray));
     }
 
     /**
@@ -1399,8 +1407,9 @@ public class GisUtils {
         try {
             Polygon polygon = toPolygon(points);
             Polygon cycle = toCycle(center.getLng(), center.getLat(), radius);
-            Geometry intersection = polygon.intersection(cycle);
-            return toListPoint(intersection);
+            List<Point> temp1 = toListPoint(polygon);
+            List<Point> temp2 = toListPoint(cycle);
+            return intersection(temp1,temp2);
         } catch (Exception ex) {
             return points;
         }
@@ -1416,6 +1425,15 @@ public class GisUtils {
      * @since 2022 -01-07 15:36:27
      */
     public static List<Point> intersection(List<Point> polygon1, List<Point> polygon2) {
+        boolean allIn = polygon1.stream().allMatch(item -> GisUtils.checkPointInPolygon(item, polygon2));
+        if (allIn) {
+            return polygon1;
+        }
+
+        allIn = polygon2.stream().allMatch(item -> GisUtils.checkPointInPolygon(item, polygon1));
+        if (allIn) {
+            return polygon1;
+        }
         Geometry geometry1 = toPolygon(polygon1);
         Geometry geometry2 = toPolygon(polygon2);
 
@@ -1508,7 +1526,7 @@ public class GisUtils {
 
             return points;
         } catch (Exception ex) {
-            log.error("计算区域分布出错:" + DataSwitch.convertListToJsonArray(polygon), ex);
+            log.error("计算区域分布出错:" + DataSwitch.convertObjectToJsonArray(polygon), ex);
             throw ex;
         }
     }
