@@ -25,7 +25,7 @@
     <groupId>com.situ</groupId>
     <version>1.0</version>
 
-<!--    <packaging>pom</packaging>-->
+    <packaging>pom</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
