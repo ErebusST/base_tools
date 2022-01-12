@@ -30,7 +30,7 @@ import java.util.Arrays;
 public class UserInfo {
     private String uKey;
     private Long userId;
-    private String name;
+    private String loginName;
     private String userName;
     private String password;
     private String type;
@@ -55,7 +55,7 @@ public class UserInfo {
         return "UserInfo{" +
                 "uKey='" + uKey + '\'' +
                 ", userId=" + userId +
-                ", name='" + name + '\'' +
+                ", loginName='" + loginName + '\'' +
                 ", userName='" + userName + '\'' +
                 ", password='" + password + '\'' +
                 ", type='" + type + '\'' +
@@ -81,14 +81,17 @@ public class UserInfo {
      * @since 2022 -01-07 15:36:09
      */
     public JsonObject getLoginInfo() {
+        Field[] fields = ReflectionUtils.getFields(this.getClass());
+
         JsonObject object = new JsonObject();
-        object.addProperty("phone", this.getPhone());
-        object.addProperty("loginName", this.getUserName());
-        object.addProperty("sex", this.getSex());
-        object.addProperty("type", this.getType());
-        object.addProperty("name", this.getName());
-        object.addProperty("userId", DataSwitch.convertObjectToString(this.getUserId()));
-        object.addProperty("unionId", unionId);
+
+        Arrays.stream(fields)
+                .forEach(field -> {
+                    Object value = ReflectionUtils.getFieldValue(this, field.getName());
+                    if(ObjectUtils.isNotNull(value)){
+                        object.addProperty(field.getName(), DataSwitch.convertObjectToString(value));
+                    }
+                });
         return object;
     }
 
