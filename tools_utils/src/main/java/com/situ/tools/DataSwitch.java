@@ -12,6 +12,7 @@ import com.google.gson.*;
 import com.situ.enumeration.DateFormatEnum;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.annotation.Nonnull;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
@@ -20,8 +21,8 @@ import java.math.BigInteger;
 import java.net.URLDecoder;
 import java.text.ParseException;
 import java.util.*;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 
 /**
@@ -775,91 +776,48 @@ public class DataSwitch {
 
 
     /**
-     * Convert jsonArrayStr to list list. 将json格式的字符串转换成List对象
+     * Convert json array to list list.
      *
-     * @param jsonArrayStr the json str
-     * @return the list
-     * @throws Exception the exception
-     * @author ErebusST
-     * @since 2022 -01-07 15:34:47
-     */
-    @Deprecated
-    public static List<Object> convertJsonArrayStrToList(String jsonArrayStr) {
-        if (StringUtils.isEmpty(jsonArrayStr)) {
-            return null;
-        } else {
-            JsonArray jsonArray = convertStringToJsonElement(jsonArrayStr).getAsJsonArray();
-            return convertJsonArrayToList(jsonArray);
-        }
-    }
-
-    /**
-     * Convert json str to map map. ：将json格式的字符串转换成Map对象
-     *
-     * @param jsonObjectStr the json str
-     * @return the map
-     * @throws Exception the exception
-     * @author ErebusST
-     * @since 2022 -01-07 15:34:47
-     */
-    public static Map<String, Object> convertJsonStringToMap(String jsonObjectStr) {
-        if (StringUtils.isEmpty(jsonObjectStr)) {
-            return null;
-        } else {
-            JsonObject jsonObj = convertStringToJsonObject(jsonObjectStr);
-            return convertJsonObjectToMap(jsonObj);
-        }
-    }
-
-    /**
-     * Convert json obj to map map.
-     *
-     * @param json the json
-     * @return the map
-     * @author ErebusST
-     * @since 2022 -01-07 15:34:47
-     */
-    public static Map<String, Object> convertJsonObjectToMap(JsonObject json) {
-        Map<String, Object> map = new HashMap<>();
-        Set<Entry<String, JsonElement>> entrySet = json.entrySet();
-        entrySet.forEach(stringJsonElementEntry -> {
-            String key = stringJsonElementEntry.getKey();
-            JsonElement value = stringJsonElementEntry.getValue();
-            if (value instanceof JsonArray) {
-                map.put(key, convertJsonArrayToList(value.getAsJsonArray()));
-            } else if (value instanceof JsonObject) {
-
-                map.put(key, convertJsonObjectToMap(value.getAsJsonObject()));
-            } else {
-                map.put(key, value.toString().replaceAll("\"", ""));
-            }
-        });
-        return map;
-    }
-
-    /**
-     * 将JSONArray对象转换成List集合
-     *
-     * @param jsonArray the json
+     * @param <T>   the type parameter
+     * @param clazz the clazz
+     * @param array the array
      * @return the list
      * @author ErebusST
-     * @since 2022 -01-07 15:34:47
+     * @since 2022 -01-12 12:45:55
      */
-    @Deprecated
-    public static List<Object> convertJsonArrayToList(JsonArray jsonArray) {
-        List<Object> list = new ArrayList<>();
-        jsonArray.forEach(jsonElement -> {
-            if (jsonElement instanceof JsonArray) {
-                list.add(convertJsonArrayToList(jsonElement.getAsJsonArray()));
-            } else if (jsonElement instanceof JsonObject) {
-                list.add(convertJsonObjectToMap(jsonElement.getAsJsonObject()));
-            } else if (jsonElement instanceof JsonPrimitive) {
-                list.add(jsonElement.getAsJsonPrimitive());
-            } else {
-                list.add(jsonElement);
-            }
-        });
+    public static <T> List<T> convertJsonArrayToListEntity(Class<T> clazz, @Nonnull JsonArray array) {
+        if (array.size() == 0) {
+            return new ArrayList<>(0);
+        }
+        List<T> list = StreamSupport.stream(array.spliterator(), true)
+                .map(element -> {
+                    T t = convertJsonObjectToEntity(element.getAsJsonObject(), clazz);
+                    return t;
+                })
+                .collect(Collectors.toList());
+        //List<T> list = getGsonInstance().fromJson(array, new TypeToken<List<T>>() {
+        //}.getType());
+
         return list;
+
+    }
+
+    /**
+     * Convert json array to list entity list.
+     *
+     * @param <T>   the type parameter
+     * @param clazz the clazz
+     * @param array the array
+     * @return the list
+     * @author ErebusST
+     * @since 2022 -01-12 12:48:34
+     */
+    public static <T> List<T> convertJsonArrayToListEntity(Class<T> clazz, @Nonnull String array) {
+        if (ObjectUtils.isEmpty(array)) {
+            return new ArrayList<>(0);
+        }
+        JsonArray jsonArray = DataSwitch.convertStringToJsonArray(array);
+        return convertJsonArrayToListEntity(clazz, jsonArray);
     }
 
 

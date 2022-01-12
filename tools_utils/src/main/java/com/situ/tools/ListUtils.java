@@ -69,18 +69,52 @@ public class ListUtils extends org.apache.commons.collections.ListUtils {
     /**
      * First t.
      *
-     * @param <T> the type parameter
-     * @param day the day
+     * @param <T>  the type parameter
+     * @param list the list
      * @return the t
      * @author ErebusST
      * @since 2022 -01-07 15:36:01
      */
-    public static <T> T first(List<T> day) {
-        int size = day.size();
+    public static <T> T first(List<T> list) {
+        int size = list.size();
         if (size > 0) {
-            return day.get(0);
+            return list.get(0);
         } else {
             return null;
+        }
+    }
+
+    /**
+     * Try get t.
+     *
+     * @param <T>   the type parameter
+     * @param list  the list
+     * @param index the index
+     * @return the t
+     * @author ErebusST
+     * @since 2022 -01-12 13:00:46
+     */
+    public static <T> T tryGet(List<T> list, Integer index) {
+        return tryGet(list, index, null);
+    }
+
+    /**
+     * Try get t.
+     *
+     * @param <T>          the type parameter
+     * @param list         the list
+     * @param index        the index
+     * @param defaultValue the default value
+     * @return the t
+     * @author ErebusST
+     * @since 2022 -01-12 13:00:08
+     */
+    public static <T> T tryGet(List<T> list, Integer index, T defaultValue) {
+        int size = list.size();
+        if (index >= size) {
+            return defaultValue;
+        } else {
+            return list.get(index);
         }
     }
 }
