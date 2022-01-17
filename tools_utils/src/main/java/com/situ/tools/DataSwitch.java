@@ -839,6 +839,41 @@ public class DataSwitch {
         }
     }
 
+    /**
+     * Convert entity to json object json object.
+     *
+     * 该方法中 字符串 如果是json 则转换成 json对象 如果是 字符串 则正常按照字符串处理
+     *
+     * @param <Entity> the type parameter
+     * @param clazz    the clazz
+     * @param entity   the entity
+     * @return the json object
+     * @author ErebusST
+     * @since 2022 -01-17 16:52:43
+     */
+    public static <Entity> JsonObject convertEntityToJsonObject(Class<Entity> clazz, Entity entity) {
+        if (ObjectUtils.isNull(entity)) {
+            return null;
+        }
+        JsonObject result = new JsonObject();
+        Field[] fields = ReflectionUtils.getFields(clazz);
+        Arrays.stream(fields)
+                .forEach(field -> {
+                    String name = field.getName();
+                    Object fieldValue = ReflectionUtils.getFieldValue(entity, name);
+                    if (ObjectUtils.isNotEmpty(fieldValue)) {
+                        Class<?> type = field.getType();
+                        JsonElement element;
+                        if (String.class.equals(type)) {
+                            element = convertStringToJsonElement(fieldValue);
+                        } else {
+                            element = convertObjectToJsonElement(fieldValue);
+                        }
+                        result.add(name, element);
+                    }
+                });
+        return result;
+    }
 
     //endregion
 

@@ -526,6 +526,10 @@ public class JdbcHelper {
             }
         }
 
+        public <T> List<T> findList(Class<T> clazz) throws Exception {
+            return findList(clazz, new HashedMap(0));
+        }
+
         /**
          * Find list list.
          *
@@ -538,6 +542,9 @@ public class JdbcHelper {
          * @since 2022 -01-07 15:39:03
          */
         public <T> List<T> findList(Class<T> clazz, Map<String, Object> parameters) throws Exception {
+            if (parameters.size() == 0) {
+                parameters = null;
+            }
             Table table = clazz.getAnnotation(Table.class);
             String tableName = table.name();
             String fields = Arrays.stream(ReflectionUtils.getFields(clazz))
@@ -829,6 +836,9 @@ public class JdbcHelper {
          */
         private PreparedStatement prepareCommand(DruidPooledConnection connection, String sql, Map<String, Object> parameters) throws Exception {
             try {
+                if (ObjectUtils.isNotNull(parameters) && parameters.size() == 0) {
+                    parameters = null;
+                }
                 PreparedStatement preparedStatement = prepareSql(connection, sql, parameters);
                 return prepareParameters(preparedStatement, sql, parameters);
             } catch (Exception ex) {
