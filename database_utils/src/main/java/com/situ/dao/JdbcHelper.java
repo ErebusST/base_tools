@@ -527,7 +527,7 @@ public class JdbcHelper {
         }
 
         public <T> List<T> findList(Class<T> clazz) throws Exception {
-            return findList(clazz, new HashedMap(0));
+            return findList(clazz, new HashedMap(1));
         }
 
         /**
