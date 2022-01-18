@@ -841,7 +841,7 @@ public class DataSwitch {
 
     /**
      * Convert entity to json object json object.
-     *
+     * <p>
      * 该方法中 字符串 如果是json 则转换成 json对象 如果是 字符串 则正常按照字符串处理
      *
      * @param <Entity> the type parameter
@@ -875,6 +875,47 @@ public class DataSwitch {
         return result;
     }
 
+    /**
+     * Merge json object json object.
+     *
+     * @param objects the objects
+     * @return the json object
+     * @author ErebusST
+     * @since 2022 -01-17 17:05:02
+     */
+    public static JsonObject mergeJsonObject(JsonObject... objects) {
+        return mergeJsonObject(false, objects);
+    }
+
+    /**
+     * Merge json object json object.
+     *
+     * @param cover   the cover
+     * @param objects the objects
+     * @return the json object
+     * @author ErebusST
+     * @since 2022 -01-17 17:05:00
+     */
+    public static JsonObject mergeJsonObject(Boolean cover, JsonObject... objects) {
+        JsonObject result = new JsonObject();
+        Arrays.stream(objects)
+                .forEach(object -> {
+                    object.entrySet()
+                            .stream()
+                            .forEach(entry -> {
+                                String key = entry.getKey();
+                                JsonElement value = entry.getValue();
+                                if (cover && !result.has(key)) {
+                                    result.add(key, value);
+                                } else {
+                                    result.add(key, value);
+                                }
+
+
+                            });
+                });
+        return result;
+    }
     //endregion
 
 
