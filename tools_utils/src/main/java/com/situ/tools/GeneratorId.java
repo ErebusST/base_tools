@@ -9,11 +9,10 @@
 package com.situ.tools;
 
 
-import com.situ.exception.MyException;
+import com.situ.enumeration.DateFormatEnum;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import java.text.ParseException;
 
 /**
  * 数据库主键创建类
@@ -27,16 +26,15 @@ public class GeneratorId {
     /**
      * 开始时间截 系统启动时间减去一天
      */
-    private static long startTime;
+    private static Long startTime = null;
 
-    static {
-        try {
-            startTime = DateUtils.getDate("2019-12-21 00:00:00").getTime();
-            //startTime = DateUtils.getDate("2020-05-21 00:00:00").getTime();
-        } catch (ParseException e) {
-            new MyException(e, GeneratorId.class, "");
-        }
+    private static String GENERATOR_FLAG;
+
+    @Value("${server.generator_flag:20211225}")
+    public void setGeneratorFlag(String flag) {
+        GENERATOR_FLAG = flag;
     }
+
 
     /**
      * 机器id所占的位数
@@ -154,7 +152,11 @@ public class GeneratorId {
      * @author ErebusST
      * @since 2022 -01-07 15:36:06
      */
+    @SneakyThrows
     public static synchronized long nextId() {
+        if (ObjectUtils.isNull(startTime)) {
+            startTime = DateUtils.getDate(GENERATOR_FLAG, DateFormatEnum.YYYYMMDD).getTime();
+        }
         checkParameters();
 
         long timestamp = timeGen();
