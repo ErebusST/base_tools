@@ -150,7 +150,8 @@ public class ReflectionUtils {
         Field field = getAccessibleField(obj, fieldName);
 
         if (field == null) {
-            throw new IllegalArgumentException("Could not find field [" + fieldName + "] on target [" + obj + "]");
+            return null;
+            //throw new IllegalArgumentException("Could not find field [" + fieldName + "] on target [" + obj + "]");
         }
 
         Object result = null;

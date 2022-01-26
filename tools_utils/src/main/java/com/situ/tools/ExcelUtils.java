@@ -3,6 +3,7 @@ package com.situ.tools;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.write.metadata.WriteSheet;
+import com.situ.entity.bo.ExportExcelSetting;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletResponse;
@@ -26,20 +27,58 @@ public class ExcelUtils {
     /**
      * Export string.
      *
-     * @param <T>          the type parameter
-     * @param clazz        the clazz
-     * @param data         the data
-     * @param fileRootPath the file root path
+     * @param settings the settings
+     * @param filePath the file root path
+     * @return the string
+     * @throws IOException the io exception
+     * @author ErebusST
+     * @since 2022 -01-21 17:18:47
+     */
+    public static String export(List<ExportExcelSetting> settings, String filePath) throws IOException {
+        //String fileName = DataSwitch.getUUID().concat(".xlsx");
+        String write_path = filePath;
+        Files.deleteIfExists(Paths.get(write_path));
+        FileUtils.createDirectory(filePath);
+        ExcelWriter writer = EasyExcel.write(write_path).autoCloseStream(true).build();
+
+        AtomicInteger sheetIndex = new AtomicInteger(0);
+
+        for (ExportExcelSetting setting : settings) {
+            Class clazz = setting.getClazz();
+            List list = setting.getData();
+            String sheetName = setting.getSheetName();
+            if (list.size() > 0) {
+                WriteSheet sheet = EasyExcel.writerSheet(sheetIndex.getAndIncrement(), sheetName)
+                        .head(clazz)
+                        .useDefaultStyle(false)
+                        .needHead(true)
+                        .build();
+                writer.write(list, sheet);
+
+            }
+        }
+        writer.finish();
+        return write_path;
+    }
+
+    /**
+     * Export string.
+     *
+     * @param <T>      the type parameter
+     * @param clazz    the clazz
+     * @param data     the data
+     * @param filePath the file root path
      * @return the string
      * @throws IOException the io exception
      * @author ErebusST
      * @since 2022 -01-07 15:36:06
      */
-    public static <T> String export(Class<T> clazz, Map<String, List<T>> data, String fileRootPath) throws IOException {
-        String fileName = DataSwitch.getUUID().concat(".xlsx");
-        String write_path = fileRootPath + fileName;
+    public static <T> String export(Class<T> clazz, Map<String, List<T>> data, String filePath) throws IOException {
+        //String fileName = DataSwitch.getUUID().concat(".xlsx");
+        //Files.deleteIfExists(Paths.get(filePath));
+        String write_path = filePath;
         Files.deleteIfExists(Paths.get(write_path));
-        FileUtils.createDirectory(fileRootPath);
+        FileUtils.createDirectory(filePath);
         ExcelWriter writer = EasyExcel.write(write_path).autoCloseStream(true).build();
 
         AtomicInteger sheetIndex = new AtomicInteger(0);
@@ -71,7 +110,7 @@ public class ExcelUtils {
      * @since 2022 -01-07 15:36:06
      */
     public static <T> void export(Class<T> clazz, Map<String, List<T>> data, HttpServletResponse response) throws IOException {
-        ExcelWriter writer =  EasyExcel.write(response.getOutputStream(),clazz).autoCloseStream(true).build();
+        ExcelWriter writer = EasyExcel.write(response.getOutputStream(), clazz).autoCloseStream(true).build();
 
         AtomicInteger sheetIndex = new AtomicInteger(0);
 
@@ -107,7 +146,8 @@ public class ExcelUtils {
                     return num;
                 })
                 .mapToInt(num -> num)
-                .sum();
+                .sum() - 1;
     }
+
 
 }

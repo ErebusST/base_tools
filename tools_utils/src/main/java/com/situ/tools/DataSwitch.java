@@ -899,6 +899,7 @@ public class DataSwitch {
     public static JsonObject mergeJsonObject(Boolean cover, JsonObject... objects) {
         JsonObject result = new JsonObject();
         Arrays.stream(objects)
+                .filter(ObjectUtils::isNotNull)
                 .forEach(object -> {
                     object.entrySet()
                             .stream()

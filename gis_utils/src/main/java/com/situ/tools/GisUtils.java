@@ -370,6 +370,9 @@ public class GisUtils {
      * @since 2022 -01-07 15:36:25
      */
     public static boolean checkPointInCircle(Point center, Point point, BigDecimal radius) {
+        if (ObjectUtils.isNull(point)) {
+            return false;
+        }
         double distance = distance(center, point);
         return radius.doubleValue() >= distance;
     }
@@ -385,7 +388,7 @@ public class GisUtils {
      * @since 2022 -01-07 15:36:25
      */
     public static boolean checkPointInPolygon(Point point, List<Point> polygon) {
-        if (polygon.size() == 0 || polygon.size() == 1) {
+        if (ObjectUtils.isNull(point) || polygon.size() == 0 || polygon.size() == 1) {
             return false;
         }
         double pointLon = point.getLng().doubleValue();
@@ -1409,7 +1412,7 @@ public class GisUtils {
             Polygon cycle = toCycle(center.getLng(), center.getLat(), radius);
             List<Point> temp1 = toListPoint(polygon);
             List<Point> temp2 = toListPoint(cycle);
-            return intersection(temp1,temp2);
+            return intersection(temp1, temp2);
         } catch (Exception ex) {
             return points;
         }
@@ -1432,7 +1435,7 @@ public class GisUtils {
 
         allIn = polygon2.stream().allMatch(item -> GisUtils.checkPointInPolygon(item, polygon1));
         if (allIn) {
-            return polygon1;
+            return polygon2;
         }
         Geometry geometry1 = toPolygon(polygon1);
         Geometry geometry2 = toPolygon(polygon2);

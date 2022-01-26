@@ -10,6 +10,7 @@ package com.situ.entity.bo;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.situ.tools.ObjectUtils;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -44,6 +45,9 @@ public class Point {
      * @since 2022 -01-07 15:36:28
      */
     public static Point get(Object x, Object y) {
+        if (ObjectUtils.isNull(x) || ObjectUtils.isNull(y)) {
+            return null;
+        }
         return new Point(x, y);
     }
 
@@ -53,9 +57,9 @@ public class Point {
      * @param x the x
      * @param y the y
      */
-    public Point(@Nonnull Object x,@Nonnull Object y) {
-        this.lng =new BigDecimal(x.toString()).setScale(6, BigDecimal.ROUND_HALF_UP);
-        this.lat =new BigDecimal(y.toString()).setScale(6, BigDecimal.ROUND_HALF_UP);
+    public Point(@Nonnull Object x, @Nonnull Object y) {
+        this.lng = new BigDecimal(x.toString()).setScale(6, BigDecimal.ROUND_HALF_UP);
+        this.lat = new BigDecimal(y.toString()).setScale(6, BigDecimal.ROUND_HALF_UP);
     }
 
 
