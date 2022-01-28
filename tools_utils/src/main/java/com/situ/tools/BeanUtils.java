@@ -18,6 +18,7 @@ import javax.annotation.Nonnull;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -123,13 +124,20 @@ public class BeanUtils extends org.apache.commons.beanutils.BeanUtils {
             Arrays.stream(targetFields).forEach(targetField ->
                     Arrays.stream(fieldsTemp)
                             .filter(field -> {
+                                Class<?> type = field.getType();
+                                Class<?> targetType = targetField.getType();
                                 boolean sameName = field.getName().equals(targetField.getName());
                                 boolean sameType = true;
                                 if (!ignoreType) {
-                                    sameType = field.getType().equals(targetField.getType());
+                                    sameType = type.equals(targetType);
+                                } else if (List.class.equals(type)) {
+                                    sameType = !String.class.equals(targetType);
+                                } else if (List.class.equals(targetType)) {
+                                    sameType = !String.class.equals(type);
                                 }
                                 return sameName && sameType;
                             })
+
                             .findFirst()
                             .ifPresent(
                                     field -> {
@@ -140,8 +148,8 @@ public class BeanUtils extends org.apache.commons.beanutils.BeanUtils {
                                             if (isCover || (isCover && targetValue == null)) {
                                                 Object value = ReflectionUtils.getFieldValue(sourceEntity, fieldName);
                                                 // field.get
-                                                if(!targetField.getType().equals(field.getType())){
-                                                    value = DataSwitch.getDefaultValue(value,targetField.getType());
+                                                if (!targetField.getType().equals(field.getType())) {
+                                                    value = DataSwitch.getDefaultValue(value, targetField.getType());
                                                 }
                                                 ReflectionUtils.setFieldValue(targetEntity, fieldName, value);
                                             }

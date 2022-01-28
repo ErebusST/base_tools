@@ -25,6 +25,20 @@ import java.util.stream.Stream;
  * @date 2017 -03-15 10:56
  */
 public class StringUtils extends org.apache.commons.lang3.StringUtils {
+
+    /**
+     * Starts with any boolean.
+     *
+     * @param string the string
+     * @param list   the list
+     * @return the boolean
+     * @author ErebusST
+     * @since 2022 -01-28 15:15:20
+     */
+    public static boolean startsWithAny(CharSequence string, List<String> list) {
+        return list.stream().anyMatch(item -> StringUtils.startsWith(string, item));
+    }
+
     /**
      * Is empty boolean.
      *
@@ -161,8 +175,8 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      */
     public static List<String> splitToList(Object sourceStr, String splitChar, boolean filterEmpty) {
         if (sourceStr != null) {
-            String[] arr =org.apache.commons.lang3.StringUtils
-                    .splitByWholeSeparatorPreserveAllTokens(DataSwitch.convertObjectToString(sourceStr),splitChar);
+            String[] arr = org.apache.commons.lang3.StringUtils
+                    .splitByWholeSeparatorPreserveAllTokens(DataSwitch.convertObjectToString(sourceStr), splitChar);
             return Arrays.stream(arr)
                     .map(String::trim)
                     .filter(str -> {
