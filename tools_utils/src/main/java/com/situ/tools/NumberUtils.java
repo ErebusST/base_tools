@@ -48,6 +48,7 @@ public class NumberUtils {
 
     /**
      * Add big decimal.
+     * 加法
      *
      * @param values the values
      * @return the big decimal
@@ -61,6 +62,7 @@ public class NumberUtils {
 
     /**
      * Add big decimal.
+     * 加法
      *
      * @param values the values
      * @return the big decimal
@@ -73,6 +75,7 @@ public class NumberUtils {
 
     /**
      * Subtract big decimal.
+     * 减法
      *
      * @param value1 the value 1
      * @param value2 the value 2
@@ -86,6 +89,8 @@ public class NumberUtils {
 
     /**
      * Multiply big decimal.
+     *
+     * 乘法
      *
      * @param values the values
      * @return the big decimal
@@ -104,6 +109,8 @@ public class NumberUtils {
     /**
      * Remainder big decimal.
      *
+     * 取余
+     *
      * @param value1 the value 1
      * @param value2 the value 2
      * @return the big decimal
@@ -117,6 +124,8 @@ public class NumberUtils {
     /**
      * Divide big decimal.
      *
+     * 除法
+     *
      * @param value1 the value 1
      * @param value2 the value 2
      * @return the big decimal
@@ -129,6 +138,8 @@ public class NumberUtils {
 
     /**
      * Total big decimal.
+     *
+     * 总数
      *
      * @param <T>    the type parameter
      * @param list   the list
@@ -144,6 +155,8 @@ public class NumberUtils {
     /**
      * Total big decimal.
      *
+     * 总数
+     *
      * @param list the list
      * @return the big decimal
      * @author ErebusST
@@ -156,6 +169,8 @@ public class NumberUtils {
     /**
      * Total big decimal.
      *
+     * 总数
+     *
      * @param stream the stream
      * @return the big decimal
      * @author ErebusST
@@ -167,6 +182,8 @@ public class NumberUtils {
 
     /**
      * Percent big decimal.
+     *
+     * 百分比
      *
      * @param value the value
      * @param total the total
