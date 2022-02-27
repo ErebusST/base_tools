@@ -89,7 +89,7 @@ public class NumberUtils {
 
     /**
      * Multiply big decimal.
-     *
+     * <p>
      * 乘法
      *
      * @param values the values
@@ -108,7 +108,7 @@ public class NumberUtils {
 
     /**
      * Remainder big decimal.
-     *
+     * <p>
      * 取余
      *
      * @param value1 the value 1
@@ -123,7 +123,7 @@ public class NumberUtils {
 
     /**
      * Divide big decimal.
-     *
+     * <p>
      * 除法
      *
      * @param value1 the value 1
@@ -138,7 +138,7 @@ public class NumberUtils {
 
     /**
      * Total big decimal.
-     *
+     * <p>
      * 总数
      *
      * @param <T>    the type parameter
@@ -154,7 +154,7 @@ public class NumberUtils {
 
     /**
      * Total big decimal.
-     *
+     * <p>
      * 总数
      *
      * @param list the list
@@ -168,7 +168,7 @@ public class NumberUtils {
 
     /**
      * Total big decimal.
-     *
+     * <p>
      * 总数
      *
      * @param stream the stream
@@ -182,7 +182,7 @@ public class NumberUtils {
 
     /**
      * Percent big decimal.
-     *
+     * <p>
      * 百分比
      *
      * @param value the value
@@ -249,6 +249,145 @@ public class NumberUtils {
          */
         REMAINDER;
     }
+
+
+    /**
+     * Calc square deviation big decimal.
+     * 计算方差
+     *
+     * @param <T>    the type parameter
+     * @param list   the list
+     * @param getter the getter
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -02-27 10:54:34
+     */
+    public static <T> BigDecimal calcVariance(List<T> list, Function<T, ? extends Number> getter) {
+        return calcVariance(list.stream().map(getter));
+    }
+
+    /**
+     * Calc square deviation big decimal.
+     * 计算方差
+     *
+     * @param list the list
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -02-27 10:54:36
+     */
+    public static BigDecimal calcVariance(List<? extends Number> list) {
+        return calcVariance(list.stream());
+    }
+
+    /**
+     * Calc square deviation big decimal.
+     * 计算方差
+     *
+     * @param stream the stream
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -02-27 10:54:48
+     */
+    public static BigDecimal calcVariance(Stream<? extends Number> stream) {
+        BigDecimal total = calcAverage(
+                stream
+                        .filter(ObjectUtils::isNotNull)
+                        .map(DataSwitch::convertObjectToBigDecimal)
+                        .map(item -> item.multiply(item)));
+        return total;
+    }
+
+    /**
+     * Calc average big decimal.
+     * <p>
+     * 计算平均数
+     *
+     * @param <T>    the type parameter
+     * @param list   the list
+     * @param getter the getter
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -02-27 11:16:24
+     */
+    public static <T> BigDecimal calcAverage(List<T> list, Function<T, ? extends Number> getter) {
+        return calcAverage(list.stream().map(getter));
+    }
+
+
+    /**
+     * Calc average big decimal.
+     * <p>
+     * 计算平均数
+     *
+     * @param list the list
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -02-27 11:16:24
+     */
+    public static BigDecimal calcAverage(List<? extends Number> list) {
+        return calcAverage(list.stream());
+    }
+
+    /**
+     * Calc average big decimal.
+     * <p>
+     * 计算平均数
+     *
+     * @param stream the stream
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -02-27 11:08:23
+     */
+    public static BigDecimal calcAverage(Stream<? extends Number> stream) {
+        double average = stream.mapToDouble(Number::doubleValue)
+                .average().orElse(0D);
+        return BigDecimal.valueOf(average);
+    }
+
+    /**
+     * Calc standard deviation big decimal.
+     * 计算标准差
+     *
+     * @param <T>    the type parameter
+     * @param list   the list
+     * @param getter the getter
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -02-27 10:57:20
+     */
+    public static <T> BigDecimal calcStandardDeviation(List<T> list, Function<T, ? extends Number> getter) {
+        return calcStandardDeviation(list.stream().map(getter));
+    }
+
+
+    /**
+     * Calc standard deviation big decimal.
+     * <p>
+     * 计算标准差
+     *
+     * @param list the list
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -02-27 11:12:40
+     */
+    public static BigDecimal calcStandardDeviation(List<? extends Number> list) {
+        return calcStandardDeviation(list.stream());
+    }
+
+    /**
+     * Calc standard deviation big decimal.
+     * 计算标准差
+     *
+     * @param stream the stream
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -02-27 10:56:05
+     */
+    public static BigDecimal calcStandardDeviation(Stream<? extends Number> stream) {
+        BigDecimal squareDeviation = calcVariance(stream);
+        return BigDecimal.valueOf(Math.sqrt(squareDeviation.doubleValue()));
+    }
+
 
     /**
      * Standard normal distribution double.
