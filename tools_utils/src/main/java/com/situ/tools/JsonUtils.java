@@ -11,6 +11,7 @@ package com.situ.tools;
 import com.google.gson.JsonArray;
 import com.situ.entity.bo.DataItem;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -201,5 +202,36 @@ public class JsonUtils {
                 })
                 .map(DataItem::toArray)
                 .collect(Collectors.collectingAndThen(Collectors.toList(), DataSwitch::convertObjectToJsonArray));
+    }
+
+    /**
+     * Get big decimal.
+     * 从 [['a',1],['b',1]] 找到key 为a 的值
+     *
+     * @param jsonArray the json array
+     * @param key       the key
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -02-27 14:21:55
+     */
+    public static BigDecimal get(String jsonArray, String key) {
+        if (StringUtils.isEmpty(jsonArray)) {
+            return BigDecimal.ZERO;
+        }
+        JsonArray array = DataSwitch.convertStringToJsonArray(jsonArray);
+        BigDecimal value = StreamSupport.stream(array.spliterator(), true)
+                .filter(element -> {
+                    JsonArray child = element.getAsJsonArray();
+                    String temp = child.get(0).getAsString();
+                    return StringUtils.equalsIgnoreCase(temp, key);
+                })
+                .map(element -> {
+                    JsonArray child = element.getAsJsonArray();
+                    BigDecimal temp = child.get(1).getAsBigDecimal();
+                    return temp;
+                })
+                .findFirst()
+                .orElse(BigDecimal.ZERO);
+        return value;
     }
 }

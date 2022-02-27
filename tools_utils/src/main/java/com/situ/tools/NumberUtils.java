@@ -125,6 +125,10 @@ public class NumberUtils {
         }
     }
 
+    /**
+     * The constant Hundred.
+     */
+    public final static BigDecimal HUNDRED =BigDecimal.valueOf(100);
 
     /**
      * The constant THOUSAND.
@@ -541,10 +545,27 @@ public class NumberUtils {
     }
 
 
+    /**
+     * Fix percent list.
+     *
+     * @param list the list
+     * @return the list
+     * @author ErebusST
+     * @since 2022 -02-27 14:54:15
+     */
     public static List<DataItem> fixPercent(List<DataItem> list) {
         return fixPercent(list, false);
     }
 
+    /**
+     * Fix percent list.
+     *
+     * @param list   the list
+     * @param sorted the sorted
+     * @return the list
+     * @author ErebusST
+     * @since 2022 -02-27 14:54:15
+     */
     public static List<DataItem> fixPercent(List<DataItem> list, boolean sorted) {
         Long total = list.stream().mapToLong(DataItem::getCount).sum();
         if (total.equals(0L)) {
@@ -584,23 +605,74 @@ public class NumberUtils {
     }
 
 
+    /**
+     * Min big decimal.
+     *
+     * @param <T>    the type parameter
+     * @param list   the list
+     * @param getter the getter
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -02-27 14:54:15
+     */
     public static <T> BigDecimal min(List<T> list, Function<T, ? extends Number> getter) {
         return min(list.stream(), getter);
 
     }
 
+    /**
+     * Min big decimal.
+     *
+     * @param <T>    the type parameter
+     * @param list   the list
+     * @param getter the getter
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -02-27 14:54:15
+     */
     public static <T> BigDecimal min(Stream<T> list, Function<T, ? extends Number> getter) {
         return minOrMax(list, getter, Type.min);
     }
 
+    /**
+     * Max big decimal.
+     *
+     * @param <T>    the type parameter
+     * @param list   the list
+     * @param getter the getter
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -02-27 14:54:15
+     */
     public static <T> BigDecimal max(List<T> list, Function<T, ? extends Number> getter) {
         return max(list.stream(), getter);
     }
 
+    /**
+     * Max big decimal.
+     *
+     * @param <T>    the type parameter
+     * @param list   the list
+     * @param getter the getter
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -02-27 14:54:15
+     */
     public static <T> BigDecimal max(Stream<T> list, Function<T, ? extends Number> getter) {
         return minOrMax(list, getter, Type.max);
     }
 
+    /**
+     * Min or max big decimal.
+     *
+     * @param <T>    the type parameter
+     * @param stream the stream
+     * @param getter the getter
+     * @param type   the type
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -02-27 14:54:15
+     */
     public static <T> BigDecimal minOrMax(Stream<T> stream, Function<T, ? extends Number> getter, Type type) {
         Stream<BigDecimal> bigDecimalStream = stream
                 .map(getter)
@@ -619,6 +691,13 @@ public class NumberUtils {
     }
 
     private enum Type {
-        min, max
+        /**
+         * Min type.
+         */
+        min,
+        /**
+         * Max type.
+         */
+        max
     }
 }
