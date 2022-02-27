@@ -214,7 +214,7 @@ public class JsonUtils {
      * @author ErebusST
      * @since 2022 -02-27 14:21:55
      */
-    public static BigDecimal get(String jsonArray, String key) {
+    public static BigDecimal get(Object jsonArray, String key) {
         if (StringUtils.isEmpty(jsonArray)) {
             return BigDecimal.ZERO;
         }

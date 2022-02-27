@@ -26,9 +26,9 @@ public class CalculatorUtils {
 
     @Test
     public void test(){
-        String string = "1+1+2+3/2";
+        String string = "1*8.23881471291217e-05";
         double conversion = CalculatorUtils.conversion(string);
-        log.info("{}",conversion);
+        log.info("{}",BigDecimal.valueOf(conversion));
     }
     /**
      * 计算表达式的值
