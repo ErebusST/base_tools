@@ -509,7 +509,7 @@ public class NumberUtils {
 
     /**
      * Standard normal distribution double.
-     * 计算标准正态分布
+     * 计算标准正态分布密度
      *
      * @param value             the value
      * @param average           the 算术平均数
@@ -518,7 +518,7 @@ public class NumberUtils {
      * @author ErebusST
      * @since 2022 -02-25 17:33:03
      */
-    public static double calcStandardNormalDistribution(double value, double average, double standardDeviation) {
+    public static double calcStdDensity(double value, double average, double standardDeviation) {
         double oor2pi = 1 / Math.sqrt(2.0 * Math.PI);
         double x2 = (value - average) / standardDeviation;
         double result;
