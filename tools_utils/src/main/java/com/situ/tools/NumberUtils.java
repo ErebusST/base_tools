@@ -8,13 +8,17 @@
 
 package com.situ.tools;
 
+import com.situ.entity.bo.DataItem;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ArrayUtils;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -534,5 +538,87 @@ public class NumberUtils {
             }
         }
         return result;
+    }
+
+
+    public static List<DataItem> fixPercent(List<DataItem> list) {
+        return fixPercent(list, false);
+    }
+
+    public static List<DataItem> fixPercent(List<DataItem> list, boolean sorted) {
+        Long total = list.stream().mapToLong(DataItem::getCount).sum();
+        if (total.equals(0L)) {
+            return new ArrayList<>(0);
+        }
+        BigDecimal temp = list
+                .stream()
+                .map(item -> {
+                    BigDecimal percent = item.getPercent();
+                    if (ObjectUtils.isNull(percent)) {
+                        percent = NumberUtils.percent(item.getCount(), total);
+                        item.setPercent(percent);
+                    }
+                    return percent;
+                })
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal diff = BigDecimal.ONE.subtract(temp);
+
+        if (BigDecimal.ZERO.compareTo(diff) != 0) {
+            list.stream()
+                    .filter(item -> {
+                        BigDecimal percent = item.getPercent();
+                        return BigDecimal.ZERO.compareTo(percent) < 0 && percent.compareTo(diff.abs()) > 0;
+                    })
+                    .findFirst()
+                    .ifPresent(item -> {
+                        BigDecimal percent = DataSwitch.convertObjectToBigDecimal(item.getPercent(), 4);
+                        percent = percent.add(diff);
+                        item.setPercent(percent);
+                    });
+        }
+
+        if (sorted) {
+            list = list.stream().sorted(Comparator.comparing(DataItem::getCount).reversed()).collect(Collectors.toList());
+        }
+        return list;
+    }
+
+
+    public static <T> BigDecimal min(List<T> list, Function<T, ? extends Number> getter) {
+        return min(list.stream(), getter);
+
+    }
+
+    public static <T> BigDecimal min(Stream<T> list, Function<T, ? extends Number> getter) {
+        return minOrMax(list, getter, Type.min);
+    }
+
+    public static <T> BigDecimal max(List<T> list, Function<T, ? extends Number> getter) {
+        return max(list.stream(), getter);
+    }
+
+    public static <T> BigDecimal max(Stream<T> list, Function<T, ? extends Number> getter) {
+        return minOrMax(list, getter, Type.max);
+    }
+
+    public static <T> BigDecimal minOrMax(Stream<T> stream, Function<T, ? extends Number> getter, Type type) {
+        Stream<BigDecimal> bigDecimalStream = stream
+                .map(getter)
+                .filter(ObjectUtils::isNotNull)
+                .map(DataSwitch::convertObjectToBigDecimal);
+        switch (type) {
+            case max:
+                return bigDecimalStream.max(Comparator.comparing(BigDecimal::doubleValue)).orElse(BigDecimal.ZERO);
+            case min:
+                return bigDecimalStream.min(Comparator.comparing(BigDecimal::doubleValue)).orElse(BigDecimal.ZERO);
+            default:
+                log.error("未知的操作类型:" + type);
+                return BigDecimal.ZERO;
+
+        }
+    }
+
+    private enum Type {
+        min, max
     }
 }
