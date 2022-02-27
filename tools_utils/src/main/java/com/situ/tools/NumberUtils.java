@@ -9,6 +9,7 @@
 package com.situ.tools;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.ArrayUtils;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -24,6 +25,102 @@ import java.util.stream.Stream;
  */
 @Slf4j
 public class NumberUtils {
+
+
+    /**
+     * Init operation.
+     *
+     * @param value the value
+     * @return the operation
+     * @author ErebusST
+     * @since 2022 -02-27 12:31:47
+     */
+    public static Operation init(Object value) {
+        return new Operation(value);
+    }
+
+
+    /**
+     * The type Operation.
+     */
+    public static class Operation {
+        private BigDecimal value;
+
+        /**
+         * Instantiates a new Operation.
+         *
+         * @param value the value
+         */
+        public Operation(Object value) {
+            this.value = DataSwitch.convertObjectToBigDecimal(value);
+        }
+
+        /**
+         * Add operation.
+         *
+         * @param values the values
+         * @return the operation
+         * @author ErebusST
+         * @since 2022 -02-27 12:31:48
+         */
+        public Operation add(Object... values) {
+            Object[] temp = ArrayUtils.add(values, value);
+            this.value = NumberUtils.add(temp);
+            return this;
+        }
+
+        /**
+         * Subtract operation.
+         *
+         * @param value the value
+         * @return the operation
+         * @author ErebusST
+         * @since 2022 -02-27 12:31:48
+         */
+        public Operation subtract(Object value) {
+            this.value = NumberUtils.subtract(this.value, value);
+            return this;
+        }
+
+        /**
+         * Multiply operation.
+         *
+         * @param values the values
+         * @return the operation
+         * @author ErebusST
+         * @since 2022 -02-27 12:31:48
+         */
+        public Operation multiply(Object... values) {
+            Object[] temp = ArrayUtils.add(values, value);
+            this.value = NumberUtils.multiply(temp);
+            return this;
+        }
+
+        /**
+         * Divide operation.
+         *
+         * @param value the value
+         * @return the operation
+         * @author ErebusST
+         * @since 2022 -02-27 12:31:48
+         */
+        public Operation divide(Object value) {
+            this.value = NumberUtils.divide(this.value, value);
+            return this;
+        }
+
+        /**
+         * Get big decimal.
+         *
+         * @return the big decimal
+         * @author ErebusST
+         * @since 2022 -02-27 12:31:48
+         */
+        public BigDecimal get() {
+            return value;
+        }
+    }
+
 
     /**
      * The constant THOUSAND.
@@ -128,6 +225,23 @@ public class NumberUtils {
      *
      * @param value1 the value 1
      * @param value2 the value 2
+     * @param scale  the scale
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -02-27 11:54:56
+     */
+    public static BigDecimal divide(Object value1, Object value2, int scale) {
+        BigDecimal operation = operation(value1, value2, NumberOperation.DIVIDE);
+        return operation.setScale(scale, BigDecimal.ROUND_HALF_UP);
+    }
+
+    /**
+     * Divide big decimal.
+     * <p>
+     * 除法
+     *
+     * @param value1 the value 1
+     * @param value2 the value 2
      * @return the big decimal
      * @author ErebusST
      * @since 2022 -02-25 18:04:43
@@ -217,7 +331,7 @@ public class NumberUtils {
                 if (decimal2.compareTo(BigDecimal.ZERO) == 0) {
                     return BigDecimal.ZERO;
                 }
-                return decimal1.divide(decimal2, 10, BigDecimal.ROUND_HALF_UP);
+                return decimal1.divide(decimal2, 20, BigDecimal.ROUND_HALF_UP);
             case REMAINDER:
                 return decimal1.remainder(decimal2);
             default:
