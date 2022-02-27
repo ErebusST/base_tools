@@ -44,7 +44,7 @@ public class NumberUtils {
      * The type Operation.
      */
     public static class Operation {
-        private BigDecimal value;
+        private BigDecimal value = BigDecimal.ZERO;
 
         /**
          * Instantiates a new Operation.
