@@ -570,6 +570,52 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         return string;
     }
 
+    public static String removeSuffix(Object str, String suffix) {
+        if (isEmpty(str) || isEmpty(suffix)) {
+            return DataSwitch.convertObjectToString(str);
+        }
+
+        final String str2 = str.toString();
+        if (str2.endsWith(suffix.toString())) {
+            return StringUtils.substring(str2, 0, str2.length() - suffix.length());// 截取前半段
+        }
+        return str2;
+    }
+
+    /**
+     * Clean blank string.
+     *
+     * @param string the string
+     * @return the string
+     * @author ErebusST
+     * @since 2022 -02-25 18:29:50
+     */
+    public static String cleanBlank(Object string) {
+        String temp = DataSwitch.convertObjectToString(string);
+        char[] chars = temp.toCharArray();
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < chars.length; i++) {
+            char c = chars[i];
+            if (isBlankChar(c)) {
+                continue;
+            }
+             result.append(c);
+        }
+        return result.toString();
+    }
+
+    public static boolean isBlankChar(char c) {
+        return isBlankChar((int) c);
+    }
+
+    public static boolean isBlankChar(int c) {
+        return Character.isWhitespace(c)
+                || Character.isSpaceChar(c)
+                || c == '\ufeff'
+                || c == '\u202a'
+                || c == '\u0000';
+    }
+
 
     //endregion
 }
