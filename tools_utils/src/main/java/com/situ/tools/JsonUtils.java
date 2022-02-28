@@ -95,7 +95,7 @@ public class JsonUtils {
     }
 
 
-    public JsonObject mergeJsonObject(JsonObject object, Object merge) {
+    public static JsonObject mergeJsonObject(JsonObject object, Object merge) {
         return mergeJsonObject(object, merge, null);
     }
 
@@ -107,7 +107,7 @@ public class JsonUtils {
         log.info(object2.toString());
     }
 
-    public JsonObject mergeJsonObject(JsonObject object, Object merge, Integer scale) {
+    public static JsonObject mergeJsonObject(JsonObject object, Object merge, Integer scale) {
         if (ObjectUtils.isNull(object)) {
             object = new JsonObject();
         }
