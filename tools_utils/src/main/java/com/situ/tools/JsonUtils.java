@@ -9,13 +9,15 @@
 package com.situ.tools;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.situ.entity.bo.DataItem;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.Test;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -24,6 +26,7 @@ import java.util.stream.StreamSupport;
  * @author 司徒彬
  * @date 2022/2/27 12:32
  */
+@Slf4j
 public class JsonUtils {
 
     /**
@@ -89,6 +92,52 @@ public class JsonUtils {
                 }).orElse(new ArrayList<>(0));
         result = NumberUtils.fixPercent(result, sorted);
         return result;
+    }
+
+
+    public JsonObject mergeJsonObject(JsonObject object, Object merge) {
+        return mergeJsonObject(object, merge, null);
+    }
+
+    @Test
+    public void test(){
+        JsonObject object = DataSwitch.convertStringToJsonObject("{'a':1,'b':false}");
+        JsonObject object1 = DataSwitch.convertStringToJsonObject("{'a':1,'b':false}");
+        JsonObject object2 = mergeJsonObject(object, object1);
+        log.info(object2.toString());
+    }
+
+    public JsonObject mergeJsonObject(JsonObject object, Object merge, Integer scale) {
+        if (ObjectUtils.isNull(object)) {
+            object = new JsonObject();
+        }
+        if (ObjectUtils.isNotNull(merge)) {
+            JsonObject object1 = DataSwitch.convertStringToJsonObject(merge);
+            if (ObjectUtils.isNull(object1)) {
+                return object;
+            }
+            Set<String> keys = object1.keySet();
+            for (String key : keys) {
+                JsonElement element = object1.get(key);
+                if (element.isJsonPrimitive()) {
+                    JsonPrimitive primitive = element.getAsJsonPrimitive();
+
+                    if (primitive.isNumber()) {
+                        BigDecimal value = primitive.getAsBigDecimal();
+                        if (object.has(key)) {
+                            value = NumberUtils.add(primitive.getAsBigDecimal(), object.get(key).getAsBigDecimal());
+                        }
+                        if (ObjectUtils.isNotNull(scale)) {
+                            value = value.setScale(scale, BigDecimal.ROUND_HALF_UP);
+                        }
+                        object.addProperty(key, value);
+                    }
+
+                }
+
+            }
+        }
+        return object;
     }
 
     /**

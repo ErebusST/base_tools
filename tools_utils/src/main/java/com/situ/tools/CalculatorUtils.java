@@ -28,7 +28,12 @@ public class CalculatorUtils {
     public void test(){
         String string = "1*8.23881471291217e-05";
         double conversion = CalculatorUtils.conversion(string);
-        log.info("{}",BigDecimal.valueOf(conversion));
+        log.info("{}={}",string ,BigDecimal.valueOf(conversion));
+        string ="67627*3.49559712526275e-05";
+        conversion = CalculatorUtils.conversion(string);
+        log.info("{}={}",string ,BigDecimal.valueOf(conversion));
+        double exp = Math.exp(1);
+        log.info("{}",exp);
     }
     /**
      * 计算表达式的值
