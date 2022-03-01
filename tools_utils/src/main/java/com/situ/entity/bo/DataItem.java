@@ -29,7 +29,10 @@ import java.util.stream.Collectors;
 @Setter
 public class DataItem {
     public static DataItem get(String text, BigDecimal count) {
-        return get(text, count.longValue());
+        DataItem item = new DataItem();
+        item.setText(text);
+        item.setCount(count);
+        return item;
     }
 
     public static DataItem get(String text, Integer count) {
@@ -37,15 +40,41 @@ public class DataItem {
     }
 
     public static DataItem get(String text, Long count) {
-        DataItem item = new DataItem();
-        item.setText(text);
-        item.setCount(count);
+        return get(text, DataSwitch.convertObjectToBigDecimal(count));
+    }
+
+    /**
+     * Get data item.
+     *
+     * @param text    the text
+     * @param count   the count
+     * @param percent the percent
+     * @return the data item
+     * @author ErebusST
+     * @since 2022 -03-01 10:46:27
+     */
+    public static DataItem get(String text, Number count, BigDecimal percent) {
+        DataItem item = get(text, DataSwitch.convertObjectToBigDecimal(count));
+        item.setPercent(percent);
         return item;
     }
 
     private Integer index;
     private String text;
-    private Long count;
+    private BigDecimal count;
+
+    public void setCount(BigDecimal count) {
+        this.count = count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = DataSwitch.convertObjectToBigDecimal(count);
+    }
+
+    public void setCount(Long count) {
+        this.count = DataSwitch.convertObjectToBigDecimal(count);
+    }
+
     //相对于本批次数据的百分比
     private BigDecimal percent;
     //相对于整体区域数据的百分比

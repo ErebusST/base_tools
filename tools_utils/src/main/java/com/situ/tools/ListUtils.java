@@ -287,7 +287,7 @@ public class ListUtils extends org.apache.commons.collections.ListUtils {
                     DataItem dataItem = new DataItem();
                     dataItem.setIndex(index.getAndIncrement());
                     dataItem.setText(type);
-                    dataItem.setCount(DataSwitch.convertObjectToLong(count));
+                    dataItem.setCount(DataSwitch.convertObjectToBigDecimal(count));
                     dataItem.setPercent(percent);
                     return dataItem;
                 })

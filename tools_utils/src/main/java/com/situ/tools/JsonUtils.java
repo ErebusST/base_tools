@@ -78,14 +78,14 @@ public class JsonUtils {
                 .reduce((item1, item2) -> {
                     List<String> keys = getKey(item1, item2);
 
-                    Map<String, Long> collect1 = item1.stream().collect(Collectors.toMap(DataItem::getText, DataItem::getCount));
-                    Map<String, Long> collect2 = item2.stream().collect(Collectors.toMap(DataItem::getText, DataItem::getCount));
+                    Map<String, BigDecimal> collect1 = item1.stream().collect(Collectors.toMap(DataItem::getText, DataItem::getCount));
+                    Map<String, BigDecimal> collect2 = item2.stream().collect(Collectors.toMap(DataItem::getText, DataItem::getCount));
 
                     List<DataItem> collect = keys.stream()
                             .map(key -> {
-                                Long count1 = MapUtils.tryGet(collect1, key, 0L);
-                                Long count2 = MapUtils.tryGet(collect2, key, 0L);
-                                return DataItem.get(key, count1 + count2);
+                                BigDecimal count1 = MapUtils.tryGet(collect1, key, BigDecimal.ZERO);
+                                BigDecimal count2 = MapUtils.tryGet(collect2, key, BigDecimal.ZERO);
+                                return DataItem.get(key, NumberUtils.add(count1, count2));
                             })
                             .collect(Collectors.toList());
                     return collect;
@@ -100,7 +100,7 @@ public class JsonUtils {
     }
 
     @Test
-    public void test(){
+    public void test() {
         JsonObject object = DataSwitch.convertStringToJsonObject("{'a':1,'b':false}");
         JsonObject object1 = DataSwitch.convertStringToJsonObject("{'a':1,'b':false}");
         JsonObject object2 = mergeJsonObject(object, object1);
@@ -173,7 +173,7 @@ public class JsonUtils {
                     DataItem item = new DataItem();
                     item.setIndex(index.getAndIncrement());
                     item.setText(jsonArray.get(0).getAsString());
-                    item.setCount(jsonArray.get(1).getAsLong());
+                    item.setCount(jsonArray.get(1).getAsBigDecimal());
                     return item;
                 })
                 .collect(Collectors.toList());

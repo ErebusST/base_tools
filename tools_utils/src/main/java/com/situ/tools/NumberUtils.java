@@ -128,7 +128,7 @@ public class NumberUtils {
     /**
      * The constant Hundred.
      */
-    public final static BigDecimal HUNDRED =BigDecimal.valueOf(100);
+    public final static BigDecimal HUNDRED = BigDecimal.valueOf(100);
 
     /**
      * The constant THOUSAND.
@@ -138,6 +138,8 @@ public class NumberUtils {
      * The constant TEN_THOUSAND.
      */
     public final static BigDecimal TEN_THOUSAND = BigDecimal.valueOf(10000);
+
+    public final static BigDecimal NEGATIVE_ONE = BigDecimal.valueOf(-1);
     /**
      * The constant NUMBER_SCALE.
      */
@@ -150,6 +152,7 @@ public class NumberUtils {
      * The constant PERCENT_SCALE.
      */
     public final static Integer PERCENT_SCALE = 4;
+
 
     /**
      * Add big decimal.
@@ -567,8 +570,8 @@ public class NumberUtils {
      * @since 2022 -02-27 14:54:15
      */
     public static List<DataItem> fixPercent(List<DataItem> list, boolean sorted) {
-        Long total = list.stream().mapToLong(DataItem::getCount).sum();
-        if (total.equals(0L)) {
+        BigDecimal total = total(list.stream().map(DataItem::getCount));
+        if (total.equals(BigDecimal.ZERO)) {
             return new ArrayList<>(0);
         }
         BigDecimal temp = list
