@@ -560,6 +560,7 @@ public class NumberUtils {
         return fixPercent(list, false);
     }
 
+
     /**
      * Fix percent list.
      *
@@ -572,7 +573,7 @@ public class NumberUtils {
     public static List<DataItem> fixPercent(List<DataItem> list, boolean sorted) {
         BigDecimal total = total(list.stream().map(DataItem::getCount));
         if (total.equals(BigDecimal.ZERO)) {
-            return new ArrayList<>(0);
+            return list;
         }
         BigDecimal temp = list
                 .stream()
@@ -606,7 +607,6 @@ public class NumberUtils {
         }
         return list;
     }
-
 
     /**
      * Min big decimal.
