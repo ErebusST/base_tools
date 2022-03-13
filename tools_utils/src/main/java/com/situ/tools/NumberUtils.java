@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ArrayUtils;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -178,7 +177,7 @@ public class NumberUtils {
      * @since 2022 -02-25 18:14:36
      */
     public static BigDecimal add(Stream<BigDecimal> values) {
-        return values.reduce(BigDecimal.ZERO, BigDecimal::add);
+        return values.filter(ObjectUtils::isNotNull).reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     /**

@@ -78,7 +78,9 @@ public class AuthHelper {
      */
     public static <T extends UserInfo> T verifyToken(Class<T> clazz, String token) throws Exception {
         //判断特殊字符
-        if (token.indexOf(SIGNING_KEY) == -1) {
+        if (ObjectUtils.isEmpty(token)) {
+            return null;
+        } else if (token.indexOf(SIGNING_KEY) == -1) {
             log.error("没有包含特定的头信息,非法访问 :{} token:{}", SIGNING_KEY, token);
             throw new RuntimeException("没有包含特定的头信息,非法访问 : " + SIGNING_KEY + "," + token);
         } else {

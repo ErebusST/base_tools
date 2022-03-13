@@ -8,6 +8,7 @@
         <module>tools_utils</module>
         <module>gis_utils</module>
         <module>base_projects</module>
+        <module>redis_utils</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
