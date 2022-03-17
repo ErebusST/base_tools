@@ -18,18 +18,46 @@ public class MapUtils {
     /**
      * Try get value.
      *
-     * @param <Key>        the type parameter
-     * @param <Value>      the type parameter
-     * @param map          the map
-     * @param key          the key
-     * @param defaultValue the default value
+     * @param <Key>   the type parameter
+     * @param <Value> the type parameter
+     * @param <T>     the type parameter
+     * @param map     the map
+     * @param key     the key
      * @return the value
      * @author ErebusST
      * @since 2022 -02-17 17:17:53
      */
-    public static <Key, Value> Value tryGet(Map<Key, Value> map, Key key, Value defaultValue) {
+//public static <Key, Value> Value tryGet(Map<Key, Value> map, Key key, Value defaultValue) {
+    //    if (map.containsKey(key)) {
+    //        return map.get(key);
+    //    } else {
+    //        return defaultValue;
+    //    }
+    //}
+    public static <Key, Value, T> T tryGet(Map<Key, Value> map, Key key) {
+        return tryGet(map, key, null);
+    }
+
+    /**
+     * Try get t.
+     *
+     * @param <Key>        the type parameter
+     * @param <Value>      the type parameter
+     * @param <T>          the type parameter
+     * @param map          the map
+     * @param key          the key
+     * @param defaultValue the default value
+     * @return the t
+     * @author ErebusST
+     * @since 2022 -03-17 19:18:39
+     */
+    public static <Key, Value, T> T tryGet(Map<Key, Value> map, Key key, T defaultValue) {
         if (map.containsKey(key)) {
-            return map.get(key);
+            try {
+                return (T) map.get(key);
+            } catch (Exception ex) {
+                return defaultValue;
+            }
         } else {
             return defaultValue;
         }
