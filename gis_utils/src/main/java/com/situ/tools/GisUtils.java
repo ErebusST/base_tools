@@ -1110,6 +1110,7 @@ public class GisUtils {
      * @author ErebusST
      * @since 2022 -01-07 15:36:27
      */
+    @Deprecated
     public static double calcSphericalPolygonArea(List<Point> polygon) {
         double totalAngle = 0.0;
         int size = polygon.size();
@@ -1129,16 +1130,49 @@ public class GisUtils {
         return excess * radiansPerDegree * earth_radius * earth_radius;
     }
 
+    /**
+     * Calc area big decimal.
+     *
+     * 计算圆的面积
+     *
+     * @param radius the radius
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -03-18 10:43:00
+     */
+    public static BigDecimal calcArea(BigDecimal radius) {
+        BigDecimal area = BigDecimal.valueOf(Math.pow(radius.doubleValue(), 2) * Math.PI);
+        return area;
+    }
+
+    /**
+     * Calc area big decimal.
+     *
+     * 计算多边形面积
+     *
+     * @param polygon the polygon
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -03-18 10:43:04
+     */
+    public static BigDecimal calcArea(List<Point> polygon) {
+        double area = calcPolygonArea(polygon);
+        return BigDecimal.valueOf(area);
+    }
+
 
     /**
      * Calc polygon area double.
      * 相对结果比较准确的方法
+     * <p>
+     * 此方法后续需要淘汰
      *
      * @param polygon the polygon
      * @return the double 平方米
      * @author ErebusST
      * @since 2022 -01-07 15:36:27
      */
+    @Deprecated
     public static double calcPolygonArea(List<Point> polygon) {
         if (polygon != null && polygon.size() >= 3) {
             double area = 0.0D;
@@ -1159,6 +1193,7 @@ public class GisUtils {
             return 0.0F;
         }
     }
+
 
     /**
      * 计算角度
