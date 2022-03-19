@@ -8,6 +8,7 @@
 
 package com.situ.tools;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.situ.entity.bo.DataItem;
 import org.apache.commons.lang3.tuple.Pair;
@@ -140,7 +141,7 @@ public class ListUtils extends org.apache.commons.collections.ListUtils {
      * @author ErebusST
      * @since 2022 -01-13 15:35:28
      */
-    public static <T, R extends Comparable<? super R>> String limit(List<T> stream,
+    public static <T, R extends Comparable<? super R>> JsonArray limit(List<T> stream,
                                                                     Function<T, R> sortBy,
                                                                     Integer limit,
                                                                     Pair<String, Function<T, Object>>... fields) {
@@ -161,7 +162,7 @@ public class ListUtils extends org.apache.commons.collections.ListUtils {
      * @author ErebusST
      * @since 2022 -01-13 15:23:01
      */
-    public static <T, R extends Comparable<? super R>> String limit(Stream<T> stream,
+    public static <T, R extends Comparable<? super R>> JsonArray limit(Stream<T> stream,
                                                                     Function<T, R> sortBy,
                                                                     Integer limit,
                                                                     Pair<String, Function<T, Object>>... fields) {
@@ -183,8 +184,7 @@ public class ListUtils extends org.apache.commons.collections.ListUtils {
                             });
                     return object;
                 })
-                .collect(Collectors.collectingAndThen(Collectors.toList(), DataSwitch::convertObjectToJsonArray))
-                .toString();
+                .collect(Collectors.collectingAndThen(Collectors.toList(), DataSwitch::convertObjectToJsonArray));
 
     }
 
@@ -199,7 +199,7 @@ public class ListUtils extends org.apache.commons.collections.ListUtils {
      * @author ErebusST
      * @since 2022 -01-17 10:58:57
      */
-    public static <T> String formatPercent(List<T> list, Function<T, Object> groupBy) {
+    public static <T> JsonArray formatPercent(List<T> list, Function<T, Object> groupBy) {
         return formatPercent(list, groupBy, null);
     }
 
@@ -216,7 +216,7 @@ public class ListUtils extends org.apache.commons.collections.ListUtils {
      * @author ErebusST
      * @since 2022 -01-17 11:03:27
      */
-    public static <T, R extends Comparable<? super R>> String formatPercent(List<T> list, Function<T, Object> groupBy, Function<T, R> sort) {
+    public static <T, R extends Comparable<? super R>> JsonArray formatPercent(List<T> list, Function<T, Object> groupBy, Function<T, R> sort) {
         return formatPercent(list.stream(), list.size(), groupBy, sort);
     }
 
@@ -231,7 +231,7 @@ public class ListUtils extends org.apache.commons.collections.ListUtils {
      * @author ErebusST
      * @since 2022 -01-17 11:03:18
      */
-    public static <T> String formatPercent(Stream<T> list, Integer total, Function<T, Object> groupBy) {
+    public static <T> JsonArray formatPercent(Stream<T> list, Integer total, Function<T, Object> groupBy) {
         return formatPercent(list, total, groupBy, null);
     }
 
@@ -248,7 +248,7 @@ public class ListUtils extends org.apache.commons.collections.ListUtils {
      * @author ErebusST
      * @since 2022 -01-17 10:58:58
      */
-    public static <T, R extends Comparable<? super R>> String formatPercent(Stream<T> list, Integer total, Function<T, Object> groupBy, Function<T, R> sort) {
+    public static <T, R extends Comparable<? super R>> JsonArray formatPercent(Stream<T> list, Integer total, Function<T, Object> groupBy, Function<T, R> sort) {
         Stream<Pair<String, List<T>>> stream = list
                 .map(item -> {
                     Object apply = groupBy.apply(item);
@@ -294,7 +294,7 @@ public class ListUtils extends org.apache.commons.collections.ListUtils {
                 .collect(Collectors.toList());
         collect = NumberUtils.fixPercent(collect);
 
-        return JsonUtils.toJsonArrayString(collect);
+        return JsonUtils.toJsonArray(collect);
     }
 
     /**
@@ -305,9 +305,9 @@ public class ListUtils extends org.apache.commons.collections.ListUtils {
      * @author ErebusST
      * @since 2022 -02-10 14:24:35
      */
-    public static String formatPercent(String jsonString) {
+    public static JsonArray formatPercent(String jsonString) {
         if (ObjectUtils.isNull(jsonString)) {
-            return "[]";
+            return new JsonArray();
         }
         List<DataItem> list = DataSwitch.convertStringToJsonObject(jsonString)
                 .entrySet()
@@ -330,9 +330,9 @@ public class ListUtils extends org.apache.commons.collections.ListUtils {
      * @author ErebusST
      * @since 2022 -01-27 17:03:05
      */
-    public static String formatPercent(List<DataItem> list) {
+    public static JsonArray formatPercent(List<DataItem> list) {
         list = NumberUtils.fixPercent(list);
-        return JsonUtils.toJsonArrayString(list);
+        return JsonUtils.toJsonArray(list);
     }
 
 }
