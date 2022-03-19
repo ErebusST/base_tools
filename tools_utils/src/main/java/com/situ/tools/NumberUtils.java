@@ -228,22 +228,6 @@ public class NumberUtils {
         return operation(value1, value2, NumberOperation.REMAINDER);
     }
 
-    /**
-     * Divide big decimal.
-     * <p>
-     * 除法
-     *
-     * @param value1 the value 1
-     * @param value2 the value 2
-     * @param scale  the scale
-     * @return the big decimal
-     * @author ErebusST
-     * @since 2022 -02-27 11:54:56
-     */
-    public static BigDecimal divide(Object value1, Object value2, int scale) {
-        BigDecimal operation = operation(value1, value2, NumberOperation.DIVIDE);
-        return operation.setScale(scale, BigDecimal.ROUND_HALF_UP);
-    }
 
     /**
      * Divide big decimal.
@@ -257,7 +241,43 @@ public class NumberUtils {
      * @since 2022 -02-25 18:04:43
      */
     public static BigDecimal divide(Object value1, Object value2) {
-        return operation(value1, value2, NumberOperation.DIVIDE);
+        return divide(value1, value2, null, null);
+    }
+
+    /**
+     * Divide big decimal.
+     * <p>
+     * 除法
+     *
+     * @param value1 the value 1
+     * @param value2 the value 2
+     * @param scale  the scale
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -02-27 11:54:56
+     */
+    public static BigDecimal divide(Object value1, Object value2, Integer scale) {
+        return divide(value1, value2, scale, BigDecimal.ROUND_HALF_UP);
+    }
+
+    /**
+     * Divide big decimal.
+     *
+     * @param value1       the value 1
+     * @param value2       the value 2
+     * @param scale        the scale
+     * @param roundingMode the rounding mode
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -03-19 17:34:02
+     */
+    public static BigDecimal divide(Object value1, Object value2, Integer scale, Integer roundingMode) {
+        BigDecimal operation = operation(value1, value2, NumberOperation.DIVIDE);
+        if (ObjectUtils.isNotNull(scale) && ObjectUtils.isNotNull(roundingMode)) {
+            return operation.setScale(scale, roundingMode);
+        } else {
+            return operation;
+        }
     }
 
     /**
@@ -434,9 +454,114 @@ public class NumberUtils {
      * @since 2022 -02-27 11:16:24
      */
     public static <T> BigDecimal calcAverage(List<T> list, Function<T, ? extends Number> getter) {
-        return calcAverage(list.stream().map(getter));
+        return calcAverage(list.stream(), getter);
     }
 
+    /**
+     * Calc average big decimal.
+     *
+     * @param <T>    the type parameter
+     * @param stream the stream
+     * @param getter the getter
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -03-19 18:05:37
+     */
+    public static <T> BigDecimal calcAverage(Stream<T> stream, Function<T, ? extends Number> getter) {
+        return calcAverage(stream, getter, null);
+    }
+
+    /**
+     * Calc average big decimal.
+     *
+     * @param <T>    the type parameter
+     * @param list   the list
+     * @param getter the getter
+     * @param scale  the scale
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -03-19 17:59:47
+     */
+    public static <T> BigDecimal calcAverage(List<T> list, Function<T, ? extends Number> getter, Integer scale) {
+        return calcAverage(list.stream(), getter, scale);
+    }
+
+    /**
+     * Calc average big decimal.
+     *
+     * @param <T>    the type parameter
+     * @param stream the stream
+     * @param getter the getter
+     * @param scale  the scale
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -03-19 18:04:28
+     */
+    public static <T> BigDecimal calcAverage(Stream<T> stream, Function<T, ? extends Number> getter, Integer scale) {
+        return calcAverage(stream, getter, scale, BigDecimal.ROUND_HALF_UP);
+    }
+
+    /**
+     * Calc average big decimal.
+     *
+     * @param <T>          the type parameter
+     * @param list         the list
+     * @param getter       the getter
+     * @param scale        the scale
+     * @param roundingMode the rounding mode
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -03-19 17:56:11
+     */
+    public static <T> BigDecimal calcAverage(List<T> list, Function<T, ? extends Number> getter, Integer scale, Integer roundingMode) {
+        BigDecimal result = calcAverage(list.stream(), getter, scale, roundingMode);
+        return result;
+    }
+
+    /**
+     * Calc average big decimal.
+     *
+     * @param <T>          the type parameter
+     * @param stream       the stream
+     * @param getter       the getter
+     * @param scale        the scale
+     * @param roundingMode the rounding mode
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -03-19 18:03:45
+     */
+    public static <T> BigDecimal calcAverage(Stream<T> stream, Function<T, ? extends Number> getter, Integer scale, Integer roundingMode) {
+        BigDecimal result = calcAverage(stream.map(getter), scale, roundingMode);
+        return result;
+    }
+
+    /**
+     * Calc average big decimal.
+     * <p>
+     * 计算平均数
+     *
+     * @param list the list
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -02-27 11:16:24
+     */
+    public static BigDecimal calcAverage(List<? extends Number> list, Integer scale) {
+        return calcAverage(list, scale, BigDecimal.ROUND_HALF_UP);
+    }
+
+    /**
+     * Calc average big decimal.
+     * <p>
+     * 计算平均数
+     *
+     * @param list the list
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -02-27 11:16:24
+     */
+    public static BigDecimal calcAverage(List<? extends Number> list, Integer scale, Integer roundingMode) {
+        return calcAverage(list.stream(), scale, roundingMode);
+    }
 
     /**
      * Calc average big decimal.
@@ -463,10 +588,42 @@ public class NumberUtils {
      * @since 2022 -02-27 11:08:23
      */
     public static BigDecimal calcAverage(Stream<? extends Number> stream) {
+        return calcAverage(stream, 10);
+    }
+
+    /**
+     * Calc average big decimal.
+     *
+     * @param stream the stream
+     * @param scale  the scale
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -03-19 17:58:12
+     */
+    public static BigDecimal calcAverage(Stream<? extends Number> stream, Integer scale) {
+        return calcAverage(stream, scale, BigDecimal.ROUND_HALF_UP);
+    }
+
+    /**
+     * Calc average big decimal.
+     *
+     * @param stream       the stream
+     * @param scale        the scale
+     * @param roundingMode the rounding mode
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -03-19 17:58:13
+     */
+    public static BigDecimal calcAverage(Stream<? extends Number> stream, Integer scale, Integer roundingMode) {
         double average = stream.mapToDouble(Number::doubleValue)
                 .average().orElse(0D);
-        return BigDecimal.valueOf(average);
+        BigDecimal result = BigDecimal.valueOf(average);
+        if (ObjectUtils.isNotNull(scale)) {
+            result = result.setScale(scale, roundingMode);
+        }
+        return result;
     }
+
 
     /**
      * Calc standard deviation big decimal.
