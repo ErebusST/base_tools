@@ -348,6 +348,12 @@ public class NumberUtils {
 
 
     private static BigDecimal operation(Object value1, Object value2, NumberOperation operation) {
+        if (ObjectUtils.isNull(value1)) {
+            value1 = BigDecimal.ZERO;
+        }
+        if (ObjectUtils.isNull(value2)) {
+            value2 = BigDecimal.ZERO;
+        }
         BigDecimal decimal1 = DataSwitch.convertObjectToBigDecimal(value1);
         BigDecimal decimal2 = DataSwitch.convertObjectToBigDecimal(value2);
         switch (operation) {
