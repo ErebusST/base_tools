@@ -283,4 +283,41 @@ public class JsonUtils {
                 .orElse(BigDecimal.ZERO);
         return value;
     }
+
+    /**
+     * Try get t.
+     *
+     * @param object the object
+     * @param key    the key
+     * @return the t
+     * @author ErebusST
+     * @since 2022 -03-23 14:59:07
+     */
+    public static Object tryGet(JsonObject object, String key) {
+        return tryGet(object, key, null);
+    }
+
+    /**
+     * Try get t.
+     *
+     * @param object       the object
+     * @param key          the key
+     * @param defaultValue the default value
+     * @return the t
+     * @author ErebusST
+     * @since 2022 -03-23 14:59:09
+     */
+    public static Object tryGet(JsonObject object, String key, Object defaultValue) {
+        if (ObjectUtils.isNull(object)) {
+            return defaultValue;
+        } else if (object.has(key)) {
+            try {
+                return object.get(key).getAsString();
+            } catch (Exception ex) {
+                return defaultValue;
+            }
+        } else {
+            return defaultValue;
+        }
+    }
 }

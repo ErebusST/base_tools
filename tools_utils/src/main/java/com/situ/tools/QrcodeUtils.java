@@ -13,6 +13,8 @@ import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.Test;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -26,7 +28,23 @@ import java.util.Hashtable;
  * @author 司徒彬
  * @date 2021 /4/19 10:42
  */
+@Slf4j
 public class QrcodeUtils {
+
+    public static final Integer MARGIN_0 = 0;
+    public static final Integer MARGIN_1 = 1;
+    public static final Integer MARGIN_2 = 2;
+    public static final Integer MARGIN_3 = 3;
+
+    @Test
+    public void test() {
+        String string = "data:image/jpeg;base64," + creatRrCode("我是测试", 400, 400);
+        log.info(string);
+    }
+
+    public static String creatRrCode(String contents, int width, int height) {
+        return creatRrCode(contents, width, height, null);
+    }
 
     /**
      * Creat rr code string.
@@ -38,11 +56,14 @@ public class QrcodeUtils {
      * @author ErebusST
      * @since 2022 -01-07 15:36:07
      */
-    public static String creatRrCode(String contents, int width, int height) {
+    public static String creatRrCode(String contents, int width, int height, Integer margin) {
         String binary = null;
         Hashtable hints = new Hashtable();
         hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
         try {
+            if (ObjectUtils.isNotNull(margin)) {
+                hints.put(EncodeHintType.MARGIN, margin);
+            }
             BitMatrix bitMatrix = new MultiFormatWriter().encode(
                     contents, BarcodeFormat.QR_CODE, width, height, hints);
             // 1、读取文件转换为字节数组
