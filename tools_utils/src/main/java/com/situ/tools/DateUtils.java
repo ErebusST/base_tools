@@ -415,7 +415,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @author ErebusST
      * @since 2022 -01-07 15:35:59
      */
-    public static Timestamp addYear(Timestamp date, int year) throws ParseException {
+    public static Timestamp addYear(Timestamp date, int year) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(date.getTime());
         cal.add(Calendar.YEAR, year);
@@ -441,7 +441,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @author ErebusST
      * @since 2022 -01-07 15:36:00
      */
-    public static Timestamp addSeconds(Timestamp date, int second) throws ParseException {
+    public static Timestamp addSeconds(Timestamp date, int second) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(date.getTime());
         cal.add(Calendar.SECOND, second);

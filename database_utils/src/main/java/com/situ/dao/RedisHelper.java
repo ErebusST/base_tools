@@ -145,7 +145,7 @@ public class RedisHelper {
      *
      * @return
      */
-    private Jedis getClient() {
+    public Jedis getClient() {
         if (jedisPool == null) {
             try {
                 lock.lock();    //防止吃初始化时多线程竞争问题
@@ -162,7 +162,7 @@ public class RedisHelper {
         return resource;
     }
 
-    private void excute(Callable callable) {
+    private void execute(Callable callable) {
         Jedis client = null;
         try {
             client = getClient();
@@ -191,7 +191,7 @@ public class RedisHelper {
      *
      * @param client
      */
-    private void close(Jedis client) {
+    public void close(Jedis client) {
         if (ObjectUtils.isNotNull(client)) {
             client.close();
         }

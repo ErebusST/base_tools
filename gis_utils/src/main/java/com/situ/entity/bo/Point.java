@@ -15,6 +15,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.annotation.Nonnull;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -26,7 +27,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class Point {
+public class Point implements Serializable {
 
     /**
      * Instantiates a new Point.
