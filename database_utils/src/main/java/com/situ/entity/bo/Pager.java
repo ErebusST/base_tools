@@ -10,6 +10,7 @@ package com.situ.entity.bo;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +18,21 @@ import java.util.Map;
  * 分页功能类
  */
 public class Pager implements Serializable {
+
+    public Pager() {
+        this.pageNumber = 1;
+        this.pageSize = 20;
+        this.total = 0;
+        this.rows = new ArrayList<>(0);
+
+    }
+
+    private Pager(Integer pageNumber, Integer pageSize, Integer total, List<Map<String, Object>> rows) {
+        this.pageNumber = pageNumber;
+        this.pageSize = pageSize;
+        this.total = total;
+        this.rows = rows;
+    }
 
     /**
      * @Fields pageNo : 页码
@@ -117,11 +133,11 @@ public class Pager implements Serializable {
                         .filter(entry -> entry.getValue() != null)
                         .forEach(entry -> {
                             Object value = entry.getValue();
-                            if(BigDecimal.class.equals(value.getClass())){
+                            if (BigDecimal.class.equals(value.getClass())) {
                                 try {
                                     value = new BigDecimal(value.toString());
                                 } catch (Exception ex) {
-                                   value = null;
+                                    value = null;
                                 }
                             }
                             entry.setValue(value);
