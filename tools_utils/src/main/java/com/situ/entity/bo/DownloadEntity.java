@@ -11,6 +11,8 @@ package com.situ.entity.bo;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 /**
  * ${description}
  *
@@ -19,7 +21,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class DownloadEntity {
+public class DownloadEntity  implements Serializable {
     private String auth;
     private String exportType;
 }

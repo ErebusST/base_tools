@@ -11,6 +11,7 @@ package com.situ.entity.bo;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -19,7 +20,7 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class ExportExcelSetting<T> {
+public class ExportExcelSetting<T>  implements Serializable {
     /**
      * Get export excel.
      *

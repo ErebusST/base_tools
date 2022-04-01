@@ -11,12 +11,14 @@ package com.situ.entity.bo;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 /**
  * The type Payload entity.
  */
 @Getter
 @Setter
-public class PayloadEntity {
+public class PayloadEntity  implements Serializable {
     //The issuer of the token，token 是给谁的
     private String iss;
     //The subject of the token，token 主题

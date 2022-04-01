@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.annotation.Nonnull;
+import java.io.Serializable;
 
 /**
  * ${description}
@@ -22,7 +23,7 @@ import javax.annotation.Nonnull;
  */
 @Setter
 @Getter
-public class SessionEntity {
+public class SessionEntity  implements Serializable {
     private Long timeStamp;
     private Object value;
     private Boolean deleteWhenExpire = true;

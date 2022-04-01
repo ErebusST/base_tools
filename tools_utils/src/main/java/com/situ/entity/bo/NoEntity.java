@@ -3,6 +3,8 @@ package com.situ.entity.bo;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 /**
  * 编号实体
  *
@@ -11,7 +13,7 @@ import lombok.Setter;
  */
 @Setter
 @Getter
-public class NoEntity {
+public class NoEntity  implements Serializable {
     private int countLength = 4;
 
     private String type;

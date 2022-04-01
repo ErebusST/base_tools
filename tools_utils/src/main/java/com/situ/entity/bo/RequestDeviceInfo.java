@@ -11,6 +11,8 @@ package com.situ.entity.bo;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 /**
  * The type Request device info.
  *
@@ -19,7 +21,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class RequestDeviceInfo {
+public class RequestDeviceInfo implements Serializable {
     private String deviceType;
     private String ip;
     private String via;

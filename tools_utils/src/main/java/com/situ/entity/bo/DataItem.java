@@ -15,6 +15,7 @@ import com.situ.tools.ObjectUtils;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
  */
 @Getter
 @Setter
-public class DataItem {
+public class DataItem implements Serializable {
     public static DataItem get(String text, BigDecimal count) {
         DataItem item = new DataItem();
         item.setText(text);
@@ -59,9 +60,17 @@ public class DataItem {
         return item;
     }
 
+    public static DataItem get(String text, Number count, String other) {
+        DataItem item = get(text, DataSwitch.convertObjectToBigDecimal(count));
+        item.setOther(other);
+        return item;
+    }
+
     private Integer index;
     private String text;
     private BigDecimal count;
+
+    private String other;
 
     public void setCount(BigDecimal count) {
         this.count = count;
@@ -94,6 +103,9 @@ public class DataItem {
 
         if (ObjectUtils.isNotNull(percent1)) {
             items.add(percent1);
+        }
+        if (ObjectUtils.isNotNull(other)) {
+            items.add(other);
         }
         if (ObjectUtils.isNotEmpty(child)) {
             List<List<Object>> child = this.child.stream().map(DataItem::toArray).collect(Collectors.toList());

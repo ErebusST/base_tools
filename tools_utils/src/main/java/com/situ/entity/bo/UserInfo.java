@@ -16,6 +16,7 @@ import com.situ.tools.StringUtils;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
@@ -27,7 +28,7 @@ import java.util.Arrays;
  */
 @Getter
 @Setter
-public class UserInfo {
+public class UserInfo  implements Serializable {
     private String uKey;
     private Long userId;
     private String loginName;

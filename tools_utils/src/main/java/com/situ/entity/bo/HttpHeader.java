@@ -11,6 +11,8 @@ package com.situ.entity.bo;
 import com.situ.tools.ObjectUtils;
 import lombok.Getter;
 
+import java.io.Serializable;
+
 /**
  * The type Http header.
  *
@@ -18,7 +20,7 @@ import lombok.Getter;
  * @date 2020 /6/26 15:06
  */
 @Getter
-public class HttpHeader {
+public class HttpHeader  implements Serializable {
     private String key;
     private String value;
 

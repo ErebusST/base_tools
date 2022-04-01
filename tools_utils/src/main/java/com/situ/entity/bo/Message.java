@@ -11,6 +11,8 @@ package com.situ.entity.bo;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 /**
  * The type Message.
  *
@@ -20,7 +22,7 @@ import lombok.Setter;
  */
 @Setter
 @Getter
-public class Message<T> {
+public class Message<T>  implements Serializable {
     private Long taskId;
     private T data;
     private boolean retry = false;
