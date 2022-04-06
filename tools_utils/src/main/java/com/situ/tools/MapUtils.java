@@ -20,7 +20,6 @@ public class MapUtils {
      *
      * @param <Key>   the type parameter
      * @param <Value> the type parameter
-     * @param <T>     the type parameter
      * @param map     the map
      * @param key     the key
      * @return the value
@@ -34,7 +33,7 @@ public class MapUtils {
     //        return defaultValue;
     //    }
     //}
-    public static <Key, Value, T> T tryGet(Map<Key, Value> map, Key key) {
+    public static <Key, Value> Value tryGet(Map<Key, Value> map, Key key) {
         return tryGet(map, key, null);
     }
 
@@ -43,7 +42,6 @@ public class MapUtils {
      *
      * @param <Key>        the type parameter
      * @param <Value>      the type parameter
-     * @param <T>          the type parameter
      * @param map          the map
      * @param key          the key
      * @param defaultValue the default value
@@ -51,15 +49,53 @@ public class MapUtils {
      * @author ErebusST
      * @since 2022 -03-17 19:18:39
      */
-    public static <Key, Value, T> T tryGet(Map<Key, Value> map, Key key, T defaultValue) {
+    public static <Key, Value> Value tryGet(Map<Key, Value> map, Key key, Value defaultValue) {
         if (map.containsKey(key)) {
             try {
-                return (T) map.get(key);
+                return map.get(key);
             } catch (Exception ex) {
                 return defaultValue;
             }
         } else {
             return defaultValue;
+        }
+    }
+
+    /**
+     * Try get value.
+     *
+     * @param <Key>   the type parameter
+     * @param <Value> the type parameter
+     * @param map     the map
+     * @param index   the index
+     * @return the value
+     * @author ErebusST
+     * @since 2022 -04-05 22:54:51
+     */
+    public static <Key, Value> Value tryGet(Map<Key, Value> map, Integer index) {
+        return tryGet(map,index,null);
+    }
+
+    /**
+     * Try get value.
+     *
+     * @param <Key>        the type parameter
+     * @param <Value>      the type parameter
+     * @param map          the map
+     * @param index        the index
+     * @param defaultValue the default value
+     * @return the value
+     * @author ErebusST
+     * @since 2022 -04-05 22:53:48
+     */
+    public static <Key, Value> Value tryGet(Map<Key, Value> map, Integer index, Value defaultValue) {
+        Object[] objects = map.keySet().toArray();
+        int length = objects.length;
+        if (index >= length) {
+            return defaultValue;
+        } else {
+            Key key = (Key) objects[index];
+            return map.get(key);
         }
     }
 }
