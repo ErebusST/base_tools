@@ -592,6 +592,10 @@ public class BaseDBDao {
      */
     private Object setDataVersion(Object entity) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         try {
+            Boolean updateVersion = druidDBConfig.getUpdateVersion();
+            if (!updateVersion) {
+                return entity;
+            }
             Field[] fields = ReflectionUtils.getFields(entity.getClass());
             if (entity.getClass().getAnnotation(Entity.class) != null) {
 

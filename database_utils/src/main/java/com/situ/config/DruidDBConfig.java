@@ -78,6 +78,9 @@ public class DruidDBConfig {
     @Value("${spring.datasource.connectionProperties}")
     private String connectionProperties;
 
+    @Value("${spring.datasource.update_version:false}")
+    private Boolean updateVersion;
+
     /**
      * The Source.
      */
