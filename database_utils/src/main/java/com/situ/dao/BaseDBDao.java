@@ -1056,7 +1056,7 @@ public class BaseDBDao {
                 } else if (StringUtils.equalsIgnoreCase(name, "createTime")) {
                     return false;
                 }
-                if (StringUtils.equalsIgnoreCase(name, "version")) {
+                if (druidDBConfig.getUpdateVersion() && StringUtils.equalsIgnoreCase(name, "version")) {
                     if (!hasVersion.get()) {
                         hasVersion.set(true);
                     }
