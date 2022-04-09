@@ -593,7 +593,6 @@ public class BaseDBDao {
     private Object setDataVersion(Object entity) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         try {
             Field[] fields = ReflectionUtils.getFields(entity.getClass());
-
             if (entity.getClass().getAnnotation(Entity.class) != null) {
 
                 if (Arrays.stream(fields).filter(field -> StringUtils.equalsIgnoreCase(field.getName(), "version")).count() > 0) {
@@ -930,10 +929,10 @@ public class BaseDBDao {
                 }
                 if (ObjectUtils.isNotNull(column)) {
                     String fieldInDb = column.name();
-                    insert.add(fieldInDb);
+
                     Object fieldValue = ReflectionUtils.getFieldValue(entity, field.getName());
                     if (ObjectUtils.isNotNull(fieldValue)) {
-
+                        insert.add(fieldInDb);
                         update.add(fieldInDb);
                     }
                     parameters.put(fieldInDb, fieldValue);

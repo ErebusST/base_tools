@@ -1334,6 +1334,10 @@ public class JdbcHelper {
                             return true;
                         }
                     })
+                    .filter(field -> {
+                        Object value = ReflectionUtils.getFieldValue(entity, field.getName());
+                        return ObjectUtils.isNotNull(value);
+                    })
                     .map(field -> {
                         Column column = field.getAnnotation(Column.class);
                         if (ObjectUtils.isNull(column)) {
@@ -1480,6 +1484,10 @@ public class JdbcHelper {
                         } else {
                             return true;
                         }
+                    })
+                    .filter(field -> {
+                        Object value = ReflectionUtils.getFieldValue(entity, field.getName());
+                        return ObjectUtils.isNotNull(value);
                     })
                     .map(field -> {
                         Column column = field.getAnnotation(Column.class);

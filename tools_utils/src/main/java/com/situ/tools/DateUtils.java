@@ -9,6 +9,7 @@
 package com.situ.tools;
 
 import com.situ.enumeration.DateFormatEnum;
+import org.junit.Test;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -33,9 +34,15 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @since 2022 -01-07 15:35:59
      */
     public static String getDateString(Timestamp date) {
-        return getDateString(date, null);
+        return getDateString(date, DateFormatEnum.YYYY_MM_DD_HH_MM_SS);
     }
 
+    @Test
+    public void test(){
+        Timestamp timestamp = DateUtils.getNow();
+        String string = timestamp.toString();
+        System.out.println(string);
+    }
     /**
      * Gets date string.
      *
@@ -46,11 +53,25 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @since 2022 -01-07 15:35:59
      */
     public static String getDateString(Timestamp date, DateFormatEnum dateFormatEnum) {
+        dateFormatEnum = dateFormatEnum == null ? DateFormatEnum.YYYY_MM_DD_HH_MM_SS : dateFormatEnum;
+        return getDateString(date, dateFormatEnum.getValue());
+    }
+
+    /**
+     * Get date string string.
+     *
+     * @param date   the date
+     * @param format the format
+     * @return the date string
+     * @author ErebusST
+     * @since 2022 -04-07 19:35:31
+     */
+    public static String getDateString(Timestamp date, String format) {
         if (ObjectUtils.isNull(date)) {
             return "";
         }
-        dateFormatEnum = dateFormatEnum == null ? DateFormatEnum.YYYY_MM_DD_HH_MM_SS : dateFormatEnum;
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormatEnum.getValue());
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
         return simpleDateFormat.format(date);
     }
 
