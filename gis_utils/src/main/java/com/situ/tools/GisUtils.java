@@ -21,13 +21,13 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.geotools.referencing.CRS;
+import org.junit.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Polygon;
 import org.locationtech.jts.io.ParseException;
 import org.locationtech.jts.io.WKTReader;
-import org.locationtech.jts.util.GeometricShapeFactory;
 import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
@@ -1132,7 +1132,7 @@ public class GisUtils {
 
     /**
      * Calc area big decimal.
-     *
+     * <p>
      * 计算圆的面积
      *
      * @param radius the radius
@@ -1147,7 +1147,7 @@ public class GisUtils {
 
     /**
      * Calc area big decimal.
-     *
+     * <p>
      * 计算多边形面积
      *
      * @param polygon the polygon
@@ -1443,11 +1443,8 @@ public class GisUtils {
      */
     public static List<Point> cycleAndPolygon(Point center, double radius, List<Point> points) {
         try {
-            Polygon polygon = toPolygon(points);
-            Polygon cycle = toCycle(center.getLng(), center.getLat(), radius);
-            List<Point> temp1 = toListPoint(polygon);
-            List<Point> temp2 = toListPoint(cycle);
-            return intersection(temp1, temp2);
+            List<Point> cycle = toCycle(center, radius);
+            return intersection(points, cycle);
         } catch (Exception ex) {
             return points;
         }
@@ -1592,6 +1589,25 @@ public class GisUtils {
                 .stream().anyMatch(point -> !checkPointInPolygon(point, square));
     }
 
+
+    /**
+     * To cycle list.
+     *
+     * @param center the center
+     * @param radius the radius
+     * @return the list
+     * @author ErebusST
+     * @since 2022 -04-15 13:55:03
+     */
+    public static List<Point> toCycle(Point center, Number radius) {
+        List<Point> list = new ArrayList<>(36);
+        for (int i = 0; i < 360; i = i + 10) {
+            Point point = getPointByRadius(center, i, radius.doubleValue());
+            list.add(point);
+        }
+        return list;
+    }
+
     /**
      * 根据圆形中心点经纬度、半径生成圆形（类圆形，32边多边形）
      *
@@ -1605,19 +1621,21 @@ public class GisUtils {
     public static Polygon toCycle(BigDecimal x, BigDecimal y, final double radius) {
         //Point temp = BD09ToWGS84(Point.get(x, y));
         Point temp = Point.get(x, y);
-        //将半径转换为度数
-        double radiusDegree = parseYLengthToDegree(radius);
-        //生成工厂类
-        GeometricShapeFactory shapeFactory = new GeometricShapeFactory();
-        //设置生成的类圆形边数
-        shapeFactory.setNumPoints(32);
-        //设置圆形中心点经纬度
-        shapeFactory.setCentre(new Coordinate(temp.getLng().doubleValue(), temp.getLat().doubleValue()));
-        //设置圆形直径
-        shapeFactory.setSize(radiusDegree * 2);
-        //使用工厂类生成圆形
-        Polygon circle = shapeFactory.createCircle();
-        return circle;
+        List<Point> list = toCycle(temp, radius);
+        return toPolygon(list);
+        ////将半径转换为度数
+        //double radiusDegree = parseYLengthToDegree(radius);
+        ////生成工厂类
+        //GeometricShapeFactory shapeFactory = new GeometricShapeFactory();
+        ////设置生成的类圆形边数
+        //shapeFactory.setNumPoints(32);
+        ////设置圆形中心点经纬度
+        //shapeFactory.setCentre(new Coordinate(temp.getLng().doubleValue(), temp.getLat().doubleValue()));
+        ////设置圆形直径
+        //shapeFactory.setSize(radiusDegree * 2);
+        ////使用工厂类生成圆形
+        //Polygon circle = shapeFactory.createCircle();
+        //return circle;
     }
 
 
