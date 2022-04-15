@@ -12,14 +12,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.situ.config.RedisConfig;
-import com.situ.tools.DataSwitch;
-import com.situ.tools.ListUtils;
-import com.situ.tools.ObjectUtils;
-import com.situ.tools.StringUtils;
+import com.situ.tools.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import redis.clients.jedis.*;
+import redis.clients.jedis.exceptions.JedisConnectionException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.PostConstruct;
@@ -86,7 +84,7 @@ public class RedisHelper {
      * @since 2022 -01-07 15:39:05
      */
     @PostConstruct
-    public void beforeInit(){
+    public void beforeInit() {
         redisConfig = redisConfigTemp;
     }
 
@@ -244,6 +242,13 @@ public class RedisHelper {
         return putString(key, value, seconds, dbIndex, true);
     }
 
+
+    public static final String RETRY_KEY = "RETRY_KEY:";
+
+    private static String getRetryKey(String key) {
+        return StringUtils.concat(RETRY_KEY, key);
+    }
+
     /**
      * Put string string.
      *
@@ -258,6 +263,7 @@ public class RedisHelper {
      */
     public String putString(@Nonnull String key, @Nonnull String value, Integer seconds, Integer dbIndex, boolean fixKey) {
         Jedis client = null;
+        String retryKey = getRetryKey(key);
         try {
             if (ObjectUtils.isNull(value)) {
                 return "";
@@ -275,6 +281,25 @@ public class RedisHelper {
             } else {
                 return client.setex(key, seconds, value);
             }
+        } catch (JedisConnectionException ex) {
+            //如果是 链接错误 需要重试三次
+            Integer count = 0;
+            if (SessionMap.containsKey(retryKey)) {
+                //非第一次
+                count = SessionMap.getValue(retryKey);
+            }
+            if (count == 3) {
+                throw ex;
+            }
+            count = count + 1;
+            SessionMap.put(retryKey, count);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return putString(key, value, seconds, dbIndex, fixKey);
+
         } catch (Exception ex) {
             throw ex;
         } finally {

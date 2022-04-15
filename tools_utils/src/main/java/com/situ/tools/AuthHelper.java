@@ -12,6 +12,7 @@ import com.situ.entity.bo.PayloadEntity;
 import com.situ.entity.bo.UserInfo;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.security.auth.message.AuthException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -70,30 +71,36 @@ public class AuthHelper {
     /**
      * Verify token user info.
      *
+     * @param <T>   the type parameter
+     * @param clazz the clazz
      * @param token the token
      * @return the user info
-     * @throws Exception the exception
+     * @throws AuthException the auth exception
      * @author ErebusST
      * @since 2022 -01-07 15:36:01
      */
-    public static <T extends UserInfo> T verifyToken(Class<T> clazz, String token) throws Exception {
-        //判断特殊字符
-        if (ObjectUtils.isEmpty(token)) {
-            return null;
-        } else if (token.indexOf(SIGNING_KEY) == -1) {
-            log.error("没有包含特定的头信息,非法访问 :{} token:{}", SIGNING_KEY, token);
-            throw new RuntimeException("没有包含特定的头信息,非法访问 : " + SIGNING_KEY + "," + token);
-        } else {
-            token = token.substring(SIGNING_KEY.length());
-
-            String sign = DesUtils.decrypt(token, 0);
-            T userInfo = DataSwitch.convertJsonStringToEntity(sign, clazz);
-            PayloadEntity payloadEntity = userInfo.getPayloadEntity();
-            if (StringUtils.equalsIgnoreCase(payloadEntity.getIss(), ISSUER)) {
-                return userInfo;
-            } else {
+    public static <T extends UserInfo> T verifyToken(Class<T> clazz, String token) throws AuthException {
+        try {
+//判断特殊字符
+            if (ObjectUtils.isEmpty(token)) {
                 return null;
+            } else if (token.indexOf(SIGNING_KEY) == -1) {
+                log.error("没有包含特定的头信息,非法访问 :{} token:{}", SIGNING_KEY, token);
+                throw new AuthException("没有包含特定的头信息,非法访问 : " + SIGNING_KEY + "," + token);
+            } else {
+                token = token.substring(SIGNING_KEY.length());
+
+                String sign = DesUtils.decrypt(token, 0);
+                T userInfo = DataSwitch.convertJsonStringToEntity(sign, clazz);
+                PayloadEntity payloadEntity = userInfo.getPayloadEntity();
+                if (StringUtils.equalsIgnoreCase(payloadEntity.getIss(), ISSUER)) {
+                    return userInfo;
+                } else {
+                    return null;
+                }
             }
+        } catch (Exception ex) {
+            throw new AuthException(ex.getMessage());
         }
     }
 
@@ -103,11 +110,11 @@ public class AuthHelper {
      *
      * @param token the token
      * @return the user info
-     * @throws Exception the exception
+     * @throws AuthException the auth exception
      * @author ErebusST
      * @since 2022 -01-10 11:45:12
      */
-    public static UserInfo verifyToken(String token) throws Exception {
+    public static UserInfo verifyToken(String token) throws AuthException {
         return verifyToken(UserInfo.class, token);
     }
 
