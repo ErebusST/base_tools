@@ -38,11 +38,12 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
     }
 
     @Test
-    public void test(){
+    public void test() {
         Timestamp timestamp = DateUtils.getNow();
         String string = timestamp.toString();
         System.out.println(string);
     }
+
     /**
      * Gets date string.
      *
@@ -391,12 +392,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @since 2022 -01-07 15:35:59
      */
     public static Timestamp addDay(int day) {
-        Calendar cal = Calendar.getInstance();
-
-        cal.add(Calendar.DATE, day);
-
-        Timestamp currentTimestamp = new Timestamp(cal.getTimeInMillis());
-        return currentTimestamp;//formatter.format(currentTime);
+        return addDay(DateUtils.getNow(), day);
     }
 
 
@@ -411,19 +407,19 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @since 2022 -01-07 15:35:59
      */
     public static Timestamp addDay(Timestamp date, int day) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(date.getTime());
-        cal.add(Calendar.DATE, day);
-        //		int year = cal.get(Calendar.YEAR);
-        //		int month = cal.get(Calendar.MONTH);
-        //		int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
-        //		String dateStr = year + "-" + (month + 1) + "-" + (dayOfMonth);
-        Date result = cal.getTime();// DataSwitch.convertObjectToDate(dateStr);
-        Timestamp currentTimestamp = new Timestamp(result.getTime());
-        //Timestamp currentTimestamp = new Timestamp(cal.getTime().getTime());
-        //		Date currentTime = cal.getTime();
-        //		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        return currentTimestamp;//formatter.format(currentTime);
+        return add(date, Calendar.DATE, day);
+    }
+
+    /**
+     * Add year timestamp.
+     *
+     * @param year the year
+     * @return the timestamp
+     * @author ErebusST
+     * @since 2022 -04-17 09:57:05
+     */
+    public static Timestamp addYear(int year) {
+        return addYear(DateUtils.getNow(), year);
     }
 
     /**
@@ -437,19 +433,46 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @since 2022 -01-07 15:35:59
      */
     public static Timestamp addYear(Timestamp date, int year) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(date.getTime());
-        cal.add(Calendar.YEAR, year);
-        //		int year = cal.get(Calendar.YEAR);
-        //		int month = cal.get(Calendar.MONTH);
-        //		int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
-        //		String dateStr = year + "-" + (month + 1) + "-" + (dayOfMonth);
-        Date result = cal.getTime();// DataSwitch.convertObjectToDate(dateStr);
-        Timestamp currentTimestamp = new Timestamp(result.getTime());
-        //Timestamp currentTimestamp = new Timestamp(cal.getTime().getTime());
-        //		Date currentTime = cal.getTime();
-        //		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        return currentTimestamp;//formatter.format(currentTime);
+        return add(date, Calendar.YEAR, year);
+    }
+
+
+
+    /**
+     * Add month timestamp.
+     *
+     * @param month the month
+     * @return the timestamp
+     * @author ErebusST
+     * @since 2022 -04-17 09:58:46
+     */
+    public static Timestamp addMonth(int month){
+        return addMonth(DateUtils.getNow(),month);
+    }
+
+    /**
+     * Add month timestamp.
+     *
+     * @param date  the date
+     * @param month the month
+     * @return the timestamp
+     * @author ErebusST
+     * @since 2022 -04-17 09:58:13
+     */
+    public static Timestamp addMonth(Timestamp date, int month) {
+        return add(date, Calendar.MONTH, month);
+    }
+
+    /**
+     * Add seconds timestamp.
+     *
+     * @param second the second
+     * @return the timestamp
+     * @author ErebusST
+     * @since 2022 -04-17 09:57:07
+     */
+    public static Timestamp addSeconds(int second) {
+        return addSeconds(DateUtils.getNow(), second);
     }
 
     /**
@@ -463,19 +486,14 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @since 2022 -01-07 15:36:00
      */
     public static Timestamp addSeconds(Timestamp date, int second) {
+        return add(date, Calendar.SECOND, second);
+    }
+
+    public static Timestamp add(Timestamp date, int filed, int value) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(date.getTime());
-        cal.add(Calendar.SECOND, second);
-        //		int year = cal.get(Calendar.YEAR);
-        //		int month = cal.get(Calendar.MONTH);
-        //		int dayOfMonth = cal.get(Calendar.DAY_OF_MONTH);
-        //		String dateStr = year + "-" + (month + 1) + "-" + (dayOfMonth);
-        Date result = cal.getTime();// DataSwitch.convertObjectToDate(dateStr);
-        Timestamp currentTimestamp = new Timestamp(result.getTime());
-        //Timestamp currentTimestamp = new Timestamp(cal.getTime().getTime());
-        //		Date currentTime = cal.getTime();
-        //		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        return currentTimestamp;//formatter.format(currentTime);
+        cal.add(filed, value);
+        return Timestamp.from(cal.toInstant());
     }
 
 
