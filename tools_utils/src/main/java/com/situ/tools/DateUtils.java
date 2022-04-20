@@ -508,7 +508,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      */
     public static String getSpendTime(Long start, Long end) {
         long spendTime = Math.abs(end - start);
-
+        long millis = spendTime % 1000;
         long second = spendTime / 1000;
 
         long minute = second / 60;
@@ -519,13 +519,15 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 
         StringBuilder result = new StringBuilder();
         if (hour != 0) {
-            result = result.append(hour).append(" 小时 ");
+            result = result.append(hour).append(" h ");
         }
         if (minute != 0) {
-            result = result.append(minute).append(" 分钟 ");
+            result = result.append(minute).append(" m ");
         }
 
-        result = result.append(second).append(" 秒 ");
+        result = result.append(second).append(" s ");
+        result = result.append(millis).append(" ms ");
+
 
         return result.toString();
     }
