@@ -254,10 +254,6 @@ public class RequestTools {
                     DataSwitch.convertObjectToJsonElement(parameters, false).toString());
 
         } else if (ObjectUtils.equals(contentType, ContentType.text_plain)) {
-
-            if (!parametersClass.equals(Map.class)) {
-                throw new Exception(contentType + "表单提交时，参数应为Map<String,String>。现在为:" + parametersClass.getName());
-            }
             MediaType mediaType = MediaType.parse("text/plain; charset=utf-8");
             MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
             ((Map<String, Object>) parameters).entrySet().stream()
