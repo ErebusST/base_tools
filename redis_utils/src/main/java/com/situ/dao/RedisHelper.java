@@ -59,16 +59,9 @@ public class RedisHelper {
      * @author ErebusST
      * @since 2022 -01-07 15:39:05
      */
-    public static RedisHelper getInstance() {
+    public synchronized static RedisHelper getInstance() {
         if (instance == null) {
-            try {
-                lock.lock();
-                instance = new RedisHelper();
-            } catch (Exception ex) {
-                throw ex;
-            } finally {
-                lock.unlock();
-            }
+            instance = new RedisHelper();
         }
         return instance;
     }
@@ -86,7 +79,7 @@ public class RedisHelper {
      * @since 2022 -01-07 15:39:05
      */
     @PostConstruct
-    public void beforeInit(){
+    public void beforeInit() {
         redisConfig = redisConfigTemp;
     }
 
@@ -145,24 +138,16 @@ public class RedisHelper {
      *
      * @return
      */
-    private Jedis getClient() {
+    public synchronized Jedis getClient() {
         if (jedisPool == null) {
-            try {
-                lock.lock();    //防止吃初始化时多线程竞争问题
-                initPool();
-            } catch (Exception ex) {
-                throw ex;
-            } finally {
-                lock.unlock();
-            }
+            initPool();
             log.info("JedisPool init success！");
         }
         Jedis resource = jedisPool.getResource();
-//        resource.auth(redis_auth);
         return resource;
     }
 
-    private void excute(Callable callable) {
+    private void execute(Callable callable) {
         Jedis client = null;
         try {
             client = getClient();
@@ -241,22 +226,6 @@ public class RedisHelper {
      * @since 2022 -01-07 15:39:05
      */
     public String putString(@Nonnull String key, @Nonnull String value, Integer seconds, Integer dbIndex) {
-        return putString(key, value, seconds, dbIndex, true);
-    }
-
-    /**
-     * Put string string.
-     *
-     * @param key     the key
-     * @param value   the value
-     * @param seconds the seconds
-     * @param dbIndex the db index
-     * @param fixKey  the fix key
-     * @return the string
-     * @author ErebusST
-     * @since 2022 -01-07 15:39:05
-     */
-    public String putString(@Nonnull String key, @Nonnull String value, Integer seconds, Integer dbIndex, boolean fixKey) {
         Jedis client = null;
         try {
             if (ObjectUtils.isNull(value)) {
@@ -267,9 +236,7 @@ public class RedisHelper {
                 client.select(dbIndex);
             }
 
-            if (fixKey) {
-                key = fixKey(key);
-            }
+
             if (ObjectUtils.isNull(seconds)) {
                 return client.set(key, value);
             } else {
@@ -281,6 +248,7 @@ public class RedisHelper {
             close(client);
         }
     }
+
 
     /**
      * Put object string.
@@ -330,22 +298,6 @@ public class RedisHelper {
      * @since 2022 -01-07 15:39:05
      */
     public String putObject(@Nonnull String key, @Nonnull Object value, Integer seconds, Integer dbIndex) {
-        return putObject(key, value, seconds, dbIndex, true);
-    }
-
-    /**
-     * Put object string.
-     *
-     * @param key     the key
-     * @param value   the value
-     * @param seconds the seconds
-     * @param dbIndex the db index
-     * @param fixKey  the fix key
-     * @return the string
-     * @author ErebusST
-     * @since 2022 -01-07 15:39:05
-     */
-    public String putObject(@Nonnull String key, @Nonnull Object value, Integer seconds, Integer dbIndex, boolean fixKey) {
         try {
             Class<?> clazz = value.getClass();
             if (clazz.equals(String.class)
@@ -357,11 +309,12 @@ public class RedisHelper {
             } else {
                 value = DataSwitch.convertObjectToJsonElement(value);
             }
-            return putString(key, value.toString(), seconds, dbIndex, fixKey);
+            return putString(key, value.toString(), seconds, dbIndex);
         } catch (Exception ex) {
             throw ex;
         }
     }
+
 
     /**
      * Gets entity.
@@ -389,29 +342,14 @@ public class RedisHelper {
      * @since 2022 -01-07 15:39:06
      */
     public <T> T getEntity(@Nonnull Class<T> clazz, @Nonnull String key, Integer dbIndex) {
-        return getEntity(clazz, key, dbIndex, true);
-    }
-
-    /**
-     * Gets entity.
-     *
-     * @param <T>     the type parameter
-     * @param clazz   the clazz
-     * @param key     the key
-     * @param dbIndex the db index
-     * @param fixKey  the fix key
-     * @return the entity
-     * @author ErebusST
-     * @since 2022 -01-07 15:39:06
-     */
-    public <T> T getEntity(@Nonnull Class<T> clazz, @Nonnull String key, Integer dbIndex, boolean fixKey) {
-        String string = getString(key, dbIndex, fixKey);
+        String string = getString(key, dbIndex);
         if (StringUtils.isEmpty(string)) {
             return null;
         }
         JsonObject jsonObject = DataSwitch.convertStringToJsonObject(string);
         return DataSwitch.convertJsonObjectToEntity(jsonObject, clazz);
     }
+
 
     /**
      * Gets json object.
@@ -523,20 +461,6 @@ public class RedisHelper {
      * @since 2022 -01-07 15:39:06
      */
     public String getString(@Nonnull String key, Integer dbIndex) {
-        return getString(key, dbIndex, true);
-    }
-
-    /**
-     * Gets string.
-     *
-     * @param key     the key
-     * @param dbIndex the db index
-     * @param fixKey  the fix key
-     * @return the string
-     * @author ErebusST
-     * @since 2022 -01-07 15:39:06
-     */
-    public String getString(@Nonnull String key, Integer dbIndex, Boolean fixKey) {
         Jedis client = null;
         try {
             if (ObjectUtils.isEmpty(key)) {
@@ -545,9 +469,6 @@ public class RedisHelper {
             client = getClient();
             if (ObjectUtils.isNotNull(dbIndex)) {
                 client.select(dbIndex);
-            }
-            if (fixKey) {
-                key = fixKey(key);
             }
             if (!client.exists(key)) {
                 return "";
@@ -561,17 +482,6 @@ public class RedisHelper {
         }
     }
 
-
-    private String fixKey(String key) {
-        String code = "";
-        if (StringUtils.isEmpty(code)) {
-            return key;
-        } else if (key.contains("merchant")) {
-            return key;
-        } else {
-            return code + "_" + key;
-        }
-    }
 
     /**
      * Remove long.
@@ -605,7 +515,7 @@ public class RedisHelper {
             if (ObjectUtils.isNotNull(dbIndex)) {
                 client.select(dbIndex);
             }
-            Long del = client.del(Arrays.stream(keys).map(this::fixKey).collect(Collectors.toList()).toArray(new String[keys.length]));
+            Long del = client.del(Arrays.stream(keys).collect(Collectors.toList()).toArray(new String[keys.length]));
             return del;
         } catch (Exception ex) {
             throw ex;
@@ -623,6 +533,7 @@ public class RedisHelper {
      * @author ErebusST
      * @since 2022 -01-07 15:39:06
      */
+    @Deprecated
     public List<String> getResultByPattern(String pattern, Integer dbIndex) {
         Jedis client = null;
         try {
@@ -631,7 +542,7 @@ public class RedisHelper {
             client.select(dbIndex);
 
             ScanParams scanParams = new ScanParams();
-            scanParams.match(fixKey(pattern));
+            scanParams.match(pattern);
             ScanResult<String> scan = client.scan("0", scanParams);
             List<String> keys = scan.getResult();
             if (keys.size() == 0) {
@@ -670,21 +581,6 @@ public class RedisHelper {
      * @since 2022 -01-07 15:39:06
      */
     public boolean exists(String key, Integer dataIndex) {
-        return exists(key, dataIndex, true);
-
-    }
-
-    /**
-     * Exists boolean.
-     *
-     * @param key       the key
-     * @param dataIndex the data index
-     * @param fixKey    the fix key
-     * @return the boolean
-     * @author ErebusST
-     * @since 2022 -01-07 15:39:06
-     */
-    public boolean exists(String key, Integer dataIndex, Boolean fixKey) {
         Jedis client = null;
         try {
             if (StringUtils.isEmpty(key)) {
@@ -692,9 +588,6 @@ public class RedisHelper {
             }
             client = getClient();
             client.select(dataIndex);
-            if (fixKey) {
-                key = fixKey(key);
-            }
             boolean exists = client.exists(key);
             close(client);
             return exists;
@@ -705,6 +598,7 @@ public class RedisHelper {
         }
 
     }
+
 
     /**
      * Expire.
@@ -720,7 +614,73 @@ public class RedisHelper {
         try {
             client = getClient();
             client.select(dbIndex);
-            client.expire(fixKey(key), seconds);
+            client.expire(key, seconds);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            close(client);
+        }
+    }
+
+    /**
+     * Update object string.
+     *
+     * @param key   the key
+     * @param value the value
+     * @return the string
+     * @author ErebusST
+     * @since 2022 -04-26 19:42:08
+     */
+    public String updateObject(@Nonnull String key, @Nonnull Object value) {
+        return updateObject(key, value, 0);
+    }
+
+    /**
+     * Update object string.
+     *
+     * @param key     the key
+     * @param value   the value
+     * @param dbIndex the db index
+     * @return the string
+     * @author ErebusST
+     * @since 2022 -04-26 19:41:22
+     */
+    public String updateObject(@Nonnull String key, @Nonnull Object value, Integer dbIndex) {
+        String string = DataSwitch.convertObjectToJsonElement(value).toString();
+        return updateString(key, string, dbIndex);
+    }
+
+
+    /**
+     * Update string string.
+     *
+     * @param key   the key
+     * @param value the value
+     * @return the string
+     * @author ErebusST
+     * @since 2022 -04-26 19:39:46
+     */
+    public String updateString(@Nonnull String key, @Nonnull String value) {
+        return updateString(key, value, 0);
+    }
+
+    /**
+     * Update string string.
+     *
+     * @param key     the key
+     * @param value   the value
+     * @param dbIndex the db index
+     * @return the string
+     * @author ErebusST
+     * @since 2022 -04-26 19:39:43
+     */
+    public String updateString(@Nonnull String key, @Nonnull String value, Integer dbIndex) {
+        Jedis client = null;
+        try {
+            client = getClient();
+            client.select(dbIndex);
+            Long expire = client.ttl(key);
+            return client.setex(key, expire.intValue(), value);
         } catch (Exception ex) {
             throw ex;
         } finally {
