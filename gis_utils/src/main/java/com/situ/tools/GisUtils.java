@@ -21,7 +21,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.geotools.referencing.CRS;
-import org.junit.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -1469,11 +1468,32 @@ public class GisUtils {
         if (allIn) {
             return polygon2;
         }
-        Geometry geometry1 = toPolygon(polygon1);
-        Geometry geometry2 = toPolygon(polygon2);
+        Geometry geometry1 = fixPolygon(polygon1);
+
+        Geometry geometry2 = fixPolygon(polygon2);
 
         Geometry intersection = geometry1.intersection(geometry2);
         return toListPoint(intersection);
+    }
+
+    private static Polygon fixPolygon(List<Point> points) {
+        Polygon polygon = toPolygon(points);
+        if (polygon.isValid()) {
+            return polygon;
+        } else {
+            int size = points.size();
+            for (int i = 0; i < size; i++) {
+                Point point = points.get(i);
+                points.remove(i);
+                Polygon temp = toPolygon(points);
+                if (temp.isValid()) {
+                    break;
+                } else {
+                    points.add(i, point);
+                }
+            }
+            return toPolygon(points);
+        }
     }
 
 

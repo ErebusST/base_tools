@@ -16,8 +16,10 @@ import com.situ.enumeration.HttpMethod;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
+import org.apache.poi.ss.formula.functions.Intercept;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
@@ -33,6 +35,23 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class RequestTools {
+
+    public static class BasicAuthInterceptor implements Interceptor{
+        private String credentials;
+
+        public BasicAuthInterceptor(String user, String password) {
+            this.credentials = Credentials.basic(user, password);
+        }
+
+
+        @Override
+        public Response intercept(Chain chain) throws IOException {
+            Request request = chain.request();
+            Request authenticatedRequest = request.newBuilder()
+                    .header("Authorization", credentials).build();
+            return chain.proceed(authenticatedRequest);
+        }
+    }
 
     /**
      * 单位:秒
@@ -202,7 +221,59 @@ public class RequestTools {
     }
 
 
-    private static Response call(HttpMethod method, ContentType contentType, @NonNull String url, Object parameters, HttpHeader... headers) throws Exception {
+    /**
+     * Get client ok http client.
+     *
+     * @param interceptors the interceptors
+     * @return the ok http client
+     * @author ErebusST
+     * @since 2022 -04-29 14:01:05
+     */
+    public static OkHttpClient getClient(Interceptor... interceptors){
+        OkHttpClient.Builder builder = new OkHttpClient().newBuilder()
+                .connectTimeout(TIME_OUT, TimeUnit.SECONDS)
+                .readTimeout(TIME_OUT, TimeUnit.SECONDS)
+                .writeTimeout(TIME_OUT, TimeUnit.SECONDS);
+
+        for (Interceptor intercept : interceptors) {
+            builder.addInterceptor(intercept);
+        }
+        return builder.build();
+    }
+
+    /**
+     * Call response.
+     *
+     * @param method      the method
+     * @param contentType the content type
+     * @param url         the url
+     * @param parameters  the parameters
+     * @param headers     the headers
+     * @return the response
+     * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -04-29 13:55:17
+     */
+    public static Response call(HttpMethod method, ContentType contentType, @NonNull String url, Object parameters, HttpHeader... headers) throws Exception {
+        OkHttpClient client = getClient();
+        return call(client, method, contentType, url, parameters, headers);
+    }
+
+    /**
+     * Call response.
+     *
+     * @param client      the client
+     * @param method      the method
+     * @param contentType the content type
+     * @param url         the url
+     * @param parameters  the parameters
+     * @param headers     the headers
+     * @return the response
+     * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -04-29 13:55:15
+     */
+    public static Response call(OkHttpClient client, HttpMethod method, ContentType contentType, @NonNull String url, Object parameters, HttpHeader... headers) throws Exception {
         if (parameters == null) {
             parameters = new Object();
         }
@@ -227,13 +298,9 @@ public class RequestTools {
         }
 
         Request request = builder.build();
-        OkHttpClient client = new OkHttpClient().newBuilder()
-                .connectTimeout(TIME_OUT, TimeUnit.SECONDS)
-                .readTimeout(TIME_OUT, TimeUnit.SECONDS)
-                .writeTimeout(TIME_OUT, TimeUnit.SECONDS)
-                .build();
+
         Response response = client.newCall(request).execute();
-        return  response;
+        return response;
 //        if (ObjectUtils.isNotNull(response.body())) {
 //            return response.body().string();
 //        } else {

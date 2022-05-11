@@ -355,6 +355,9 @@ public class NumberUtils {
             value2 = BigDecimal.ZERO;
         }
         BigDecimal decimal1 = DataSwitch.convertObjectToBigDecimal(value1);
+        if(ObjectUtils.isNull(decimal1)){
+            decimal1 = BigDecimal.ZERO;
+        }
         BigDecimal decimal2 = DataSwitch.convertObjectToBigDecimal(value2);
         switch (operation) {
             case ADD:
