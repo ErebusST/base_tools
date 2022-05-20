@@ -103,8 +103,8 @@
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-core</artifactId>
             <version>9.0.53</version>
-            <optional>true</optional>
-            <scope>provided</scope>
+<!--            <optional>true</optional>-->
+<!--            <scope>provided</scope>-->
         </dependency>
 
         <dependency>

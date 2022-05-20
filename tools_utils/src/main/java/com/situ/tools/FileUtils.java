@@ -764,7 +764,7 @@ public class FileUtils {
         inputStream.close();
         // 清空response
         realName = URLEncoder.encode(realName, "UTF-8");
-        response.reset();
+        //response.reset();
         // 设置response的Header
         response.addHeader("Content-Disposition", "attachment;filename=" + realName);
         response.addHeader("Content-Length", "" + file.length());
