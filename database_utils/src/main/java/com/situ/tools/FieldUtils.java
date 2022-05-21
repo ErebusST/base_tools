@@ -69,9 +69,10 @@ public class FieldUtils {
             List<Class<?>> classes = ClassUtils.getClasses(packageName);
             classes.parallelStream()
                     .forEach(temp -> {
+                        Table annotation = temp.getAnnotation(Table.class);
                         TableSetting setting = new TableSetting();
-                        setting.setSchema(schema);
-                        setting.setTable(name);
+                        setting.setSchema(annotation.schema());
+                        setting.setTable(annotation.name());
                         List<JdbcField> fields = Arrays.stream(ReflectionUtils.getFields(temp))
                                 .map(field -> {
                                     JdbcField jdbcField = new JdbcField();
@@ -97,7 +98,7 @@ public class FieldUtils {
                                 })
                                 .collect(Collectors.toList());
                         setting.setFields(fields);
-                        TABLE_SETTING.put(key, setting);
+                        TABLE_SETTING.put(setting.getKey(), setting);
                     });
         }
         return TABLE_SETTING.get(key);
@@ -249,9 +250,12 @@ public class FieldUtils {
                 .map(field -> {
                     String name = field.getField().getName();
                     Object value = ReflectionUtils.getFieldValue(entity, name);
+                    if (ObjectUtils.isNull(value)) {
+                        return null;
+                    }
                     return Pair.of(name, value);
                 })
-                .filter(pair -> ObjectUtils.isNotNull(pair.getLeft()))
+                .filter(ObjectUtils::isNotNull)
                 .collect(Collectors.toMap(Pair::getKey, Pair::getValue));
         return parameters;
     }

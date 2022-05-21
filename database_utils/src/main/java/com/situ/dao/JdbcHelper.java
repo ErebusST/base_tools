@@ -620,6 +620,7 @@ public class JdbcHelper {
                 List<T> resultMap = getMapList(resultSet, clazz);
                 return resultMap;
             } catch (Exception ex) {
+                log.error(sql, ex);
                 throw ex;
             } finally {
                 finallyExecute(resultSet, preparedStatement, null);
