@@ -11,12 +11,10 @@ package com.situ.dao;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.google.gson.JsonObject;
+import com.situ.entity.bo.JdbcField;
+import com.situ.entity.bo.TableSetting;
 import com.situ.entity.enumeration.DatabaseSetting;
-import com.situ.tools.DataSwitch;
-import com.situ.tools.ObjectUtils;
-import com.situ.tools.ReflectionUtils;
-import com.situ.tools.StringUtils;
-import lombok.Getter;
+import com.situ.tools.*;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -24,9 +22,6 @@ import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.*;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -328,9 +323,14 @@ public class JdbcHelper {
          * @since 2022 -01-07 15:39:02
          */
         public <T> T findFirst(Class<T> clazz) throws Exception {
-            Table table = clazz.getAnnotation(Table.class);
-            String name = table.name();
-            String sql = "select * from " + name + " limit 1";
+            TableSetting setting = FieldUtils.getEntityInfo(clazz);
+            String fieldsString = FieldUtils.getFieldJoinStringForSelect(setting);
+            String schema = setting.getSchema();
+            String name = setting.getTable();
+            if (ObjectUtils.isNotEmpty(schema)) {
+                name = schema.concat(".").concat(name);
+            }
+            String sql = "select " + fieldsString + " from " + name + " limit 1";
             Map<String, Object> first = findFirst(sql);
             return DataSwitch.convertMapObjToEntity(clazz, first);
         }
@@ -545,22 +545,18 @@ public class JdbcHelper {
             if (parameters.size() == 0) {
                 parameters = null;
             }
-            Table table = clazz.getAnnotation(Table.class);
-            String tableName = table.name();
-            String fields = Arrays.stream(ReflectionUtils.getFields(clazz))
-                    .map(field -> {
-                        Column column = field.getAnnotation(Column.class);
-                        if (ObjectUtils.isNotNull(column)) {
-                            return column.name();
-                        } else {
-                            return null;
-                        }
-                    })
-                    .filter(ObjectUtils::isNotNull)
-                    .collect(Collectors.joining(","));
+            TableSetting setting = FieldUtils.getEntityInfo(clazz);
+            String fields = FieldUtils.getFieldJoinStringForSelect(setting);
+
+            String schema = setting.getSchema();
+            String table = setting.getTable();
+            if (ObjectUtils.isNotEmpty(schema)) {
+                table = schema.concat(".").concat(table);
+            }
+
             StringBuilder sql = new StringBuilder("SELECT ");
             sql.append(fields);
-            sql.append(" FROM ").append(tableName);
+            sql.append(" FROM ").append(table);
             if (ObjectUtils.isNotNull(parameters)) {
                 String where = parameters.entrySet()
                         .stream()
@@ -1094,20 +1090,14 @@ public class JdbcHelper {
             if (ObjectUtils.isNull(id)) {
                 return null;
             }
-            JdbcField primaryKey = getPrimaryKeySetting(clazz);
-            Table table = clazz.getAnnotation(Table.class);
-            String tableName = table.name();
-            String fields = Arrays.stream(ReflectionUtils.getFields(clazz))
-                    .map(field -> {
-                        Column column = field.getAnnotation(Column.class);
-                        if (ObjectUtils.isNotNull(column)) {
-                            return column.name();
-                        } else {
-                            return null;
-                        }
-                    })
-                    .filter(ObjectUtils::isNotNull)
-                    .collect(Collectors.joining(","));
+            TableSetting setting = FieldUtils.getEntityInfo(clazz);
+            JdbcField primaryKey = setting.getPrimaryKey();
+            String schema = setting.getSchema();
+            String tableName = setting.getTable();
+            if (ObjectUtils.isNotEmpty(schema)) {
+                tableName = schema.concat(".").concat(tableName);
+            }
+            String fields = FieldUtils.getFieldJoinStringForSelect(setting);
             StringBuilder sql = new StringBuilder("SELECT ");
             sql.append(fields);
             sql.append(" FROM ")
@@ -1133,19 +1123,14 @@ public class JdbcHelper {
          * @since 2022 -01-07 15:39:04
          */
         public <T> T findFirst(Class<T> clazz, Map<String, Object> parameters) throws Exception {
-            Table table = clazz.getAnnotation(Table.class);
-            String tableName = table.name();
-            String fields = Arrays.stream(ReflectionUtils.getFields(clazz))
-                    .map(field -> {
-                        Column column = field.getAnnotation(Column.class);
-                        if (ObjectUtils.isNotNull(column)) {
-                            return column.name();
-                        } else {
-                            return null;
-                        }
-                    })
-                    .filter(ObjectUtils::isNotNull)
-                    .collect(Collectors.joining(","));
+            TableSetting setting = FieldUtils.getEntityInfo(clazz);
+            String schema = setting.getSchema();
+            String tableName = setting.getTable();
+            if (ObjectUtils.isNotEmpty(schema)) {
+                tableName = schema.concat(".").concat(tableName);
+            }
+
+            String fields = FieldUtils.getFieldJoinStringForSelect(setting);
             StringBuilder sql = new StringBuilder("SELECT ");
             sql.append(fields);
             sql.append(" FROM ")
@@ -1160,68 +1145,6 @@ public class JdbcHelper {
                 sql.append(" WHERE ").append(where);
             }
             return findFirst(clazz, sql.toString(), parameters);
-        }
-
-
-        @Getter
-        @Setter
-        private class JdbcField {
-            /**
-             * The Field.
-             */
-            Field field;
-            /**
-             * The Field in db.
-             */
-            String fieldInDb;
-            /**
-             * The Auto generate.
-             */
-            boolean autoGenerate;//GeneratedValue
-        }
-
-        private JdbcField getPrimaryKeySetting(Class<?> clazz) throws Exception {
-            JdbcField primaryKey = Arrays.stream(ReflectionUtils.getFields(clazz)).filter(field -> {
-                Id id = field.getAnnotation(Id.class);
-                if (ObjectUtils.isNull(id)) {
-                    Method getterMethod = ReflectionUtils.getGetterMethod(clazz, field.getName());
-                    if (ObjectUtils.isNull(getterMethod)) {
-                        return false;
-                    }
-                    id = getterMethod.getAnnotation(Id.class);
-                }
-                return ObjectUtils.isNotNull(id);
-            }).map(field -> {
-                JdbcField jdbcField = new JdbcField();
-                jdbcField.setField(field);
-                Column column = field.getAnnotation(Column.class);
-                Method getterMethod = ReflectionUtils.getGetterMethod(clazz, field.getName());
-                if (ObjectUtils.isNull(column)) {
-                    column = getterMethod.getAnnotation(Column.class);
-                }
-                if (ObjectUtils.isNotNull(column)) {
-                    jdbcField.setFieldInDb(column.name());
-                } else {
-                    jdbcField.setFieldInDb("");
-                }
-
-                GeneratedValue generatedValue = field.getAnnotation(GeneratedValue.class);
-                if (ObjectUtils.isNull(generatedValue)) {
-                    generatedValue = getterMethod.getAnnotation(GeneratedValue.class);
-                }
-                boolean autoGenerate;
-                if (ObjectUtils.isNotNull(generatedValue)) {
-                    autoGenerate = generatedValue.strategy().equals(GenerationType.AUTO);
-                } else {
-                    autoGenerate = false;
-                }
-                jdbcField.setAutoGenerate(autoGenerate);
-                return jdbcField;
-            }).findFirst().orElse(null);
-            if (ObjectUtils.isNull(primaryKey)) {
-                throw new Exception("在实体中未找到主键设置");
-            }
-            return primaryKey;
         }
 
 
@@ -1309,56 +1232,20 @@ public class JdbcHelper {
          * @since 2022 -01-07 15:39:04
          */
         public <Entity> boolean insert(DruidPooledConnection connection, Entity entity, String schema, String tableName) throws Exception {
-            Class<Entity> clazz = (Class<Entity>) entity.getClass();
-            Table table = clazz.getAnnotation(Table.class);
-            if (ObjectUtils.isNull(table)) {
-                return false;
-            }
-            tableName = StringUtils.isNotEmpty(tableName) ? tableName : table.name();
-            schema = StringUtils.isNotEmpty(schema) ? schema : table.schema();
-            Map<String, Object> parameters = new HashMap<>();
+            Class clazz = entity.getClass();
+            TableSetting setting = FieldUtils.getEntityInfo(clazz);
 
-            Field[] entityFields = ReflectionUtils.getFields(clazz);
-            JdbcField primaryKeySetting = getPrimaryKeySetting(entity.getClass());
+            tableName = StringUtils.isNotEmpty(tableName) ? tableName : setting.getTable();
+            schema = StringUtils.isNotEmpty(schema) ? schema : setting.getSchema();
+            Map<String, Object> parameters = FieldUtils.getParameters(entity);
+            JdbcField primaryKeySetting = setting.getPrimaryKey();
 
             String primaryId = primaryKeySetting.getField().getName();
             boolean autoGenerate = primaryKeySetting.isAutoGenerate();
-            String primaryKeyInDb = primaryKeySetting.getFieldInDb();
-            parameters.put(primaryKeyInDb, ReflectionUtils.getFieldValue(entity, primaryId));
-
-            List<String> fields = Arrays.stream(entityFields)
-                    .filter(field -> {
-                        if (autoGenerate && field.getName().equals(primaryId)) {
-                            return false;
-                        } else {
-                            return true;
-                        }
-                    })
-                    .filter(field -> {
-                        Object value = ReflectionUtils.getFieldValue(entity, field.getName());
-                        return ObjectUtils.isNotNull(value);
-                    })
-                    .map(field -> {
-                        Column column = field.getAnnotation(Column.class);
-                        if (ObjectUtils.isNull(column)) {
-                            String fieldName = field.getName();
-                            Method getterMethod = ReflectionUtils.getGetterMethod(clazz, fieldName);
-                            column = getterMethod.getAnnotation(Column.class);
-                        }
-                        if (ObjectUtils.isNull(column)) {
-                            return null;
-                        } else {
-                            Object fieldValue = ReflectionUtils.getFieldValue(entity, field.getName());
-                            if (ObjectUtils.isNull(fieldValue)) {
-                                return null;
-                            } else {
-                                String fieldInDb = column.name();
-                                parameters.put(fieldInDb, fieldValue);
-                                return fieldInDb;
-                            }
-                        }
-                    }).filter(StringUtils::isNotEmpty).collect(Collectors.toList());
-
+            if (autoGenerate) {
+                String primaryKeyInDb = primaryKeySetting.getFieldInDb();
+                parameters.put(primaryKeyInDb, ReflectionUtils.getFieldValue(entity, primaryId));
+            }
             if (parameters.size() == 0) {
                 return false;
             }
@@ -1367,16 +1254,14 @@ public class JdbcHelper {
                 sql.append(schema).append(".");
             }
             sql.append(tableName);
-            String insertKey = fields.stream().collect(Collectors.joining(","));
-            String insertValue = fields.stream().map(str -> ":" + str).collect(Collectors.joining(","));
-
+            String insertKey = FieldUtils.getFieldJoinStringForInsertField(entity);
+            String insertValue = FieldUtils.getFieldJoinStringForInsertParameter(entity);
 
             /**
              * INSERT INTO tb_residential_houses
              *     ( province, city, area, buildingName,address )
              * VALUES
              *     ( '河北', '唐山', '丰润', '建筑一' ,:address)
-             *     ON DUPLICATE KEY UPDATE address = :address;
              */
             sql.append("(").append(insertKey).append(")");
             sql.append(" VALUES ");
@@ -1461,54 +1346,19 @@ public class JdbcHelper {
          */
         public <Entity> boolean replace(DruidPooledConnection connection, Entity entity, String tableName) throws Exception {
             Class<Entity> clazz = (Class<Entity>) entity.getClass();
-            Table table = clazz.getAnnotation(Table.class);
-            if (ObjectUtils.isNull(table)) {
-                return false;
-            }
-            tableName = StringUtils.isNotEmpty(tableName) ? tableName : table.name();
-            String schema = table.schema();
-            Map<String, Object> parameters = new HashMap<>();
+            TableSetting setting = FieldUtils.getEntityInfo(clazz);
+            tableName = StringUtils.isNotEmpty(tableName) ? tableName : setting.getTable();
+            String schema = setting.getSchema();
+            Map<String, Object> parameters = FieldUtils.getParameters(entity);
 
-            Field[] entityFields = ReflectionUtils.getFields(clazz);
-            JdbcField primaryKeySetting = getPrimaryKeySetting(entity.getClass());
-            String primaryId = primaryKeySetting.getField().getName();
-            String primaryKeyInDb = primaryKeySetting.getFieldInDb();
+            JdbcField primaryKeySetting = setting.getPrimaryKey();
+
             boolean autoGenerate = primaryKeySetting.isAutoGenerate();
-            parameters.put(primaryKeyInDb, ReflectionUtils.getFieldValue(entity, primaryId));
-
-
-            List<String> fields = Arrays.stream(entityFields)
-                    .filter(field -> {
-                        if (autoGenerate && field.getName().equalsIgnoreCase(primaryId)) {
-                            return false;
-                        } else {
-                            return true;
-                        }
-                    })
-                    .filter(field -> {
-                        Object value = ReflectionUtils.getFieldValue(entity, field.getName());
-                        return ObjectUtils.isNotNull(value);
-                    })
-                    .map(field -> {
-                        Column column = field.getAnnotation(Column.class);
-                        if (ObjectUtils.isNull(column)) {
-                            String fieldName = field.getName();
-                            Method getterMethod = ReflectionUtils.getGetterMethod(clazz, fieldName);
-                            column = getterMethod.getAnnotation(Column.class);
-                        }
-                        if (ObjectUtils.isNull(column)) {
-                            return null;
-                        } else {
-                            Object fieldValue = ReflectionUtils.getFieldValue(entity, field.getName());
-                            if (ObjectUtils.isNull(fieldValue)) {
-                                return null;
-                            } else {
-                                String fieldInDb = column.name();
-                                parameters.put(fieldInDb, fieldValue);
-                                return fieldInDb;
-                            }
-                        }
-                    }).filter(StringUtils::isNotEmpty).collect(Collectors.toList());
+            if (autoGenerate) {
+                String primaryId = primaryKeySetting.getField().getName();
+                String primaryKeyInDb = primaryKeySetting.getFieldInDb();
+                parameters.put(primaryKeyInDb, ReflectionUtils.getFieldValue(entity, primaryId));
+            }
 
             if (parameters.size() == 0) {
                 return false;
@@ -1518,11 +1368,9 @@ public class JdbcHelper {
                 sql.append(schema).append(".");
             }
             sql.append(tableName);
-            String insertKey = fields.stream().collect(Collectors.joining(","));
-            String insertValue = fields.stream().map(str -> ":" + str).collect(Collectors.joining(","));
-            String update = fields.stream().filter(field -> !StringUtils.equalsIgnoreCase(field, primaryId))
-                    .map(field -> " ".concat(field).concat("=:").concat(field))
-                    .collect(Collectors.joining(","));
+            String insertKey = FieldUtils.getFieldJoinStringForInsertField(entity);
+            String insertValue = FieldUtils.getFieldJoinStringForInsertParameter(entity);
+            String update = FieldUtils.getFieldJoinStringForUpdateString(entity);
 
             /**
              * INSERT INTO tb_residential_houses
@@ -1584,39 +1432,15 @@ public class JdbcHelper {
          */
         public <Entity> boolean update(DruidPooledConnection connection, Entity entity) throws Exception {
             Class<Entity> clazz = (Class<Entity>) entity.getClass();
-            Table table = clazz.getAnnotation(Table.class);
-            if (ObjectUtils.isNull(table)) {
-                return false;
-            }
-            String tableName = table.name();
-            String schema = table.schema();
-            Map<String, Object> parameters = new HashMap<>();
 
-            Field[] entityFields = ReflectionUtils.getFields(clazz);
-            JdbcField primaryKey = getPrimaryKeySetting(entity.getClass());
+            TableSetting setting = FieldUtils.getEntityInfo(clazz);
+
+            String tableName = setting.getTable();
+            String schema = setting.getSchema();
+            Map<String, Object> parameters = FieldUtils.getParameters(entity);
+
+            JdbcField primaryKey = setting.getPrimaryKey();
             String primaryId = primaryKey.getFieldInDb();
-
-
-            List<String> fields = Arrays.stream(entityFields).map(field -> {
-                Column column = field.getAnnotation(Column.class);
-                if (ObjectUtils.isNull(column)) {
-                    String fieldName = field.getName();
-                    Method getterMethod = ReflectionUtils.getGetterMethod(clazz, fieldName);
-                    column = getterMethod.getAnnotation(Column.class);
-                }
-                if (ObjectUtils.isNull(column)) {
-                    return null;
-                } else {
-                    Object fieldValue = ReflectionUtils.getFieldValue(entity, field.getName());
-                    if (ObjectUtils.isNull(fieldValue)) {
-                        return null;
-                    } else {
-                        String fieldInDb = column.name();
-                        parameters.put(fieldInDb, fieldValue);
-                        return fieldInDb;
-                    }
-                }
-            }).filter(StringUtils::isNotEmpty).collect(Collectors.toList());
 
 
             if (parameters.size() == 0) {
@@ -1628,8 +1452,7 @@ public class JdbcHelper {
             }
             sql.append(tableName);
 
-            String update = fields.stream().filter(field -> !StringUtils.equalsIgnoreCase(field, primaryId))
-                    .map(field -> field.concat("=:").concat(field)).collect(Collectors.joining(","));
+            String update = FieldUtils.getFieldJoinStringForUpdateString(entity);
             sql.append(" SET ").append(update);
             sql.append(" WHERE ").append(primaryId).append("=:").append(primaryId);
 

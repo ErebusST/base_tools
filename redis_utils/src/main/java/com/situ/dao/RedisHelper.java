@@ -689,6 +689,155 @@ public class RedisHelper {
     }
 
     /**
+     * Incr long.
+     *
+     * @param key the key
+     * @return the long
+     * @author ErebusST
+     * @since 2022 -05-20 15:35:06
+     */
+    public Long incr(@Nonnull String key) {
+        return incr(key, 0);
+    }
+
+    /**
+     * Incr long.
+     *
+     * @param key     the key
+     * @param dbIndex the db index
+     * @return the long
+     * @author ErebusST
+     * @since 2022 -05-20 15:34:09
+     */
+    public Long incr(@Nonnull String key, Integer dbIndex) {
+        Jedis client = null;
+        try {
+            client = getClient();
+            client.select(dbIndex);
+            return client.incr(key);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            close(client);
+        }
+    }
+
+    /**
+     * Incr long.
+     *
+     * @param key     the key
+     * @param value   the value
+     * @param dbIndex the db index
+     * @return the long
+     * @author ErebusST
+     * @since 2022 -05-20 15:35:09
+     */
+    public Long incr(@Nonnull String key, @Nonnull Long value, Integer dbIndex) {
+        Jedis client = null;
+        try {
+            client = getClient();
+            client.select(dbIndex);
+            return client.incrBy(key, value);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            close(client);
+        }
+    }
+
+
+    /**
+     * Decr long.
+     *
+     * @param key the key
+     * @return the long
+     * @author ErebusST
+     * @since 2022 -05-20 16:53:55
+     */
+    public Long decr(@Nonnull String key) {
+        return decr(key, 0);
+    }
+
+    /**
+     * Decr long.
+     *
+     * @param key     the key
+     * @param dbIndex the db index
+     * @return the long
+     * @author ErebusST
+     * @since 2022 -05-20 16:53:56
+     */
+    public Long decr(@Nonnull String key, Integer dbIndex) {
+        Jedis client = null;
+        try {
+            client = getClient();
+            client.select(dbIndex);
+            return client.decr(key);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            close(client);
+        }
+    }
+
+    /**
+     * Decr long.
+     *
+     * @param key     the key
+     * @param value   the value
+     * @param dbIndex the db index
+     * @return the long
+     * @author ErebusST
+     * @since 2022 -05-20 16:53:58
+     */
+    public Long decr(@Nonnull String key, @Nonnull Long value, Integer dbIndex) {
+        Jedis client = null;
+        try {
+            client = getClient();
+            client.select(dbIndex);
+            return client.decrBy(key, value);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            close(client);
+        }
+    }
+
+    /**
+     * Ttl long.
+     *
+     * @param key the key
+     * @return the long
+     * @author ErebusST
+     * @since 2022 -05-20 15:39:28
+     */
+    public Long ttl(@Nonnull String key) {
+        return ttl(key, 0);
+    }
+
+    /**
+     * Ttl long.
+     *
+     * @param key     the key
+     * @param dbIndex the db index
+     * @return the long
+     * @author ErebusST
+     * @since 2022 -05-20 15:39:29
+     */
+    public Long ttl(@Nonnull String key, Integer dbIndex) {
+        Jedis client = null;
+        try {
+            client = getClient();
+            client.select(dbIndex);
+            return client.ttl(key);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            close(client);
+        }
+    }
+
+    /**
      * Flush.
      *
      * @param dbIndex the db index
