@@ -47,7 +47,7 @@ public class DruidPool {
     /**
      * The constant DEFAULT.
      */
-    public static String DEFAULT = "489a0aac-52d2-4f8b-8e8c-a6e1deb97d4f";
+    public static final String DEFAULT = "489a0aac-52d2-4f8b-8e8c-a6e1deb97d4f";
     /**
      * The constant DEFAULT_SIZE.
      */
@@ -115,7 +115,6 @@ public class DruidPool {
                 DATA_SOURCE_SETTING.put(key, source);
             }
 
-            DEFAULT = sources.get(0).getKey();
         } else {
             String url = config.getUrl();
             String username = config.getUsername();

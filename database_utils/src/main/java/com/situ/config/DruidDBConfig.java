@@ -29,11 +29,11 @@ import org.springframework.stereotype.Component;
 @Setter
 @ConfigurationProperties(prefix = "spring.datasource.pool")
 public class DruidDBConfig {
-    @Value("${spring.datasource.url}")
+    @Value("${spring.datasource.url:null}")
     private String url;
-    @Value("${spring.datasource.username}")
+    @Value("${spring.datasource.username:null}")
     private String username;
-    @Value("${spring.datasource.password}")
+    @Value("${spring.datasource.password:null}")
     private String password;
 
     private String driverClassName;
