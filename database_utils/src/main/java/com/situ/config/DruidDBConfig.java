@@ -8,10 +8,14 @@
 
 package com.situ.config;
 
+import com.situ.entity.bo.StatViewServlet;
+import com.situ.entity.bo.WebStatFilter;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 
 /**
@@ -20,66 +24,75 @@ import org.springframework.context.annotation.Configuration;
  * @author 司徒彬
  * @date 2020 /6/21 11:06
  */
-@Configuration
+@Component
 @Getter
+@Setter
+@ConfigurationProperties(prefix = "spring.datasource.pool")
 public class DruidDBConfig {
-    @Getter
-    @Value("${spring.datasource.druid.url:null}")
+    @Value("${spring.datasource.url}")
     private String url;
-
-    @Value("${spring.datasource.druid.username:null")
+    @Value("${spring.datasource.username}")
     private String username;
-
-    @Value("${spring.datasource.druid.password:null}")
+    @Value("${spring.datasource.password}")
     private String password;
 
-    @Value("${spring.datasource.druid.driverClassName}")
     private String driverClassName;
 
-    @Value("${spring.datasource.druid.initialSize}")
     private int initialSize;
 
-    @Value("${spring.datasource.druid.minIdle}")
     private int minIdle;
 
-    @Value("${spring.datasource.druid.maxActive}")
     private int maxActive;
 
-    @Value("${spring.datasource.druid.maxWait}")
     private int maxWait;
 
-    @Value("${spring.datasource.druid.timeBetweenEvictionRunsMillis}")
     private int timeBetweenEvictionRunsMillis;
 
-    @Value("${spring.datasource.druid.minEvictableIdleTimeMillis}")
     private int minEvictableIdleTimeMillis;
 
-    @Value("${spring.datasource.druid.validationQuery}")
     private String validationQuery;
 
-    @Value("${spring.datasource.druid.testWhileIdle}")
     private boolean testWhileIdle;
 
-    @Value("${spring.datasource.druid.testOnBorrow}")
     private boolean testOnBorrow;
 
-    @Value("${spring.datasource.druid.testOnReturn}")
     private boolean testOnReturn;
 
-    @Value("${spring.datasource.druid.poolPreparedStatements}")
     private boolean poolPreparedStatements;
 
-    @Value("${spring.datasource.druid.maxPoolPreparedStatementPerConnectionSize}")
     private int maxPoolPreparedStatementPerConnectionSize;
 
-    @Value("${spring.datasource.druid.filters}")
     private String filters;
 
-    @Value("${spring.datasource.druid.connectionProperties}")
     private String connectionProperties;
 
-    @Value("${spring.datasource.druid.update_version:false}")
-    private Boolean updateVersion;
+    private Boolean updateVersion = false;
+
+    private boolean useGlobalDataSourceStat;
+
+    private String dbType;
+
+    StatViewServlet statViewServlet;
+
+    WebStatFilter webStatFilter;
+
+
+    //@Getter
+    //@Setter
+    //public class StatViewServlet {
+    //    String loginName;
+    //    String loginPassword;
+    //    boolean resetEnable;
+    //    String urlPattern;
+    //    boolean enabled = false;
+    //}
+
+    //@Getter
+    //@Setter
+    //public class WebStatFilter {
+    //    String urlPattern;
+    //    String exclusions;
+    //}
 
     /**
      * The Source.

@@ -13,6 +13,8 @@ import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.situ.config.DruidDBConfig;
 import com.situ.config.JdbcSource;
+import com.situ.entity.bo.StatViewServlet;
+import com.situ.entity.bo.WebStatFilter;
 import com.situ.tools.ObjectUtils;
 import com.situ.tools.ReflectionUtils;
 import com.situ.tools.StringUtils;
@@ -45,7 +47,7 @@ public class DruidPool {
     /**
      * The constant DEFAULT.
      */
-    public static final String DEFAULT = "489a0aac-52d2-4f8b-8e8c-a6e1deb97d4f";
+    public static String DEFAULT = "489a0aac-52d2-4f8b-8e8c-a6e1deb97d4f";
     /**
      * The constant DEFAULT_SIZE.
      */
@@ -71,17 +73,31 @@ public class DruidPool {
         Field[] fields = ReflectionUtils.getFields(DruidDBConfig.class);
         Map<String, Object> setting = Arrays.stream(fields)
                 .filter(field -> !StringUtils.equalsIgnoreCase(field.getName(), "sources"))
-                .filter(field -> !StringUtils.equalsIgnoreCase(field.getName(), "dbUrl"))
+                .filter(field -> !StringUtils.equalsIgnoreCase(field.getName(), "url"))
                 .filter(field -> !StringUtils.equalsIgnoreCase(field.getName(), "username"))
                 .filter(field -> !StringUtils.equalsIgnoreCase(field.getName(), "password"))
                 .map(field -> {
                     String name = field.getName();
                     Object value = ReflectionUtils.getFieldValue(config, name);
-                    if (ObjectUtils.isNotNull(value) && !String.class.equals(value.getClass())) {
+                    if (ObjectUtils.isEmpty(value)) {
+                        return null;
+                    }
+                    Class<?> clazz = value.getClass();
+
+                    if (StatViewServlet.class.equals(clazz)) {
+                        StatViewServlet set = (StatViewServlet) value;
+                        return Pair.of(name, set.toMap());
+                    }
+                    if (WebStatFilter.class.equals(clazz)) {
+                        WebStatFilter set = (WebStatFilter) value;
+                        return Pair.of(name, set.toMap());
+                    }
+                    if (ObjectUtils.isNotNull(value) && !String.class.equals(clazz)) {
                         value = value.toString();
                     }
                     return Pair.of(name, value);
                 })
+                .filter(ObjectUtils::isNotNull)
                 .collect(Collectors.toMap(Pair::getLeft, Pair::getRight));
         if (ObjectUtils.isNotNull(sources) && sources.size() > 0) {
             for (JdbcSource.Source source : sources) {
@@ -98,6 +114,8 @@ public class DruidPool {
                 source.setDruidDataSource(dataSource);
                 DATA_SOURCE_SETTING.put(key, source);
             }
+
+            DEFAULT = sources.get(0).getKey();
         } else {
             String url = config.getUrl();
             String username = config.getUsername();
@@ -112,8 +130,8 @@ public class DruidPool {
             DruidDataSource dataSource = (DruidDataSource) DruidDataSourceFactory.createDataSource(setting);
             keys.add(DEFAULT);
 
-            JdbcSource.Source  source = new JdbcSource.Source();
-            source.setKey("");
+            JdbcSource.Source source = new JdbcSource.Source();
+            source.setKey(DEFAULT);
             source.setUrl(url);
             source.setSchema("");
             source.setUsername(username);
@@ -186,7 +204,7 @@ public class DruidPool {
      * @since 2022 -01-07 15:39:01
      */
     @Bean
-    public HibernateTransactionManager transactionManager(){
+    public HibernateTransactionManager transactionManager() {
         HibernateTransactionManager manager = new HibernateTransactionManager(sessionFactory());
         return manager;
     }
