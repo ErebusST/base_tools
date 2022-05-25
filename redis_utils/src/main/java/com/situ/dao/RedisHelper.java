@@ -87,9 +87,9 @@ public class RedisHelper {
 //    private Environment environment;
 
     /**
-     * redis.ip=180.76.120.27
-     * redis.port=6370
-     * redis.auth=yysp@2018
+     * redis.ip=
+     * redis.port=
+     * redis.auth=
      * redis.pool.maxIdle=1
      * redis.pool.maxTotal=300
      * redis.pool.testOnBorrow=true
