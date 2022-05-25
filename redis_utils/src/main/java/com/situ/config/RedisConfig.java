@@ -29,12 +29,12 @@ public class RedisConfig {
     private String redis_port;
     @Value("${redis.auth}")
     private String redis_auth;
-    @Value("${redis.pool.maxTotal}")
-    private String redis_pool_maxTotal;
-    @Value("${redis.pool.maxIdle}")
-    private String redis_pool_maxIdle;
-    @Value("${redis.pool.testOnBorrow}")
-    private String redis_pool_testOnBorrow;
-    @Value("${redis.pool.testOnReturn}")
-    private String redis_pool_testOnReturn;
+    @Value("${redis.pool.maxTotal|10}")
+    private Integer redis_pool_maxTotal;
+    @Value("${redis.pool.maxIdle|8}")
+    private Integer redis_pool_maxIdle;
+    @Value("${redis.pool.testOnBorrow|true}")
+    private Boolean redis_pool_testOnBorrow;
+    @Value("${redis.pool.testOnReturn|true}")
+    private Boolean redis_pool_testOnReturn;
 }

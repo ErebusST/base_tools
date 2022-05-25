@@ -107,19 +107,27 @@ public class RedisHelper {
 
             String redis_auth = redisConfig.getRedis_auth();
 
-            String redis_pool_maxTotal = redisConfig.getRedis_pool_maxTotal();
+            Integer redis_pool_maxTotal = redisConfig.getRedis_pool_maxTotal();
 
-            String redis_pool_maxIdle = redisConfig.getRedis_pool_maxIdle();
+            Integer redis_pool_maxIdle = redisConfig.getRedis_pool_maxIdle();
 
-            String redis_pool_testOnBorrow = redisConfig.getRedis_pool_testOnBorrow();
+            Boolean redis_pool_testOnBorrow = redisConfig.getRedis_pool_testOnBorrow();
 
-            String redis_pool_testOnReturn = redisConfig.getRedis_pool_testOnReturn();
+            Boolean redis_pool_testOnReturn = redisConfig.getRedis_pool_testOnReturn();
 
             JedisPoolConfig config = new JedisPoolConfig();
-            config.setMaxIdle(Integer.valueOf(redis_pool_maxIdle));
-            config.setTestOnBorrow(Boolean.getBoolean(redis_pool_testOnBorrow));
-            config.setTestOnReturn(Boolean.getBoolean(redis_pool_testOnReturn));
-            config.setMaxTotal(Integer.valueOf(redis_pool_maxTotal));
+            config.setMaxIdle(redis_pool_maxIdle);
+            config.setMaxTotal(redis_pool_maxTotal);
+            config.setMinIdle(redis_pool_maxIdle / 2);
+            config.setTestOnCreate(true);
+            config.setTestOnBorrow(redis_pool_testOnBorrow);
+            config.setTestOnReturn(redis_pool_testOnReturn);
+
+            //是否在空闲资源监测时通过ping命令监测连接有效性，无效连接将被销毁。
+            config.setTestWhileIdle(true);
+            //空闲资源的检测周期
+            config.setTimeBetweenEvictionRunsMillis(30 * 1000L);
+            //当资源池连接用尽后，调用者的最大等待时间（单位为毫秒
             config.setMaxWaitMillis(5000L);
             config.setJmxEnabled(true);
             log.info("redis.port 2:" + redis_port);

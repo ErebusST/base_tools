@@ -629,8 +629,8 @@ public class BaseDBDao {
             TableSetting setting = FieldUtils.getEntityInfo(clazz);
             StringBuilder sql = new StringBuilder("INSERT INTO ");
             sql.append(setting.getTable()).append(" ");
-            String insertKey = FieldUtils.getFieldJoinStringForInsertField(setting);
-            String parameterKey = FieldUtils.getFieldJoinStringForInsertParameter(setting);
+            String insertKey = FieldUtils.getFieldJoinStringForInsertField(entity);
+            String parameterKey = FieldUtils.getFieldJoinStringForInsertParameter(entity);
             sql.append("(")
                     .append(insertKey)
                     .append(") VALUES (")
