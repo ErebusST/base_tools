@@ -149,27 +149,6 @@ public class DruidPool {
 
 
     /**
-     * dialect=org.hibernate.dialect.MySQL5Dialect
-     * driverClassName=com.mysql.jdbc.Driver
-     * url=
-     * username=
-     * password=
-     * auto=none
-     * showSql=true
-     * formatSql=true
-     * initialSize=1
-     * maxActive=2
-     * maxWait=60000
-     * timeBetweenEvictionRunsMillis=60000
-     * minEvictableIdleTimeMillis=300000
-     * validationQuery=SELECT 1
-     * testWhileIdle=true
-     * testOnBorrow=false
-     * testOnReturn=false
-     * poolPreparedStatements=true
-     * maxPoolPreparedStatementPerConnectionSize=200
-     * filters=stat
-     *
      * @return the connection
      * @throws Exception the exception
      * @author ErebusST
