@@ -53,7 +53,7 @@ public class DruidPool {
     /**
      * The constant DATA_SOURCE_SETTING.
      */
-    public static final Map<String, DruidDataSource> DATA_SOURCE_SETTING = new HashMap<>(DEFAULT_SIZE);
+    public static final Map<String, JdbcSource.Source> DATA_SOURCE_SETTING = new HashMap<>(DEFAULT_SIZE);
     @Getter
     private List<String> keys = new ArrayList<>(DEFAULT_SIZE);
 
@@ -87,6 +87,7 @@ public class DruidPool {
             for (JdbcSource.Source source : sources) {
                 String key = source.getKey();
                 String url = source.getUrl();
+                String schema = source.getSchema();
                 String username = source.getUsername();
                 String password = source.getPassword();
                 setting.put("url", url);
@@ -94,12 +95,14 @@ public class DruidPool {
                 setting.put("password", password);
                 DruidDataSource dataSource = (DruidDataSource) DruidDataSourceFactory.createDataSource(setting);
                 keys.add(key);
-                DATA_SOURCE_SETTING.put(key, dataSource);
+                source.setDruidDataSource(dataSource);
+                DATA_SOURCE_SETTING.put(key, source);
             }
         } else {
-            String url = config.getDbUrl();
+            String url = config.getUrl();
             String username = config.getUsername();
             String password = config.getPassword();
+
             if (StringUtils.equalsIgnoreCase(url, "null") || StringUtils.equalsIgnoreCase(username, "null") || StringUtils.equalsIgnoreCase(password, "null")) {
                 throw new Exception("必须至少配置一类数据源");
             }
@@ -108,7 +111,15 @@ public class DruidPool {
             setting.put("password", password);
             DruidDataSource dataSource = (DruidDataSource) DruidDataSourceFactory.createDataSource(setting);
             keys.add(DEFAULT);
-            DATA_SOURCE_SETTING.put(DEFAULT, dataSource);
+
+            JdbcSource.Source  source = new JdbcSource.Source();
+            source.setKey("");
+            source.setUrl(url);
+            source.setSchema("");
+            source.setUsername(username);
+            source.setPassword(password);
+            source.setDruidDataSource(dataSource);
+            DATA_SOURCE_SETTING.put(DEFAULT, source);
         }
     }
 
@@ -122,9 +133,9 @@ public class DruidPool {
     /**
      * dialect=org.hibernate.dialect.MySQL5Dialect
      * driverClassName=com.mysql.jdbc.Driver
-     * url=jdbc:mysql://180.76.120.27:3316/hms?characterEncoding=utf8&autoReconnect=true&useSSL=false
-     * username=root
-     * password=yysp@2017
+     * url=
+     * username=
+     * password=
      * auto=none
      * showSql=true
      * formatSql=true
@@ -147,7 +158,7 @@ public class DruidPool {
      * @since 2022 -01-07 15:39:01
      */
     public DruidPooledConnection getConnection() throws Exception {
-        DruidDataSource dds = DATA_SOURCE_SETTING.values().stream().findFirst().get();
+        DruidDataSource dds = DATA_SOURCE_SETTING.values().stream().findFirst().get().getDruidDataSource();
         return dds.getConnection();
     }
 
@@ -161,7 +172,7 @@ public class DruidPool {
      */
     @Bean(name = "sessionFactory")
     public SessionFactory sessionFactory() {
-        DruidDataSource dataSource = DATA_SOURCE_SETTING.values().stream().findFirst().get();
+        DruidDataSource dataSource = DATA_SOURCE_SETTING.values().stream().findFirst().get().getDruidDataSource();
         LocalSessionFactoryBuilder localSessionFactoryBuilder = new LocalSessionFactoryBuilder(dataSource);
         SessionFactory sessionFactory = localSessionFactoryBuilder.buildSessionFactory();
         return sessionFactory;

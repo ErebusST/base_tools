@@ -11,6 +11,7 @@ package com.situ.dao;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidPooledConnection;
 import com.google.gson.JsonObject;
+import com.situ.config.JdbcSource;
 import com.situ.entity.bo.JdbcField;
 import com.situ.entity.bo.TableSetting;
 import com.situ.entity.enumeration.DatabaseSetting;
@@ -79,9 +80,10 @@ public class JdbcHelper {
             key = DruidPool.DATA_SOURCE_SETTING.keySet().stream().findFirst().get();
         }
         if (!EXECUTE_SOURCES.containsKey(key)) {
-            DruidDataSource druidDataSource = DruidPool.DATA_SOURCE_SETTING.get(key);
+            JdbcSource.Source source = DruidPool.DATA_SOURCE_SETTING.get(key);
             Execute execute = new Execute();
-            execute.setDataSource(druidDataSource);
+            execute.setDataSource(source.getDruidDataSource());
+            execute.setSchema(source.getSchema());
             EXECUTE_SOURCES.put(key, execute);
         }
         return EXECUTE_SOURCES.get(key);
@@ -97,6 +99,9 @@ public class JdbcHelper {
          */
         @Setter
         DruidDataSource dataSource;
+
+        @Setter
+        private String schema;
 
 
         private final String regex = ":[a-zA-Z]+\\w*";
@@ -1458,6 +1463,78 @@ public class JdbcHelper {
             sql.append(" WHERE ").append(primaryId).append("=:").append(primaryId);
 
             return executeNonQuery(connection, sql.toString(), parameters) > 0;
+        }
+
+        /**
+         * Check table exists boolean.
+         *
+         * @param table the table
+         * @return the boolean
+         * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -05-25 11:48:48
+         */
+        public Boolean checkTableExists(String table) throws Exception {
+            return checkTableExists(schema, table);
+        }
+
+        /**
+         * Check table exist boolean.
+         *
+         * @param schema the schema
+         * @param table  the table
+         * @return the boolean
+         * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -05-25 11:26:41
+         */
+        public Boolean checkTableExists(String schema, String table) throws Exception {
+            StringBuilder sbSql = new StringBuilder();
+            sbSql.append(" SELECT count(1) exist ");
+            sbSql.append(" FROM information_schema.TABLES ");
+            sbSql.append(" WHERE TABLE_NAME = :table ");
+            sbSql.append(" AND TABLE_SCHEMA = :schema ");
+
+            Map<String, Object> parameters = new HashMap<>(2);
+            parameters.put("schema", schema);
+            parameters.put("table", table);
+
+            Object exist = executeScalar(sbSql.toString(), "exist", parameters);
+            return DataSwitch.convertObjectToBoolean(exist, false);
+        }
+
+        /**
+         * Clone table .
+         *
+         * @param source the source
+         * @param target the target
+         * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -05-25 11:48:04
+         */
+        public void cloneTable(String source, String target) throws Exception {
+            cloneTable(schema, source, target);
+        }
+
+        /**
+         * Clone table .
+         *
+         * @param schema the schema
+         * @param source the source
+         * @param target the target
+         * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -05-25 11:26:23
+         */
+        public void cloneTable(String schema, String source, String target) throws Exception {
+            StringBuilder sbSql = new StringBuilder();
+            sbSql.append("CREATE TABLE ");
+            sbSql.append(schema).append(".");
+            sbSql.append(target);
+            sbSql.append(" LIKE ");
+            sbSql.append(schema).append(".");
+            sbSql.append(source);
+            executeNonQuery(sbSql.toString());
         }
     }
 

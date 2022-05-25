@@ -8,6 +8,8 @@
 
 package com.situ.config;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.situ.tools.StringUtils;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -40,6 +42,16 @@ public class JdbcSource {
          * The Url.
          */
         String url;
+
+        String schema;
+
+        public String getSource() {
+            if (StringUtils.isEmpty(schema)) {
+                this.schema = this.key;
+            }
+            return this.schema;
+        }
+
         /**
          * The Username.
          */
@@ -48,6 +60,8 @@ public class JdbcSource {
          * The Password.
          */
         String password;
+
+        DruidDataSource druidDataSource;
     }
 
 }

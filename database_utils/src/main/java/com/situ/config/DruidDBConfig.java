@@ -25,9 +25,9 @@ import org.springframework.context.annotation.Configuration;
 public class DruidDBConfig {
     @Getter
     @Value("${spring.datasource.url:null}")
-    private String dbUrl;
+    private String url;
 
-    @Value("${spring.datasource.username:null}")
+    @Value("${spring.datasource.username:null")
     private String username;
 
     @Value("${spring.datasource.password:null}")
