@@ -101,6 +101,7 @@ public class RedisHelper {
      */
     private void initPool() {
         try {
+
             String redis_ip = redisConfig.getRedis_ip();
 
             String redis_port = redisConfig.getRedis_port();
