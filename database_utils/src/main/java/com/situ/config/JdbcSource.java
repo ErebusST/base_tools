@@ -45,7 +45,7 @@ public class JdbcSource {
 
         String schema;
 
-        public String getSource() {
+        public String getSchema() {
             if (StringUtils.isEmpty(schema)) {
                 this.schema = this.key;
             }
