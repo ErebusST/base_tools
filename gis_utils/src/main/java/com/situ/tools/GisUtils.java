@@ -599,14 +599,12 @@ public class GisUtils {
      * @since 2022 -01-07 15:36:26
      */
     public static Point getPointByRadius(Point point, double angle, double distance) {
-        double startLat = point.getLat().doubleValue();
-        double startLng = point.getLng().doubleValue();
+        double startLat = Math.toRadians(point.getLat().doubleValue());
+        double startLng = Math.toRadians(point.getLng().doubleValue());
         //将距离转换成经度的计算公式
         double δ = distance / (EARTH_RADIUS * 1000);
         // 转换为radian，否则结果会不正确
         angle = Math.toRadians(angle);
-        startLng = Math.toRadians(startLng);
-        startLat = Math.toRadians(startLat);
         double lat = Math.asin(Math.sin(startLat) * Math.cos(δ) + Math.cos(startLat) * Math.sin(δ) * Math.cos(angle));
         double lng = startLng + Math.atan2(Math.sin(angle) * Math.sin(δ) * Math.cos(startLat), Math.cos(δ) - Math.sin(startLat) * Math.sin(lat));
         // 转为正常的10进制经纬度

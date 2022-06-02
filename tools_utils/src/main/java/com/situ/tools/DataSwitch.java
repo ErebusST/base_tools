@@ -9,6 +9,7 @@
 package com.situ.tools;
 
 import com.google.gson.*;
+import com.situ.config.CustomObjectTypeAdapter;
 import com.situ.enumeration.DateFormatEnum;
 import lombok.extern.slf4j.Slf4j;
 
@@ -535,6 +536,8 @@ public class DataSwitch {
 
     //region Json与实体转换
 
+    private static Gson gson;
+
     /**
      * Get gson instance gson.
      *
@@ -551,15 +554,20 @@ public class DataSwitch {
     }
 
     private static Gson getGsonInstance(boolean isSerializeNulls, DateFormatEnum dateFormatEnum) {
-        dateFormatEnum = ObjectUtils.isNull(dateFormatEnum) ? DateFormatEnum.YYYY_MM_DD_HH_MM_SS : dateFormatEnum;
-        GsonBuilder gsonBuilder = new GsonBuilder().
-                setPrettyPrinting().
-                setLongSerializationPolicy(LongSerializationPolicy.STRING).
-                setDateFormat(dateFormatEnum.getValue());
-        if (isSerializeNulls) {
-            gsonBuilder.serializeNulls();
+        if (ObjectUtils.isNull(gson)) {
+            dateFormatEnum = ObjectUtils.isNull(dateFormatEnum) ? DateFormatEnum.YYYY_MM_DD_HH_MM_SS : dateFormatEnum;
+            GsonBuilder gsonBuilder = new GsonBuilder().
+                    setPrettyPrinting().
+                    setLongSerializationPolicy(LongSerializationPolicy.STRING).
+                    setDateFormat(dateFormatEnum.getValue());
+            gsonBuilder.registerTypeAdapter(Map.class, new CustomObjectTypeAdapter());
+            if (isSerializeNulls) {
+                gsonBuilder.serializeNulls();
+            }
+            gson = gsonBuilder.create();
         }
-        return gsonBuilder.create();
+
+        return gson;
     }
 
 
