@@ -102,7 +102,7 @@
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-core</artifactId>
-            <version>9.0.53</version>
+            <version>9.0.58</version>
 <!--            <optional>true</optional>-->
 <!--            <scope>provided</scope>-->
         </dependency>
@@ -137,7 +137,7 @@
         <dependency>
             <groupId>commons-beanutils</groupId>
             <artifactId>commons-beanutils</artifactId>
-            <version>1.9.3</version>
+            <version>20020520</version>
         </dependency>
 
         <dependency>
@@ -156,13 +156,31 @@
             <groupId>com.alibaba</groupId>
             <artifactId>easyexcel</artifactId>
             <version>2.2.7</version>
-<!--            <exclusions>-->
+            <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-api</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
+            <!--            <exclusions>-->
 <!--                <exclusion>-->
 <!--                    <artifactId>slf4j-api</artifactId>-->
 <!--                    <groupId>org.slf4j</groupId>-->
 <!--                </exclusion>-->
 <!--            </exclusions>-->
             <optional>false</optional>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.36</version>
+            <optional>true</optional>
             <scope>provided</scope>
         </dependency>
     </dependencies>
