@@ -13,6 +13,7 @@ import org.apache.tomcat.util.http.fileupload.FileItem;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.apache.tomcat.util.http.fileupload.disk.DiskFileItemFactory;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
+import org.junit.Test;
 
 import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
@@ -756,23 +757,39 @@ public class FileUtils {
      */
     public static void download(String reportPath, String realName, HttpServletResponse response) throws IOException {
         Path path = Paths.get(reportPath);
-        File file = path.toFile();
         InputStream inputStream = Files.newInputStream(path);
         // 以流的形式下载文件。
         byte[] buffer = new byte[inputStream.available()];
         inputStream.read(buffer);
         inputStream.close();
+
+        download(buffer, realName, response);
+
+    }
+
+    /**
+     * Download .
+     *
+     * @param data     the data
+     * @param realName the real name
+     * @param response the response
+     * @throws IOException the io exception
+     * @author ErebusST
+     * @since 2022 -06-19 20:37:00
+     */
+    public static void download(byte[] data, String realName, HttpServletResponse response) throws IOException {
         // 清空response
         realName = URLEncoder.encode(realName, "UTF-8");
         //response.reset();
         // 设置response的Header
         response.addHeader("Content-Disposition", "attachment;filename=" + realName);
-        response.addHeader("Content-Length", "" + file.length());
+        response.addHeader("Content-Length", "" + data.length);
         response.setCharacterEncoding("utf8");
         OutputStream toClient = new BufferedOutputStream(response.getOutputStream());
         response.setContentType("application/octet-stream");
-        toClient.write(buffer);
+        toClient.write(data);
         toClient.flush();
         toClient.close();
     }
+
 }
