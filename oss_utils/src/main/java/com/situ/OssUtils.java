@@ -15,6 +15,7 @@ import com.aliyun.oss.common.utils.IOUtils;
 import com.aliyun.oss.model.*;
 import com.situ.config.OssConfig;
 import com.situ.tools.DateUtils;
+import com.situ.tools.FileUtils;
 import com.situ.tools.ObjectUtils;
 import com.situ.tools.StringUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Nonnull;
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -426,6 +428,53 @@ public class OssUtils {
             }
         }
 
+    }
+
+    /**
+     * Download boolean.
+     *
+     * @param bucketName the bucket name
+     * @param objectKey  the object key
+     * @param fileName   the file name
+     * @param response   the response
+     * @return the boolean
+     * @throws IOException the io exception
+     * @author ErebusST
+     * @since 2022 -06-27 11:50:46
+     */
+    public static boolean download( @Nonnull String bucketName, @Nonnull String objectKey,
+                                    @Nonnull String fileName, HttpServletResponse response) throws IOException {
+        OSS client = null;
+        try {
+            client = getClient();
+            return download(client, bucketName, objectKey,fileName,response);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            if (ObjectUtils.isNotNull(client)) {
+                client.shutdown();
+            }
+        }
+    }
+
+    /**
+     * Download boolean.
+     *
+     * @param client     the client
+     * @param bucketName the bucket name
+     * @param objectKey  the object key
+     * @param fileName   the file name
+     * @param response   the response
+     * @return the boolean
+     * @throws IOException the io exception
+     * @author ErebusST
+     * @since 2022 -06-27 11:49:57
+     */
+    public static boolean download(OSS client, @Nonnull String bucketName, @Nonnull String objectKey,
+                                   @Nonnull String fileName, HttpServletResponse response) throws IOException {
+        byte[] bytes = getBytes(client, bucketName, objectKey);
+        FileUtils.download(bucketName,fileName,response);
+        return true;
     }
 
 }

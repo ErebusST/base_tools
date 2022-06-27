@@ -13,6 +13,7 @@ import com.alibaba.druid.pool.DruidPooledConnection;
 import com.google.gson.JsonObject;
 import com.situ.config.JdbcSource;
 import com.situ.entity.bo.JdbcField;
+import com.situ.entity.bo.Pager;
 import com.situ.entity.bo.TableSetting;
 import com.situ.entity.enumeration.DatabaseSetting;
 import com.situ.tools.*;
@@ -23,6 +24,7 @@ import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.Nonnull;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -315,6 +317,58 @@ public class JdbcHelper {
             } finally {
                 finallyExecute(null, preparedStatement, null);
             }
+        }
+
+        /**
+         * Find pager pager.
+         *
+         * @param sql        the sql
+         * @param parameters the parameters
+         * @param pageNumber the page number
+         * @param pageSize   the page size
+         * @return the pager
+         * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -06-22 15:45:36
+         */
+        public Pager findPager(@Nonnull String sql, Map<String, Object> parameters, Integer pageNumber, Integer pageSize) throws Exception {
+            DruidPooledConnection connection = null;
+            try {
+                connection = getConnection(false);
+                return findPager(connection, sql, parameters, pageNumber, pageSize);
+            } catch (Exception ex) {
+                throw ex;
+            } finally {
+                finallyExecute(null, null, connection);
+            }
+        }
+
+        /**
+         * Find pager pager.
+         *
+         * @param connection the connection
+         * @param sql        the sql
+         * @param parameters the parameters
+         * @param pageNumber the page number
+         * @param pageSize   the page size
+         * @return the pager
+         * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -06-22 15:44:43
+         */
+        public Pager findPager(DruidPooledConnection connection, @Nonnull String sql, Map<String, Object> parameters, Integer pageNumber, Integer pageSize) throws Exception {
+            int startIndex = (pageNumber - 1) * pageSize;
+            sql = StringUtils.replace(sql, ";", "");
+            String pagerSql = StringUtils.concat(sql, " limit ", startIndex, ",", pageSize);
+            List<Map<String, Object>> list = findList(connection, pagerSql, parameters);
+            //  sqlBuilder.append("SELECT COUNT(1) FROM (").append(sql).append(") TEMP");
+            String countSql = StringUtils.concat("SELECT COUNT(1) count FROM (", sql, ") TEMP");
+            Integer count = DataSwitch.convertObjectToInteger(executeScalar(countSql, parameters));
+            Pager pager = new Pager();
+            pager.setPageSize(pageSize);
+            pager.setRows(list);
+            pager.setTotal(count);
+            return pager;
         }
 
         /**
