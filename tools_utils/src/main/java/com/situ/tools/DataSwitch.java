@@ -859,6 +859,7 @@ public class DataSwitch {
      * @author ErebusST
      * @since 2022 -01-17 16:52:43
      */
+    @Deprecated
     public static <Entity> JsonObject convertEntityToJsonObject(Class<Entity> clazz, Entity entity) {
         if (ObjectUtils.isNull(entity)) {
             return null;

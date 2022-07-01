@@ -16,7 +16,6 @@ import com.situ.enumeration.HttpMethod;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
-import org.apache.poi.ss.formula.functions.Intercept;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +35,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class RequestTools {
 
-    public static class BasicAuthInterceptor implements Interceptor{
+    public static class BasicAuthInterceptor implements Interceptor {
         private String credentials;
 
         public BasicAuthInterceptor(String user, String password) {
@@ -89,12 +88,16 @@ public class RequestTools {
                     .stream()
                     .map(entry -> {
                         String key = entry.getKey();
-                        String value = entry.getValue();
+                        String value = null;
+                        try {
+                            value = URLEncoder.encode(entry.getValue(), "UTF-8");
+                        } catch (UnsupportedEncodingException e) {
+                            value = entry.getValue();
+                        }
                         return StringUtils.concat(key, "=", value);
                     })
                     .collect(Collectors.joining("&"));
             if (StringUtils.isNotEmpty(para)) {
-                para = URLEncoder.encode(url, "UTF-8");
                 url = StringUtils.concat(url, "?", para);
             }
             //url = URLEncoder.encode(url, "UTF-8");
@@ -229,7 +232,7 @@ public class RequestTools {
      * @author ErebusST
      * @since 2022 -04-29 14:01:05
      */
-    public static OkHttpClient getClient(Interceptor... interceptors){
+    public static OkHttpClient getClient(Interceptor... interceptors) {
         OkHttpClient.Builder builder = new OkHttpClient().newBuilder()
                 .connectTimeout(TIME_OUT, TimeUnit.SECONDS)
                 .readTimeout(TIME_OUT, TimeUnit.SECONDS)
