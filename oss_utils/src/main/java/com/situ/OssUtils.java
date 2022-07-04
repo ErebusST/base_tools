@@ -25,8 +25,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Nonnull;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -442,12 +440,12 @@ public class OssUtils {
      * @author ErebusST
      * @since 2022 -06-27 11:50:46
      */
-    public static boolean download( @Nonnull String bucketName, @Nonnull String objectKey,
-                                    @Nonnull String fileName, HttpServletResponse response) throws IOException {
+    public static boolean download(@Nonnull String bucketName, @Nonnull String objectKey,
+                                   @Nonnull String fileName, HttpServletResponse response) throws IOException {
         OSS client = null;
         try {
             client = getClient();
-            return download(client, bucketName, objectKey,fileName,response);
+            return download(client, bucketName, objectKey, fileName, response);
         } catch (Exception ex) {
             throw ex;
         } finally {
@@ -472,8 +470,13 @@ public class OssUtils {
      */
     public static boolean download(OSS client, @Nonnull String bucketName, @Nonnull String objectKey,
                                    @Nonnull String fileName, HttpServletResponse response) throws IOException {
-        byte[] bytes = getBytes(client, bucketName, objectKey);
-        FileUtils.download(bucketName,fileName,response);
+        try {
+            OSSObject object = getObject(client, bucketName, objectKey);
+            InputStream inputStream = object.getObjectContent();
+            FileUtils.download(inputStream, fileName, response);
+        } catch (Exception ex) {
+            throw ex;
+        }
         return true;
     }
 

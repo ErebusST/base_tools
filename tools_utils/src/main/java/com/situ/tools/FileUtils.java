@@ -13,12 +13,15 @@ import org.apache.tomcat.util.http.fileupload.FileItem;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.apache.tomcat.util.http.fileupload.disk.DiskFileItemFactory;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
-import org.junit.Test;
 
 import javax.annotation.Nonnull;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -731,19 +734,6 @@ public class FileUtils {
         return fileNameRet;
     }
 
-    /**
-     * Get file stream .
-     *
-     * @param reportPath the report path
-     * @throws IOException the io exception
-     * @author ErebusST
-     * @since 2022 -01-07 15:36:01
-     */
-    public static void getFileStream(String reportPath) throws IOException {
-        InputStream inputStream = Files.newInputStream(Paths.get(reportPath));
-
-
-    }
 
     /**
      * Download.
@@ -757,39 +747,50 @@ public class FileUtils {
      */
     public static void download(String reportPath, String realName, HttpServletResponse response) throws IOException {
         Path path = Paths.get(reportPath);
-        InputStream inputStream = Files.newInputStream(path);
-        // 以流的形式下载文件。
-        byte[] buffer = new byte[inputStream.available()];
-        inputStream.read(buffer);
-        inputStream.close();
-
-        download(buffer, realName, response);
-
+        try {
+            InputStream inputStream = Files.newInputStream(path);
+            download(inputStream, realName, response);
+        } catch (Exception ex) {
+            throw ex;
+        }
     }
 
     /**
      * Download .
      *
-     * @param data     the data
-     * @param realName the real name
-     * @param response the response
+     * @param inputStream the input stream
+     * @param fileName    the file name
+     * @param response    the response
      * @throws IOException the io exception
      * @author ErebusST
-     * @since 2022 -06-19 20:37:00
+     * @since 2022 -07-04 17:45:53
      */
-    public static void download(byte[] data, String realName, HttpServletResponse response) throws IOException {
-        // 清空response
-        realName = URLEncoder.encode(realName, "UTF-8");
-        //response.reset();
-        // 设置response的Header
-        response.addHeader("Content-Disposition", "attachment;filename=" + realName);
-        response.addHeader("Content-Length", "" + data.length);
-        response.setCharacterEncoding("utf8");
-        OutputStream toClient = new BufferedOutputStream(response.getOutputStream());
-        response.setContentType("application/octet-stream");
-        toClient.write(data);
-        toClient.flush();
-        toClient.close();
+    public static void download(InputStream inputStream, String fileName, HttpServletResponse response) throws IOException {
+        try {
+            // 清空response
+            String realName = URLEncoder.encode(fileName, StaticValue.ENCODING);
+            //response.reset();
+            // 设置response的Header
+            response.addHeader("Content-Disposition", "attachment;filename=" + realName);
+            response.setCharacterEncoding("utf8");
+            response.setContentType("application/octet-stream");
+            ServletOutputStream outputStream = response.getOutputStream();
+
+            byte[] buffer = new byte[2048];
+            int length = 0;
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+
+            outputStream.flush();
+            outputStream.close();
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            if (ObjectUtils.isNotNull(inputStream)) {
+                inputStream.close();
+            }
+        }
     }
 
 }
