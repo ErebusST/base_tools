@@ -11,6 +11,7 @@ package com.situ.tools;
 import com.situ.entity.bo.DataItem;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ArrayUtils;
+import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -355,7 +356,7 @@ public class NumberUtils {
             value2 = BigDecimal.ZERO;
         }
         BigDecimal decimal1 = DataSwitch.convertObjectToBigDecimal(value1);
-        if(ObjectUtils.isNull(decimal1)){
+        if (ObjectUtils.isNull(decimal1)) {
             decimal1 = BigDecimal.ZERO;
         }
         BigDecimal decimal2 = DataSwitch.convertObjectToBigDecimal(value2);
@@ -759,6 +760,12 @@ public class NumberUtils {
                         BigDecimal percent = item.getPercent();
                         return BigDecimal.ZERO.compareTo(percent) < 0 && percent.compareTo(diff.abs()) > 0;
                     })
+                    .collect(Collectors.groupingBy(DataItem::getCount))
+                    .entrySet()
+                    .stream()
+                    .sorted(Comparator.comparing(entry -> entry.getValue().size()))
+                    .filter(entry -> entry.getKey().doubleValue() > 0D)
+                    .flatMap(entry -> entry.getValue().stream())
                     .findFirst()
                     .ifPresent(item -> {
                         BigDecimal percent = DataSwitch.convertObjectToBigDecimal(item.getPercent(), 4);
