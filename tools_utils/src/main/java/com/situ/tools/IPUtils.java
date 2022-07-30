@@ -8,6 +8,10 @@
 
 package com.situ.tools;
 
+import lombok.extern.slf4j.Slf4j;
+import org.junit.Test;
+import org.lionsoul.ip2region.xdb.Searcher;
+
 import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
 
@@ -17,6 +21,7 @@ import java.net.InetAddress;
  * @author 司徒彬
  * @date 2017 -03-10 13:55
  */
+@Slf4j
 public class IPUtils {
 
     /**
@@ -54,5 +59,28 @@ public class IPUtils {
             ip = "127.0.0.1";
         }
         return ip;
+    }
+
+    public static String DB_PATH = "/Users/erebus/Downloads/ip2region.xdb";
+
+    @Test
+    public void test(){
+        String s = toAddress("120.244.236.77");
+        log.info(s);
+    }
+
+    public static String toAddress(String ip) {
+        try {
+            if (StringUtils.isEmpty(DB_PATH)) {
+                DB_PATH = SpringContextUtils.getApplicationContext().getEnvironment().getProperty("ip.db");
+                if (StringUtils.isEmpty(DB_PATH)) {
+                    return "";
+                }
+            }
+            Searcher searcher = Searcher.newWithFileOnly(DB_PATH);
+            return searcher.search(ip);
+        } catch (Exception ex) {
+            return "";
+        }
     }
 }

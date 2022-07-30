@@ -145,7 +145,9 @@ public class RedisHelper {
     /**
      * 通用方法：从JedisPool中获取Jedis
      *
-     * @return
+     * @return client
+     * @author ErebusST
+     * @since 2022 -07-27 18:25:51
      */
     public synchronized Jedis getClient() {
         if (jedisPool == null) {
@@ -689,7 +691,12 @@ public class RedisHelper {
             client = getClient();
             client.select(dbIndex);
             Long expire = client.ttl(key);
-            return client.setex(key, expire.intValue(), value);
+            if (ObjectUtils.isNotNull(expire) && expire > 0L) {
+                return client.setex(key, expire.intValue(), value);
+            } else {
+                return client.set(key, value);
+            }
+
         } catch (Exception ex) {
             throw ex;
         } finally {
@@ -719,10 +726,27 @@ public class RedisHelper {
      * @since 2022 -05-20 15:34:09
      */
     public Long incr(@Nonnull String key, Integer dbIndex) {
+        return incr(key, dbIndex, null);
+    }
+
+    /**
+     * Incr long.
+     *
+     * @param key     the key
+     * @param dbIndex the db index
+     * @param expire  the expire
+     * @return the long
+     * @author ErebusST
+     * @since 2022 -07-29 09:44:08
+     */
+    public Long incr(@Nonnull String key, Integer dbIndex, Integer expire) {
         Jedis client = null;
         try {
             client = getClient();
             client.select(dbIndex);
+            if (ObjectUtils.isNotNull(expire)) {
+                client.expire(key, expire);
+            }
             return client.incr(key);
         } catch (Exception ex) {
             throw ex;
