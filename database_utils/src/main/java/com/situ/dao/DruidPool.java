@@ -55,7 +55,7 @@ public class DruidPool {
     /**
      * The constant DATA_SOURCE_SETTING.
      */
-    public static final Map<String, JdbcSource.Source> DATA_SOURCE_SETTING = new HashMap<>(DEFAULT_SIZE);
+    public static final Map<String, JdbcSource.Source> DATA_SOURCE_SETTING = new LinkedHashMap<>(DEFAULT_SIZE);
     @Getter
     private List<String> keys = new ArrayList<>(DEFAULT_SIZE);
 
