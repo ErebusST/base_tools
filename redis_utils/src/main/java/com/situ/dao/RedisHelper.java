@@ -744,10 +744,11 @@ public class RedisHelper {
         try {
             client = getClient();
             client.select(dbIndex);
+            Long incr = client.incr(key);
             if (ObjectUtils.isNotNull(expire)) {
                 client.expire(key, expire);
             }
-            return client.incr(key);
+            return incr;
         } catch (Exception ex) {
             throw ex;
         } finally {
