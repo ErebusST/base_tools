@@ -326,6 +326,25 @@ public class RedisHelper {
         }
     }
 
+    public <T> List<T> getEntities(@Nonnull Class<T> clazz, @Nonnull String key) {
+        return getEntities(clazz, key, null);
+    }
+
+    /**
+     * Get entities list.
+     *
+     * @param <T>     the type parameter
+     * @param clazz   the clazz
+     * @param key     the key
+     * @param dbIndex the db index
+     * @return the list
+     * @author ErebusST
+     * @since 2022 -08-12 13:55:48
+     */
+    public <T> List<T> getEntities(@Nonnull Class<T> clazz, @Nonnull String key, Integer dbIndex) {
+        JsonArray jsonArray = getJsonArray(key, dbIndex);
+        return DataSwitch.convertJsonArrayToListEntity(clazz, jsonArray);
+    }
 
     /**
      * Gets entity.

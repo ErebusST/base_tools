@@ -208,6 +208,45 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
         return day;
     }
 
+
+    /**
+     * Get day of week int.
+     *
+     * @param timestamp the timestamp
+     * @return the int
+     * @author ErebusST
+     * @since 2022 -08-12 10:16:29
+     */
+    public static int getDayOfWeek(Timestamp timestamp) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(timestamp.getTime());
+        boolean firstDayIsSunday = cal.getFirstDayOfWeek() == Calendar.SUNDAY;
+        cal.setFirstDayOfWeek(Calendar.MONDAY);
+        int day = cal.get(Calendar.DAY_OF_WEEK);
+        if (firstDayIsSunday) {
+            day = day - 1;
+            if (day == 0) {
+                day = 7;
+            }
+        }
+        return day;
+    }
+
+    /**
+     * Get day of month int.
+     *
+     * @param timestamp the timestamp
+     * @return the int
+     * @author ErebusST
+     * @since 2022 -08-12 10:15:54
+     */
+    public static int getDayOfMonth(Timestamp timestamp) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(timestamp.getTime());
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+        return day;
+    }
+
     /**
      * Get week of year int.
      *
@@ -437,7 +476,6 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
     }
 
 
-
     /**
      * Add month timestamp.
      *
@@ -446,8 +484,8 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @author ErebusST
      * @since 2022 -04-17 09:58:46
      */
-    public static Timestamp addMonth(int month){
-        return addMonth(DateUtils.getNow(),month);
+    public static Timestamp addMonth(int month) {
+        return addMonth(DateUtils.getNow(), month);
     }
 
     /**
