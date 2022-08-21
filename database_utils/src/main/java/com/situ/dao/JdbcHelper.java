@@ -83,6 +83,11 @@ public class JdbcHelper {
         }
         if (!EXECUTE_SOURCES.containsKey(key)) {
             JdbcSource.Source source = DruidPool.DATA_SOURCE_SETTING.get(key);
+            if (ObjectUtils.isNull(source)) {
+                String temp = DruidPool.DATA_SOURCE_SETTING.keySet().stream().collect(Collectors.joining(","));
+                log.error("获取数据源失败:" + key + " 现有数据源:" + temp);
+                throw new NullPointerException("获取数据源失败:" + key + " 现有数据源:" + temp);
+            }
             Execute execute = new Execute();
             execute.setDataSource(source.getDruidDataSource());
             execute.setSchema(source.getSchema());

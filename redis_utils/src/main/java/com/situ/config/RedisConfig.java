@@ -10,6 +10,8 @@ package com.situ.config;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +24,8 @@ import org.springframework.stereotype.Component;
 @Component
 @Getter
 @Setter
-public class RedisConfig {
+@Slf4j
+public class RedisConfig implements InitializingBean {
     @Value("${redis.redis_ip}")
     private String redis_ip;
     @Value("${redis.redis_port}")
@@ -37,4 +40,9 @@ public class RedisConfig {
     private Boolean redis_pool_testOnBorrow;
     @Value("${redis.pool.testOnReturn:true}")
     private Boolean redis_pool_testOnReturn;
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+       log.info("redis init!");
+    }
 }

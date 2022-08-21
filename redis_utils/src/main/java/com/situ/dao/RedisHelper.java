@@ -101,7 +101,9 @@ public class RedisHelper {
      */
     private void initPool() {
         try {
-
+            if (ObjectUtils.isNull(redisConfig)) {
+                redisConfig = redisConfigTemp;
+            }
             String redis_ip = redisConfig.getRedis_ip();
 
             String redis_port = redisConfig.getRedis_port();
@@ -759,38 +761,35 @@ public class RedisHelper {
      * @since 2022 -07-29 09:44:08
      */
     public Long incr(@Nonnull String key, Integer dbIndex, Integer expire) {
-        Jedis client = null;
-        try {
-            client = getClient();
-            client.select(dbIndex);
-            Long incr = client.incr(key);
-            if (ObjectUtils.isNotNull(expire)) {
-                client.expire(key, expire);
-            }
-            return incr;
-        } catch (Exception ex) {
-            throw ex;
-        } finally {
-            close(client);
-        }
+        return incr(key, dbIndex, null, expire);
     }
 
     /**
      * Incr long.
      *
-     * @param key     the key
-     * @param value   the value
-     * @param dbIndex the db index
+     * @param key       the key
+     * @param dbIndex   the db index
+     * @param increment the increment
+     * @param expire    the expire
      * @return the long
      * @author ErebusST
-     * @since 2022 -05-20 15:35:09
+     * @since 2022 -08-19 11:14:14
      */
-    public Long incr(@Nonnull String key, @Nonnull Long value, Integer dbIndex) {
+    public Long incr(@Nonnull String key, Integer dbIndex, Long increment, Integer expire) {
         Jedis client = null;
         try {
             client = getClient();
             client.select(dbIndex);
-            return client.incrBy(key, value);
+            Long incr;
+            if (ObjectUtils.isNotNull(increment)) {
+                incr = client.incrBy(key, increment);
+            } else {
+                incr = client.incr(key);
+            }
+            if (ObjectUtils.isNotNull(expire)) {
+                client.expire(key, expire);
+            }
+            return incr;
         } catch (Exception ex) {
             throw ex;
         } finally {
@@ -821,11 +820,49 @@ public class RedisHelper {
      * @since 2022 -05-20 16:53:56
      */
     public Long decr(@Nonnull String key, Integer dbIndex) {
+        return decr(key, dbIndex, null);
+    }
+
+    /**
+     * Incr long.
+     *
+     * @param key     the key
+     * @param dbIndex the db index
+     * @param expire  the expire
+     * @return the long
+     * @author ErebusST
+     * @since 2022 -07-29 09:44:08
+     */
+    public Long decr(@Nonnull String key, Integer dbIndex, Integer expire) {
+        return decr(key, dbIndex, null, expire);
+    }
+
+    /**
+     * Decr long.
+     *
+     * @param key       the key
+     * @param dbIndex   the db index
+     * @param increment the increment
+     * @param expire    the expire
+     * @return the long
+     * @author ErebusST
+     * @since 2022 -08-19 11:17:21
+     */
+    public Long decr(@Nonnull String key, Integer dbIndex, Long increment, Integer expire) {
         Jedis client = null;
         try {
             client = getClient();
             client.select(dbIndex);
-            return client.decr(key);
+            Long incr;
+            if (ObjectUtils.isNotNull(increment)) {
+                incr = client.decrBy(key, increment);
+            } else {
+                incr = client.decr(key);
+            }
+            if (ObjectUtils.isNotNull(expire)) {
+                client.expire(key, expire);
+            }
+            return incr;
         } catch (Exception ex) {
             throw ex;
         } finally {
@@ -833,28 +870,6 @@ public class RedisHelper {
         }
     }
 
-    /**
-     * Decr long.
-     *
-     * @param key     the key
-     * @param value   the value
-     * @param dbIndex the db index
-     * @return the long
-     * @author ErebusST
-     * @since 2022 -05-20 16:53:58
-     */
-    public Long decr(@Nonnull String key, @Nonnull Long value, Integer dbIndex) {
-        Jedis client = null;
-        try {
-            client = getClient();
-            client.select(dbIndex);
-            return client.decrBy(key, value);
-        } catch (Exception ex) {
-            throw ex;
-        } finally {
-            close(client);
-        }
-    }
 
     /**
      * Ttl long.
