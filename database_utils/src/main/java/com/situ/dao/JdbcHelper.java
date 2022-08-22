@@ -1487,6 +1487,31 @@ public class JdbcHelper {
         /**
          * Update boolean.
          *
+         * @param <Entity>  the type parameter
+         * @param entity    the entity
+         * @param tableName the table name
+         * @return the boolean
+         * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -08-21 18:50:38
+         */
+        public <Entity> boolean update(Entity entity, String tableName) throws Exception {
+            DruidPooledConnection connection = getConnection();
+            try {
+                boolean replace = update(connection, entity, tableName);
+                connection.commit();
+                return replace;
+            } catch (Exception ex) {
+                connection.rollback();
+                throw ex;
+            } finally {
+                connection.close();
+            }
+        }
+
+        /**
+         * Update boolean.
+         *
          * @param <Entity>   the type parameter
          * @param connection the connection
          * @param entity     the entity
@@ -1497,10 +1522,30 @@ public class JdbcHelper {
          */
         public <Entity> boolean update(DruidPooledConnection connection, Entity entity) throws Exception {
             Class<Entity> clazz = (Class<Entity>) entity.getClass();
-
             TableSetting setting = FieldUtils.getEntityInfo(clazz);
 
             String tableName = setting.getTable();
+            return update(connection, entity, tableName);
+        }
+
+
+        /**
+         * Update boolean.
+         *
+         * @param <Entity>   the type parameter
+         * @param connection the connection
+         * @param entity     the entity
+         * @param tableName  the table name
+         * @return the boolean
+         * @throws Exception the exception
+         * @author ErebusST
+         * @since 2022 -08-21 18:49:16
+         */
+        public <Entity> boolean update(DruidPooledConnection connection, Entity entity, String tableName) throws Exception {
+            Class<Entity> clazz = (Class<Entity>) entity.getClass();
+
+            TableSetting setting = FieldUtils.getEntityInfo(clazz);
+
             String schema = setting.getSchema();
             Map<String, Object> parameters = FieldUtils.getParameters(entity);
 
