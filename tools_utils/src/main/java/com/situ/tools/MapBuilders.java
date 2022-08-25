@@ -12,17 +12,36 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
+ * The type Map builders.
+ *
+ * @param <Key>   the type parameter
+ * @param <Value> the type parameter
  * @author 司徒彬
- * @date 2022/1/8 15:53
+ * @date 2022 /1/8 15:53
  */
 public class MapBuilders<Key, Value> {
 
     private LinkedHashMap<Key, Value> temp;
 
+    /**
+     * New instance map builders.
+     *
+     * @return the map builders
+     * @author ErebusST
+     * @since 2022 -08-23 11:32:58
+     */
     public static MapBuilders newInstance() {
         return new MapBuilders();
     }
 
+    /**
+     * New instance map builders.
+     *
+     * @param size the size
+     * @return the map builders
+     * @author ErebusST
+     * @since 2022 -08-23 11:32:58
+     */
     public static MapBuilders newInstance(Integer size) {
         return new MapBuilders(size);
     }
@@ -35,11 +54,29 @@ public class MapBuilders<Key, Value> {
         temp = new LinkedHashMap<>(size);
     }
 
+    /**
+     * Add map builders.
+     *
+     * @param key   the key
+     * @param value the value
+     * @return the map builders
+     * @author ErebusST
+     * @since 2022 -08-23 11:32:58
+     */
     public MapBuilders add(Key key, Value value) {
-        temp.put(key, value);
+        if(ObjectUtils.isNotNull(value)){
+            temp.put(key, value);
+        }
         return this;
     }
 
+    /**
+     * Get map.
+     *
+     * @return the map
+     * @author ErebusST
+     * @since 2022 -08-23 11:32:58
+     */
     public Map<Key, Value> get() {
         return temp;
     }

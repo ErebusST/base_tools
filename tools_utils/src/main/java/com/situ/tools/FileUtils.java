@@ -13,17 +13,16 @@ import org.apache.tomcat.util.http.fileupload.FileItem;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.apache.tomcat.util.http.fileupload.disk.DiskFileItemFactory;
 import org.apache.tomcat.util.http.fileupload.servlet.ServletFileUpload;
+import org.junit.Test;
 
 import javax.annotation.Nonnull;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -792,5 +791,47 @@ public class FileUtils {
             }
         }
     }
+
+    /**
+     * Get web file content string.
+     *
+     * @param urlPath the url path
+     * @return the web file content
+     * @author ErebusST
+     * @since 2022 -08-24 18:08:19
+     */
+    public static String getWebFileContent(String urlPath) {
+        String result = "";
+        InputStream inputStream = null;
+        BufferedReader bufferedReader = null;
+        try {
+            URL url = new URL(urlPath);
+            inputStream = url.openStream();
+            bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            result = bufferedReader.lines().collect(Collectors.joining(StaticValue.LINE_SEPARATOR));
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (ObjectUtils.isNotNull(bufferedReader)) {
+                    bufferedReader.close();
+                }
+                if (ObjectUtils.isNotNull(inputStream)) {
+                    inputStream.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
+
+
+    @Test
+    public void test() {
+        String webFileContent = getWebFileContent("https://storage.data-dance.com/js/init.js");
+        log.info(webFileContent);
+    }
+
 
 }

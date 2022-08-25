@@ -10,6 +10,8 @@ package com.situ.tools;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -25,6 +27,71 @@ import java.util.stream.Stream;
  * @date 2017 -03-15 10:56
  */
 public class StringUtils extends org.apache.commons.lang3.StringUtils {
+
+    /**
+     * Encode string.
+     *
+     * @param string the string
+     * @return the string
+     * @author ErebusST
+     * @since 2022 -08-23 11:20:30
+     */
+    public static String encode(String string) {
+        return encode(string, StaticValue.ENCODING);
+    }
+
+    /**
+     * Encode string.
+     *
+     * @param string   the string
+     * @param encoding the encoding
+     * @return the string
+     * @author ErebusST
+     * @since 2022 -08-25 10:07:14
+     */
+    public static String encode(String string, String encoding) {
+        if (isEmpty(string)) {
+            return string;
+        }
+        try {
+            return URLEncoder.encode(string, encoding);
+        } catch (Exception ex) {
+            return URLEncoder.encode(string);
+        }
+    }
+
+    /**
+     * Decode string.
+     *
+     * @param string the string
+     * @return the string
+     * @author ErebusST
+     * @since 2022 -08-23 11:20:28
+     */
+    public static String decode(String string) {
+        return decode(string, StaticValue.ENCODING);
+
+    }
+
+    /**
+     * Decode string.
+     *
+     * @param string   the string
+     * @param encoding the encoding
+     * @return the string
+     * @author ErebusST
+     * @since 2022 -08-25 10:07:51
+     */
+    public static String decode(String string, String encoding) {
+        if (isEmpty(string)) {
+            return string;
+        }
+        try {
+            return URLDecoder.decode(string, encoding);
+        } catch (Exception ex) {
+            return URLDecoder.decode(string);
+        }
+    }
 
     /**
      * Starts with any boolean.
@@ -599,7 +666,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
             if (isBlankChar(c)) {
                 continue;
             }
-             result.append(c);
+            result.append(c);
         }
         return result.toString();
     }
