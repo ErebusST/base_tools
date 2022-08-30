@@ -15,7 +15,7 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
+import java.util.regex.Pattern;
 
 /**
  * DateUtils，时间操作类
@@ -37,12 +37,6 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
         return getDateString(date, DateFormatEnum.YYYY_MM_DD_HH_MM_SS);
     }
 
-    @Test
-    public void test() {
-        Timestamp timestamp = DateUtils.getNow();
-        String string = timestamp.toString();
-        System.out.println(string);
-    }
 
     /**
      * Gets date string.
@@ -71,21 +65,10 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
         if (ObjectUtils.isNull(date)) {
             return "";
         }
-
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(format);
         return simpleDateFormat.format(date);
     }
 
-    /**
-     * 获得当前时间的字符串 默认格式：yyyy-MM-dd HH:mm:ss
-     *
-     * @return the date string
-     * @author ErebusST
-     * @since 2022 -01-07 15:35:59
-     */
-    public static String getDateString() {
-        return getDateString(new Date(), null);
-    }
 
     /**
      * 根据制指定的格式，获得当前时间的字符串
@@ -96,22 +79,9 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @since 2022 -01-07 15:35:59
      */
     public static String getDateString(DateFormatEnum dateFormatEnum) {
-        return getDateString(new Date(), dateFormatEnum);
+        return getDateString(getNow(), dateFormatEnum);
     }
 
-    /**
-     * 根据指定的格式，得到指定时间的字符串
-     *
-     * @param date           the date
-     * @param dateFormatEnum the date format enum
-     * @return the date string
-     * @author ErebusST
-     * @since 2022 -01-07 15:35:59
-     */
-    public static String getDateString(Date date, DateFormatEnum dateFormatEnum) {
-        Timestamp timestamp = new Timestamp(date.getTime());
-        return getDateString(timestamp, dateFormatEnum);
-    }
 
     /**
      * 获取日期 天数差
@@ -123,7 +93,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @return：相差天数
      * @since 2022 -01-07 15:35:59
      */
-    public static int getDaysCount(Date startDate, Date endDate) {
+    public static int getDaysCount(Timestamp startDate, Timestamp endDate) {
         int dayInt = 0;
         long date1Time = startDate.getTime();
         long date2Time = endDate.getTime();
@@ -142,7 +112,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @author ErebusST
      * @since 2022 -01-07 15:35:59
      */
-    public static int getSecondsCount(Date startDate, Date endDate) {
+    public static int getSecondsCount(Timestamp startDate, Timestamp endDate) {
         long time = endDate.getTime() - startDate.getTime();
         int totalS = new Long(time / 1000).intValue();
         return totalS;
@@ -157,7 +127,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      */
     public static String getCurrentYearStr() {
         Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date());
+        cal.setTimeInMillis(System.currentTimeMillis());
         int year = cal.get(Calendar.YEAR);
         return year + "";
     }
@@ -289,34 +259,6 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
         return new Timestamp(System.currentTimeMillis());
     }
 
-    /**
-     * 根据指定的字符串获得时间
-     *
-     * @param dateStr 时间字符串 yyyy-MM-dd HH:mm:ss
-     * @return date date
-     * @throws ParseException the parse exception
-     * @author ErebusST
-     * @since 2022 -01-07 15:35:59
-     */
-    public static Date getDate(String dateStr) throws ParseException {
-        return getDate(dateStr, null);
-    }
-
-    /**
-     * Gets date.
-     *
-     * @param dateStr        the date str
-     * @param dateFormatEnum the date format enum
-     * @return the date
-     * @throws ParseException the parse exception
-     * @author ErebusST
-     * @since 2022 -01-07 15:35:59
-     */
-    public static Date getDate(String dateStr, DateFormatEnum dateFormatEnum) throws ParseException {
-        dateFormatEnum = dateFormatEnum == null ? DateFormatEnum.YYYY_MM_DD_HH_MM_SS : dateFormatEnum;
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormatEnum.getValue());
-        return simpleDateFormat.parse(dateStr);
-    }
 
     /**
      * Gets timestamp.
@@ -328,8 +270,13 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @since 2022 -01-07 15:35:59
      */
     public static Timestamp getTimestamp(Object dateStr) {
-        return getTimestamp(DataSwitch.convertObjectToString(dateStr), 0, null);
+        return getTimestamp(DataSwitch.convertObjectToString(dateStr), 0);
     }
+
+
+    private final static Pattern YYYY_MM_DD = Pattern.compile("^\\d{4}-[01][0-9]-[0-2][0-9]$");
+    private final static Pattern YYYY_MM_DD_HH = Pattern.compile("^\\d{4}-[01][0-9]-[0-2][0-9]\\s[0-5][0-9]$");
+    private final static Pattern YYYY_MM_DD_HH_MM = Pattern.compile("^\\d{4}-[01][0-9]-[0-2][0-9]\\s[0-5][0-9]:[0-5][0-9]$");
 
     /**
      * Gets timestamp.
@@ -341,65 +288,21 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @author ErebusST
      * @since 2022 -01-07 15:35:59
      */
-    public static Timestamp getTimestamp(String dateStr, int day) throws ParseException {
-        return getTimestamp(dateStr, day, null);
-    }
-
-    /**
-     * Gets timestamp.
-     *
-     * @param dateStr        the date str
-     * @param day            the day
-     * @param dateFormatEnum the date format enum
-     * @return the timestamp
-     * @throws ParseException the parse exception
-     * @author ErebusST
-     * @since 2022 -01-07 15:35:59
-     */
-    public static Timestamp getTimestamp(String dateStr, int day, DateFormatEnum dateFormatEnum) {
+    public static Timestamp getTimestamp(String dateStr, int day) {
         try {
-            dateFormatEnum = dateFormatEnum == null ? DateFormatEnum.YYYY_MM_DD_HH_MM_SS : dateFormatEnum;
-            Timestamp result = new Timestamp(getDate(dateStr, dateFormatEnum).getTime());
+            if (StringUtils.match(dateStr, YYYY_MM_DD)) {
+                dateStr = dateStr + " 00:00:00";
+            } else if (StringUtils.match(dateStr, YYYY_MM_DD_HH)) {
+                dateStr = dateStr + ":00:00";
+            } else if (StringUtils.match(dateStr, YYYY_MM_DD_HH_MM)) {
+                dateStr = dateStr + ":00";
+            }
+            Timestamp result = Timestamp.valueOf(dateStr);
             result = addDay(result, day);
             return result;
         } catch (Exception ex) {
             return null;
         }
-    }
-
-    /**
-     * 获取时间对象
-     *
-     * @param dateStr   时间字符串
-     * @param formatStr 时间格式字符串 yyyy-MM-dd
-     * @return date by format
-     * @throws ParseException the parse exception
-     * @author ErebusST
-     * @since 2022 -01-07 15:35:59
-     */
-    public static Date getDateByFormat(String dateStr, String formatStr) throws ParseException {
-        if (StringUtils.isBlank(dateStr)) {
-            return null;
-        }
-        SimpleDateFormat sdf = new SimpleDateFormat(formatStr);
-        return sdf.parse(dateStr);
-    }
-
-    /**
-     * 获取当前时间字符串
-     *
-     * @param date      时间对象
-     * @param formatStr 时间格式字符串
-     * @return date format str
-     * @author ErebusST
-     * @since 2022 -01-07 15:35:59
-     */
-    public static String getDateFormatStr(Date date, String formatStr) {
-        if (date == null) {
-            return null;
-        }
-        SimpleDateFormat sdf = new SimpleDateFormat(formatStr);
-        return sdf.format(date);
     }
 
     /**
@@ -410,8 +313,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @since 2022 -01-07 15:35:59
      */
     public static int getSecondTimestamp() {
-        Date date = new Date();
-        String timestamp = String.valueOf(date.getTime());
+        String timestamp = String.valueOf(System.currentTimeMillis());
         int length = timestamp.length();
         if (length > 3) {
             return Integer.valueOf(timestamp.substring(0, length - 3));
@@ -419,6 +321,59 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
             return 0;
         }
     }
+
+
+    /**
+     * Add seconds timestamp.
+     *
+     * @param second the second
+     * @return the timestamp
+     * @author ErebusST
+     * @since 2022 -04-17 09:57:07
+     */
+    public static Timestamp addSeconds(int second) {
+        return addSeconds(DateUtils.getNow(), second);
+    }
+
+    /**
+     * Add seconds timestamp.
+     *
+     * @param date   the date
+     * @param second the second
+     * @return the timestamp
+     * @throws ParseException the parse exception
+     * @author ErebusST
+     * @since 2022 -01-07 15:36:00
+     */
+    public static Timestamp addSeconds(Timestamp date, int second) {
+        return add(date, Calendar.SECOND, second);
+    }
+
+    /**
+     * Add hours timestamp.
+     *
+     * @param hour the hour
+     * @return the timestamp
+     * @author ErebusST
+     * @since 2022 -08-30 10:31:00
+     */
+    public static Timestamp addHours(int hour){
+        return addHours(DateUtils.getNow(),hour);
+    }
+
+    /**
+     * Add hours timestamp.
+     *
+     * @param date the date
+     * @param hour the hour
+     * @return the timestamp
+     * @author ErebusST
+     * @since 2022 -08-30 10:31:02
+     */
+    public static Timestamp addHours(Timestamp date, int hour) {
+        return add(date, Calendar.HOUR_OF_DAY, hour);
+    }
+
 
     /**
      * 获取数据查询日期，格式是：2014-04-02，day是天差，如果传-1是昨天的日期
@@ -450,33 +405,6 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
     }
 
     /**
-     * Add year timestamp.
-     *
-     * @param year the year
-     * @return the timestamp
-     * @author ErebusST
-     * @since 2022 -04-17 09:57:05
-     */
-    public static Timestamp addYear(int year) {
-        return addYear(DateUtils.getNow(), year);
-    }
-
-    /**
-     * Add year timestamp.
-     *
-     * @param date the date
-     * @param year the year
-     * @return the timestamp
-     * @throws ParseException the parse exception
-     * @author ErebusST
-     * @since 2022 -01-07 15:35:59
-     */
-    public static Timestamp addYear(Timestamp date, int year) {
-        return add(date, Calendar.YEAR, year);
-    }
-
-
-    /**
      * Add month timestamp.
      *
      * @param month the month
@@ -502,30 +430,31 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
     }
 
     /**
-     * Add seconds timestamp.
+     * Add year timestamp.
      *
-     * @param second the second
+     * @param year the year
      * @return the timestamp
      * @author ErebusST
-     * @since 2022 -04-17 09:57:07
+     * @since 2022 -04-17 09:57:05
      */
-    public static Timestamp addSeconds(int second) {
-        return addSeconds(DateUtils.getNow(), second);
+    public static Timestamp addYear(int year) {
+        return addYear(DateUtils.getNow(), year);
     }
 
     /**
-     * Add seconds timestamp.
+     * Add year timestamp.
      *
-     * @param date   the date
-     * @param second the second
+     * @param date the date
+     * @param year the year
      * @return the timestamp
      * @throws ParseException the parse exception
      * @author ErebusST
-     * @since 2022 -01-07 15:36:00
+     * @since 2022 -01-07 15:35:59
      */
-    public static Timestamp addSeconds(Timestamp date, int second) {
-        return add(date, Calendar.SECOND, second);
+    public static Timestamp addYear(Timestamp date, int year) {
+        return add(date, Calendar.YEAR, year);
     }
+
 
     public static Timestamp add(Timestamp date, int filed, int value) {
         Calendar cal = Calendar.getInstance();

@@ -9,7 +9,6 @@
 package com.situ.tools;
 
 
-import com.situ.enumeration.DateFormatEnum;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -155,7 +154,7 @@ public class GeneratorId {
     @SneakyThrows
     public static synchronized long nextId() {
         if (ObjectUtils.isNull(startTime)) {
-            startTime = DateUtils.getDate(GENERATOR_FLAG, DateFormatEnum.YYYYMMDD).getTime();
+            startTime = DateUtils.getTimestamp(GENERATOR_FLAG).getTime();
         }
         checkParameters();
 
