@@ -15,6 +15,7 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 /**
@@ -274,9 +275,9 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
     }
 
 
-    private final static Pattern YYYY_MM_DD = Pattern.compile("^\\d{4}-[01][0-9]-[0-2][0-9]$");
-    private final static Pattern YYYY_MM_DD_HH = Pattern.compile("^\\d{4}-[01][0-9]-[0-2][0-9]\\s[0-5][0-9]$");
-    private final static Pattern YYYY_MM_DD_HH_MM = Pattern.compile("^\\d{4}-[01][0-9]-[0-2][0-9]\\s[0-5][0-9]:[0-5][0-9]$");
+    private final static Pattern YYYY_MM_DD = Pattern.compile("^\\d{4}-[01][0-9]-[0-3][0-9]$");
+    private final static Pattern YYYY_MM_DD_HH = Pattern.compile("^\\d{4}-[01][0-9]-[0-3][0-9]\\s[0-5][0-9]$");
+    private final static Pattern YYYY_MM_DD_HH_MM = Pattern.compile("^\\d{4}-[01][0-9]-[0-3][0-9]\\s[0-5][0-9]:[0-5][0-9]$");
 
     /**
      * Gets timestamp.
@@ -303,6 +304,22 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
         } catch (Exception ex) {
             return null;
         }
+    }
+
+    public static Timestamp getTimestamp(String dateStr, DateFormatEnum dateFormatEnum) {
+        try {
+            dateFormatEnum = dateFormatEnum == null ? DateFormatEnum.YYYY_MM_DD_HH_MM_SS : dateFormatEnum;
+            Timestamp result = new Timestamp(getDate(dateStr, dateFormatEnum).getTime());
+            return result;
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    private static Date getDate(String dateStr, DateFormatEnum dateFormatEnum) throws ParseException {
+        dateFormatEnum = dateFormatEnum == null ? DateFormatEnum.YYYY_MM_DD_HH_MM_SS : dateFormatEnum;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormatEnum.getValue());
+        return simpleDateFormat.parse(dateStr);
     }
 
     /**

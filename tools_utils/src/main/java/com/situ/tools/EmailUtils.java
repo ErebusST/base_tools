@@ -111,6 +111,8 @@ public class EmailUtils {
         }
     }
 
+    @Setter
+    public EmailConfig config;
 
     /**
      * Send mail boolean.
@@ -123,6 +125,10 @@ public class EmailUtils {
     public boolean sendMail() throws Exception {
         try {
             Map<String, String> setting = emailConfig.getSetting();
+            if (ObjectUtils.isNull(setting)) {
+                emailConfig.setSetting(config.getSetting());
+                setting = emailConfig.getSetting();
+            }
             Properties props = new Properties();
 
             props.putAll(setting);
@@ -183,7 +189,6 @@ public class EmailUtils {
      * The Line separator.
      */
     String LINE_SEPARATOR = "<br/>";
-
 
 
 }

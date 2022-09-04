@@ -9,7 +9,10 @@
 package com.situ.tools;
 
 
+import com.situ.enumeration.DateFormatEnum;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +23,7 @@ import org.springframework.stereotype.Component;
  * @date 2017 -08-06 19:53
  */
 @Component
+@Slf4j
 public class GeneratorId {
     // ==============================Fields===========================================
     /**
@@ -123,6 +127,11 @@ public class GeneratorId {
 
     //==============================Constructors=====================================
 
+    @Test
+    public void test(){
+        long l = nextId();
+        log.info("{}",l);
+    }
     /**
      * Check parameters boolean.
      * <p>
@@ -154,7 +163,7 @@ public class GeneratorId {
     @SneakyThrows
     public static synchronized long nextId() {
         if (ObjectUtils.isNull(startTime)) {
-            startTime = DateUtils.getTimestamp(GENERATOR_FLAG).getTime();
+            startTime = DateUtils.getTimestamp(GENERATOR_FLAG, DateFormatEnum.YYYYMMDD).getTime();
         }
         checkParameters();
 

@@ -21,6 +21,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.geotools.referencing.CRS;
+import org.junit.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -395,7 +396,17 @@ public class GisUtils {
         // 将要判断的横纵坐标组成一个点
         Point2D.Double point2D = new Point2D.Double(pointLon, pointLat);
         GeneralPath border = pointsToPolygon(polygon);
-        return border.contains(point2D);
+        boolean contains = border.contains(point2D);
+        if (!contains) {
+            List<Line> lines = getPolygonLines(polygon);
+            for (Line line : lines) {
+                if (checkPointInLine(line, point)) {
+                    contains = true;
+                    break;
+                }
+            }
+        }
+        return contains;
 
         /**
          *  Coordinate temp = new Coordinate(point.getLng().doubleValue(), point.getLat().doubleValue());
@@ -405,6 +416,66 @@ public class GisUtils {
          */
     }
 
+    /**
+     * Check point in line boolean.
+     *
+     * @param start the start
+     * @param end   the end
+     * @param point the point
+     * @return the boolean
+     * @author ErebusST
+     * @since 2022 -09-05 00:01:04
+     */
+    public static boolean checkPointInLine(Point start, Point end, Point point) {
+        boolean flag = false;     // true   点在线上    false   点不在线上
+        Double pointLng = point.getLng().doubleValue();
+        Double pointLat = point.getLat().doubleValue();
+        Double startLng = start.getLng().doubleValue();
+        Double startLat = start.getLat().doubleValue();
+        Double endLng = end.getLng().doubleValue();
+        Double endLat = end.getLat().doubleValue();
+
+        if (((pointLng - startLng) * (endLat - startLat) - (pointLat - startLat) * (endLng - startLng)) == 0) {
+            //System.out.println("点在线上这条直线上");
+            if (startLng >= endLng && startLat >= endLat) {
+                //点p1在点p2右上方    p1x > p2x p1y> p2y
+                if (pointLng <= startLng && pointLng >= endLng && pointLat <= startLat && pointLat >= endLat) {
+                    flag = true;
+                }
+            } else if (startLng >= endLng && startLat <= endLat) {
+                //点p1在点p2的右下方   p1x > p2x p1y < p2y
+                if (pointLng <= startLng && pointLng >= endLng && pointLat >= startLat && pointLat <= endLat) {
+                    flag = true;
+                }
+            } else if (startLng <= endLng && startLat >= endLat) {
+                //点p1在p2左上方   p1x < p2x p1y > p2y
+                if (pointLng >= startLng && pointLng <= endLng && pointLat <= startLat && pointLat >= endLat) {
+                    flag = true;
+                }
+            } else if (startLng <= endLng && startLat <= endLat) {
+                //点p1在p2左下方 p1x < p2x p1y < p2y
+                if (pointLng >= startLng && pointLng <= endLng && pointLat >= startLat && pointLat <= endLat) {
+                    flag = true;
+                }
+            }
+        }
+        return flag;
+    }
+
+    /**
+     * Check point in line boolean.
+     *
+     * @param line  the line
+     * @param point the point
+     * @return the boolean
+     * @author ErebusST
+     * @since 2022 -09-05 00:01:08
+     */
+    public static boolean checkPointInLine(Line line, Point point) {
+        Point start = Point.get(line.getX1(), line.getY1());
+        Point end = Point.get(line.getX2(), line.getY2());
+        return checkPointInLine(start, end, point);
+    }
 
     private static GeneralPath pointsToPolygon(List<Point> polygon) {
         GeneralPath border = new GeneralPath();
