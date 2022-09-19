@@ -9,7 +9,6 @@
 package com.situ.tools;
 
 import com.situ.enumeration.DateFormatEnum;
-import org.junit.Test;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -260,6 +259,28 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
         return new Timestamp(System.currentTimeMillis());
     }
 
+    /**
+     * In time range boolean.
+     *
+     * @param start the start
+     * @param end   the end
+     * @return the boolean
+     * @author ErebusST
+     * @since 2022 -09-15 14:54:35
+     */
+    public static boolean inTimeRange(Timestamp start, Timestamp end) {
+        Timestamp now = DateUtils.getNow();
+        if (ObjectUtils.isNull(start) && ObjectUtils.isNull(end)) {
+            return true;
+        } else if (ObjectUtils.isNotNull(start) && ObjectUtils.isNull(end)) {
+            return start.before(now);
+        } else if (ObjectUtils.isNull(start) && ObjectUtils.isNotNull(end)) {
+            return end.after(now);
+        } else {
+            return start.before(now) && end.after(now);
+        }
+    }
+
 
     /**
      * Gets timestamp.
@@ -374,8 +395,8 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @author ErebusST
      * @since 2022 -08-30 10:31:00
      */
-    public static Timestamp addHours(int hour){
-        return addHours(DateUtils.getNow(),hour);
+    public static Timestamp addHours(int hour) {
+        return addHours(DateUtils.getNow(), hour);
     }
 
     /**

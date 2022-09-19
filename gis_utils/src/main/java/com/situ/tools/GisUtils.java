@@ -21,7 +21,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.geotools.referencing.CRS;
-import org.junit.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -1575,9 +1574,20 @@ public class GisUtils {
      * @since 2022 -01-07 15:36:28
      */
     public static Polygon toPolygon(List<Point> points) {
-        Coordinate[] coordinates = toCoordinateArray(points);
-        Polygon polygon = new GeometryFactory().createPolygon(coordinates);
-        return polygon;
+        try {
+            Coordinate[] coordinates = toCoordinateArray(points);
+            Polygon polygon = new GeometryFactory().createPolygon(coordinates);
+            return polygon;
+        } catch (Exception ex) {
+            if (StringUtils.contains(ex.getMessage(), "Points of LinearRing do not form a closed linestring")) {
+                points.add(points.get(0));
+                Coordinate[] coordinates = toCoordinateArray(points);
+                Polygon polygon = new GeometryFactory().createPolygon(coordinates);
+                return polygon;
+            }
+            throw ex;
+        }
+
     }
 
 

@@ -18,6 +18,7 @@ import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * The type Point.
@@ -130,6 +131,11 @@ public class Point implements Serializable {
         Point that = (Point) obj;
         return (this.lng.floatValue() + " " + this.lat.floatValue())
                 .equalsIgnoreCase(that.getLng().floatValue() + " " + that.getLat().floatValue());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(lng, lat);
     }
 
     /**

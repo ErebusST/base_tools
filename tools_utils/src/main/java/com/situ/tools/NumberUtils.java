@@ -11,7 +11,6 @@ package com.situ.tools;
 import com.situ.entity.bo.DataItem;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ArrayUtils;
-import org.junit.Test;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -293,8 +292,12 @@ public class NumberUtils {
      * @author ErebusST
      * @since 2022 -02-25 18:14:36
      */
-    public static <T> BigDecimal total(List<T> list, Function<T, BigDecimal> getter) {
-        return add(list.stream().map(getter));
+    //public static <T> BigDecimal total(List<T> list, Function<T, BigDecimal> getter) {
+    //    return add(list.stream().map(getter));
+    //}
+    public static <T, E extends Number> BigDecimal total(List<T> list, Function<T, E> getter) {
+        Stream<BigDecimal> stream = list.stream().map(item -> getter.apply(item)).map(DataSwitch::convertObjectToBigDecimal);
+        return add(stream);
     }
 
     /**
@@ -849,18 +852,98 @@ public class NumberUtils {
      * @since 2022 -02-27 14:54:15
      */
     public static <T> BigDecimal minOrMax(Stream<T> stream, Function<T, ? extends Number> getter, Type type) {
-        Stream<BigDecimal> bigDecimalStream = stream
-                .map(getter)
+        T entity = minOrMaxEntity(stream, getter, type);
+        if (ObjectUtils.isNotNull(entity)) {
+            return DataSwitch.convertObjectToBigDecimal(getter.apply(entity));
+        } else {
+            return BigDecimal.ZERO;
+        }
+    }
+
+    /**
+     * Min big decimal.
+     *
+     * @param <T>    the type parameter
+     * @param list   the list
+     * @param getter the getter
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -02-27 14:54:15
+     */
+    public static <T> BigDecimal minEntity(List<T> list, Function<T, ? extends Number> getter) {
+        return minEntity(list.stream(), getter);
+
+    }
+
+    /**
+     * Min big decimal.
+     *
+     * @param <T>    the type parameter
+     * @param list   the list
+     * @param getter the getter
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -02-27 14:54:15
+     */
+    public static <T> BigDecimal minEntity(Stream<T> list, Function<T, ? extends Number> getter) {
+        return minOrMax(list, getter, Type.min);
+    }
+
+    /**
+     * Max big decimal.
+     *
+     * @param <T>    the type parameter
+     * @param list   the list
+     * @param getter the getter
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -02-27 14:54:15
+     */
+    public static <T> T maxEntity(List<T> list, Function<T, ? extends Number> getter) {
+        return maxEntity(list.stream(), getter);
+    }
+
+    /**
+     * Max big decimal.
+     *
+     * @param <T>    the type parameter
+     * @param list   the list
+     * @param getter the getter
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2022 -02-27 14:54:15
+     */
+    public static <T> T maxEntity(Stream<T> list, Function<T, ? extends Number> getter) {
+        return minOrMaxEntity(list, getter, Type.max);
+    }
+
+
+    /**
+     * Min or max entity t.
+     *
+     * @param <T>    the type parameter
+     * @param stream the stream
+     * @param getter the getter
+     * @param type   the type
+     * @return the t
+     * @author ErebusST
+     * @since 2022 -09-13 18:19:41
+     */
+    public static <T> T minOrMaxEntity(Stream<T> stream, Function<T, ? extends Number> getter, Type type) {
+        Stream<T> bigDecimalStream = stream
                 .filter(ObjectUtils::isNotNull)
-                .map(DataSwitch::convertObjectToBigDecimal);
+                .filter(item -> {
+                    Number value = getter.apply(item);
+                    return ObjectUtils.isNotNull(value);
+                });
         switch (type) {
             case max:
-                return bigDecimalStream.max(Comparator.comparing(BigDecimal::doubleValue)).orElse(BigDecimal.ZERO);
+                return bigDecimalStream.max(Comparator.comparing(item -> getter.apply(item).doubleValue())).orElse(null);
             case min:
-                return bigDecimalStream.min(Comparator.comparing(BigDecimal::doubleValue)).orElse(BigDecimal.ZERO);
+                return bigDecimalStream.min(Comparator.comparing(item -> getter.apply(item).doubleValue())).orElse(null);
             default:
                 log.error("未知的操作类型:" + type);
-                return BigDecimal.ZERO;
+                return null;
 
         }
     }

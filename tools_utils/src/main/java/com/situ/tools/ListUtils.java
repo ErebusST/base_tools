@@ -39,7 +39,7 @@ public class ListUtils extends org.apache.commons.collections.ListUtils {
      * @since 2022 -01-07 15:36:01
      */
     public static <T> List<T> newArrayList(T... t) {
-        return Arrays.stream(t).collect(Collectors.toList());
+        return Arrays.stream(t).filter(ObjectUtils::isNotEmpty).collect(Collectors.toList());
     }
 
     /**
@@ -142,9 +142,9 @@ public class ListUtils extends org.apache.commons.collections.ListUtils {
      * @since 2022 -01-13 15:35:28
      */
     public static <T, R extends Comparable<? super R>> JsonArray limit(List<T> stream,
-                                                                    Function<T, R> sortBy,
-                                                                    Integer limit,
-                                                                    Pair<String, Function<T, Object>>... fields) {
+                                                                       Function<T, R> sortBy,
+                                                                       Integer limit,
+                                                                       Pair<String, Function<T, Object>>... fields) {
         return limit(stream.stream(), sortBy, limit, fields);
     }
 
@@ -163,9 +163,9 @@ public class ListUtils extends org.apache.commons.collections.ListUtils {
      * @since 2022 -01-13 15:23:01
      */
     public static <T, R extends Comparable<? super R>> JsonArray limit(Stream<T> stream,
-                                                                    Function<T, R> sortBy,
-                                                                    Integer limit,
-                                                                    Pair<String, Function<T, Object>>... fields) {
+                                                                       Function<T, R> sortBy,
+                                                                       Integer limit,
+                                                                       Pair<String, Function<T, Object>>... fields) {
         return stream
                 .filter(item -> {
                     R value = sortBy.apply(item);
