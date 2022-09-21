@@ -631,6 +631,17 @@ public class RedisHelper {
 
     }
 
+    /**
+     * Expire .
+     *
+     * @param key     the key
+     * @param seconds the seconds
+     * @author ErebusST
+     * @since 2022 -09-21 15:31:18
+     */
+    public void expire(String key, Integer seconds) {
+        expire(0, key, seconds);
+    }
 
     /**
      * Expire.

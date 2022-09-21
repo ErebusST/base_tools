@@ -291,6 +291,7 @@ public class ListUtils extends org.apache.commons.collections.ListUtils {
                     dataItem.setPercent(percent);
                     return dataItem;
                 })
+                .filter(item -> StringUtils.isNotEmpty(item.getText()))
                 .collect(Collectors.toList());
         collect = NumberUtils.fixPercent(collect);
 

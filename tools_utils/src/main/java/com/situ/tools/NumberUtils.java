@@ -365,18 +365,18 @@ public class NumberUtils {
         BigDecimal decimal2 = DataSwitch.convertObjectToBigDecimal(value2);
         switch (operation) {
             case ADD:
-                return decimal1.add(decimal2);
+                return decimal1.add(decimal2).stripTrailingZeros();
             case SUBTRACT:
-                return decimal1.subtract(decimal2);
+                return decimal1.subtract(decimal2).stripTrailingZeros();
             case MULTIPLY:
-                return decimal1.multiply(decimal2);
+                return decimal1.multiply(decimal2).stripTrailingZeros();
             case DIVIDE:
                 if (decimal2.compareTo(BigDecimal.ZERO) == 0) {
                     return BigDecimal.ZERO;
                 }
                 return decimal1.divide(decimal2, 20, BigDecimal.ROUND_HALF_UP);
             case REMAINDER:
-                return decimal1.remainder(decimal2);
+                return decimal1.remainder(decimal2).stripTrailingZeros();
             default:
                 log.error(StringUtils.format("出现未知的运算符:{}", operation));
                 return BigDecimal.ZERO;
