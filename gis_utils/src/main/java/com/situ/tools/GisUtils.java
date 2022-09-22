@@ -8,6 +8,9 @@
 
 package com.situ.tools;
 
+import ch.hsr.geohash.BoundingBox;
+import ch.hsr.geohash.GeoHash;
+import ch.hsr.geohash.WGS84Point;
 import com.google.gson.JsonArray;
 import com.situ.entity.bo.Point;
 import com.situ.enumeration.HexagonType;
@@ -40,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
@@ -1031,7 +1035,7 @@ public class GisUtils {
      * 高德转WGS84
      *
      * @param point the point
-     * @return point
+     * @return point point
      * @author ErebusST
      * @since 2022 -01-07 15:36:26
      */
@@ -1287,7 +1291,7 @@ public class GisUtils {
      *
      * @param from the from
      * @param to   the to
-     * @return bearing
+     * @return bearing bearing
      * @author ErebusST
      * @since 2022 -01-07 15:36:27
      */
@@ -1713,7 +1717,7 @@ public class GisUtils {
      * @param x      中心点经度
      * @param y      中心点纬度
      * @param radius 半径（米）
-     * @return polygon
+     * @return polygon polygon
      * @author ErebusST
      * @since 2022 -01-07 15:36:28
      */
@@ -1757,5 +1761,193 @@ public class GisUtils {
         Double radiusLat = dpmLat * length;
         return radiusLat;
     }
+
+
+    //=================================================================//
+    //Geohash封装
+    //=================================================================//
+
+    /**
+     * geohash长度	宽度width	高度height	Lat位数	Lng位数	Lat误差	        Lng误差	        km误差
+     * 1	        5,009.4km	4,992.6km	2	    3	    ±23	            ±23	            ±2500
+     * 2	        1,252.3km	624.1km	    5	    5	    ± 2.8	        ±5.6	        ±630
+     * 3	        156.5km	    156km	    7	    8	    ± 0.70	        ± 0.7	        ±78
+     * 4	        39.1km	    19.5km	    10	    10	    ± 0.087	        ± 0.18	        ±20
+     * 5	        4.9km	    4.9km	    12	    13	    ± 0.022	        ± 0.022	        ±2.4
+     * 6	        1.2km	    609.4m	    15	    15	    ± 0.0027	    ± 0.0055	    ±0.61
+     * 7	        152.9m	    152.4m	    17	    18	    ±0.00068	    ±0.00068	    ±0.076
+     * 8	        38.2m	    19m	        20	    20	    ±0.000086	    ±0.000172	    ±0.01911
+     * 9	        4.8m	    4.8m	    22	    23	    ±0.000021	    ±0.000021	    ±0.00478
+     * 10	        1.2m	    59.5cm	    25	    25	    ±0.00000268	    ±0.00000536	    ±0.0005971
+     * 11	        14.9cm	    14.9cm	    27	    28	    ±0.00000067	    ±0.00000067	    ±0.0001492
+     * 12	        3.7cm	    1.9cm	    30	    30	    ±0.00000008	    ±0.00000017	    ±0.0000186
+     * 对比4位数的时候，查找20km左右 5位数2.4KM
+     *
+     */
+    /**
+     * Get geohash string.
+     *
+     * @param point the point
+     * @return the geohash
+     * @author ErebusST
+     * @since 2022 -09-22 19:00:01
+     */
+    public static String getGeohash(Point point) {
+        return toGeohash(point).toBase32();
+    }
+
+    /**
+     * To geohash geo hash.
+     *
+     * @param point the point
+     * @return the geo hash
+     * @author ErebusST
+     * @since 2022 -09-22 17:54:36
+     */
+    public static GeoHash toGeohash(Point point) {
+        GeoHash geoHash = GeoHash.withBitPrecision(point.getLat().doubleValue(), point.getLng().doubleValue(), 30);
+        return geoHash;
+    }
+
+    /**
+     * To geohash geo hash.
+     *
+     * @param hash the hash
+     * @return the geo hash
+     * @author ErebusST
+     * @since 2022 -09-22 17:54:36
+     */
+    public static GeoHash toGeohash(String hash) {
+        return GeoHash.fromGeohashString(hash);
+    }
+
+    /**
+     * Split polygon to geohash list.
+     *
+     * @param polygon the polygon
+     * @return the list
+     * @author ErebusST
+     * @since 2022 -09-22 17:54:36
+     */
+    public static List<String> splitPolygonToGeohash(List<Point> polygon) {
+        long start = System.currentTimeMillis();
+
+        List<Point> range = getPolygonSquareRange(polygon);
+        Point northWest = range.get(0);
+
+        BigDecimal lngMax = NumberUtils.max(range, Point::getLng);
+        BigDecimal lngMin = NumberUtils.min(range, Point::getLng);
+
+        BigDecimal latMax = NumberUtils.max(range, Point::getLat);
+        BigDecimal latMin = NumberUtils.min(range, Point::getLat);
+
+        List<GeoHash> list = new ArrayList<>();
+        GeoHash geoHash = toGeohash(northWest);
+        list.add(geoHash);
+        while (true) {
+            double northLatitude = geoHash.getBoundingBox().getNorthLatitude();
+            if (northLatitude < latMin.doubleValue()) {
+                break;
+            }
+            list.add(geoHash);
+            GeoHash western = toGeohash(geoHash.toBase32());
+            while (true) {
+
+                double eastLongitude = western.getBoundingBox().getEastLongitude();
+                if (eastLongitude < lngMin.doubleValue()) {
+                    break;
+                }
+                list.add(western);
+                western = western.getWesternNeighbour();
+            }
+            geoHash = geoHash.getSouthernNeighbour();
+        }
+        List<String> collect = list.parallelStream()
+                .filter(hash -> checkPolygonsIntersect(toRectangleByGeohash(hash), polygon))
+                .map(GeoHash::toBase32).collect(Collectors.toList());
+        log.info("{}", start - System.currentTimeMillis());
+        return collect;
+    }
+
+    /**
+     * Split polygon to geohash .
+     *
+     * @param polygon  the polygon
+     * @param callback the callback
+     * @author ErebusST
+     * @since 2022 -09-22 19:19:20
+     */
+    public static void splitPolygonToGeohash(List<Point> polygon, Function<String, Boolean> callback) {
+        List<Point> range = getPolygonSquareRange(polygon);
+        Point northWest = range.get(0);
+
+        BigDecimal lngMax = NumberUtils.max(range, Point::getLng);
+        BigDecimal lngMin = NumberUtils.min(range, Point::getLng);
+
+        BigDecimal latMax = NumberUtils.max(range, Point::getLat);
+        BigDecimal latMin = NumberUtils.min(range, Point::getLat);
+
+        GeoHash geoHash = toGeohash(northWest);
+        callback.apply(geoHash.toBase32());
+        while (true) {
+            double northLatitude = geoHash.getBoundingBox().getNorthLatitude();
+            if (northLatitude < latMin.doubleValue()) {
+                break;
+            }
+            if (!checkPolygonsIntersect(toRectangleByGeohash(geoHash), polygon)) {
+                continue;
+            }
+            callback.apply(geoHash.toBase32());
+            GeoHash western = toGeohash(geoHash.toBase32());
+            while (true) {
+
+                double eastLongitude = western.getBoundingBox().getEastLongitude();
+                if (eastLongitude < lngMin.doubleValue()) {
+                    break;
+                }
+                if (!checkPolygonsIntersect(toRectangleByGeohash(western), polygon)) {
+                    continue;
+                }
+                callback.apply(western.toBase32());
+                western = western.getWesternNeighbour();
+            }
+            geoHash = geoHash.getSouthernNeighbour();
+        }
+    }
+
+    public static List<Point> toRectangleByGeohash(String hash) {
+        return toRectangleByGeohash(toGeohash(hash));
+    }
+
+    /**
+     * Get geo hash center point.
+     *
+     * @param hash the hash
+     * @return the point
+     * @author ErebusST
+     * @since 2022 -09-22 18:58:05
+     */
+    public static Point getGeoHashCenter(String hash) {
+        GeoHash geoHash = toGeohash(hash);
+        WGS84Point center = geoHash.getBoundingBoxCenter();
+        return Point.get(center.getLongitude(), center.getLatitude());
+    }
+
+    private static List<Point> toRectangleByGeohash(GeoHash hash) {
+        BoundingBox boundingBox = hash.getBoundingBox();
+        WGS84Point northWestCorner = boundingBox.getNorthWestCorner();
+        WGS84Point northEastCorner = boundingBox.getNorthEastCorner();
+        WGS84Point southEastCorner = boundingBox.getSouthEastCorner();
+        WGS84Point southWestCorner = boundingBox.getSouthWestCorner();
+
+
+        return ListUtils.newArrayList(
+                Point.get(northWestCorner.getLongitude(), northWestCorner.getLatitude()),
+                Point.get(northEastCorner.getLongitude(), northEastCorner.getLatitude()),
+                Point.get(southEastCorner.getLongitude(), southEastCorner.getLatitude()),
+                Point.get(southWestCorner.getLongitude(), southWestCorner.getLatitude())
+        );
+    }
+
 
 }

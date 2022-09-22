@@ -87,6 +87,20 @@
             <optional>true</optional>
         </dependency>
 
+        <!--google s2 -->
+        <dependency>
+            <groupId>com.google.geometry</groupId>
+            <artifactId>s2-geometry</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+
+        <!--geohash -->
+        <dependency>
+            <groupId>ch.hsr</groupId>
+            <artifactId>geohash</artifactId>
+            <version>1.4.0</version>
+        </dependency>
+
         <!-- GIS start -->
         <dependency>
             <groupId>org.locationtech.jts</groupId>
