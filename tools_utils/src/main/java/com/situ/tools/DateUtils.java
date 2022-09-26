@@ -100,7 +100,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
         if (date2Time > date1Time) {
             dayInt = (int) ((date2Time - date1Time) / 1000 / 60 / 60 / 24);
         }
-        return dayInt;
+        return Math.abs(dayInt);
     }
 
     /**
@@ -115,7 +115,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
     public static int getSecondsCount(Timestamp startDate, Timestamp endDate) {
         long time = endDate.getTime() - startDate.getTime();
         int totalS = new Long(time / 1000).intValue();
-        return totalS;
+        return Math.abs(totalS);
     }
 
     /**
@@ -141,8 +141,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @since 2022 -01-07 15:35:59
      */
     public static int getYear(Timestamp timestamp) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(timestamp.getTime());
+        Calendar cal = toCalendar(timestamp);
         int year = cal.get(Calendar.YEAR);
         return year;
     }
@@ -156,8 +155,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @since 2022 -01-07 15:35:59
      */
     public static int getMonth(Timestamp timestamp) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(timestamp.getTime());
+        Calendar cal = toCalendar(timestamp);
         int month = cal.get(Calendar.MONTH);
         return month + 1;
     }
@@ -172,8 +170,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @since 2022 -01-07 15:35:59
      */
     public static int getDayOfYear(Timestamp timestamp) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(timestamp.getTime());
+        Calendar cal = toCalendar(timestamp);
         int day = cal.get(Calendar.DAY_OF_YEAR);
         return day;
     }
@@ -188,8 +185,8 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @since 2022 -08-12 10:16:29
      */
     public static int getDayOfWeek(Timestamp timestamp) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(timestamp.getTime());
+        Calendar cal = toCalendar(timestamp);
+
         boolean firstDayIsSunday = cal.getFirstDayOfWeek() == Calendar.SUNDAY;
         cal.setFirstDayOfWeek(Calendar.MONDAY);
         int day = cal.get(Calendar.DAY_OF_WEEK);
@@ -211,8 +208,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @since 2022 -08-12 10:15:54
      */
     public static int getDayOfMonth(Timestamp timestamp) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(timestamp.getTime());
+        Calendar cal = toCalendar(timestamp);
         int day = cal.get(Calendar.DAY_OF_MONTH);
         return day;
     }
@@ -226,8 +222,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @since 2022 -01-07 15:35:59
      */
     public static int getWeekOfYear(Timestamp timestamp) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(timestamp.getTime());
+        Calendar cal = toCalendar(timestamp);
         int day = cal.get(Calendar.WEEK_OF_YEAR);
         return day;
     }
@@ -241,8 +236,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @since 2022 -01-07 15:35:59
      */
     public static int getWeekOfMonth(Timestamp timestamp) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(timestamp.getTime());
+        Calendar cal = toCalendar(timestamp);
         int day = cal.get(Calendar.WEEK_OF_MONTH);
         return day;
     }
@@ -495,8 +489,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 
 
     public static Timestamp add(Timestamp date, int filed, int value) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(date.getTime());
+        Calendar cal = toCalendar(date);
         cal.add(filed, value);
         return Timestamp.from(cal.toInstant());
     }
@@ -562,8 +555,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @since 2022 -01-07 15:36:00
      */
     public static boolean isFirstDayOfWeek(Timestamp now) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(now.getTime());
+        Calendar cal = toCalendar(now);
         return ObjectUtils.equals(Calendar.MONDAY, cal.get(Calendar.DAY_OF_WEEK));
     }
 
@@ -578,8 +570,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @since 2022 -01-07 15:36:00
      */
     public static Timestamp getFirstDayOfWeek(Timestamp now, int week) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(now.getTime());
+        Calendar cal = toCalendar(now);
         cal.add(Calendar.WEEK_OF_MONTH, week);
         cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
         cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -601,8 +592,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @since 2022 -01-07 15:36:00
      */
     public static Timestamp getLastDayOfWeek(Timestamp now, int week) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(now.getTime());
+        Calendar cal = toCalendar(now);
         cal.add(Calendar.WEEK_OF_MONTH, week + 1);
         cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
         cal.add(Calendar.DAY_OF_MONTH, -1);
@@ -623,8 +613,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @since 2022 -01-07 15:36:00
      */
     public static boolean isFirstDayOfMonth(Timestamp now) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(now.getTime());
+        Calendar cal = toCalendar(now);
         return ObjectUtils.equals(1, cal.get(Calendar.DAY_OF_MONTH));
     }
 
@@ -639,8 +628,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @since 2022 -01-07 15:36:00
      */
     public static Timestamp getFirstDayOfMonth(Timestamp now, int month) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(now.getTime());
+        Calendar cal = toCalendar(now);
         cal.add(Calendar.MONTH, month);
         cal.set(Calendar.DAY_OF_MONTH, 1);
         cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -661,8 +649,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @since 2022 -01-07 15:36:00
      */
     public static Timestamp getLastDayOfMonth(Timestamp now, int month) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(now.getTime());
+        Calendar cal = toCalendar(now);
         cal.add(Calendar.MONTH, month + 1);
         cal.set(Calendar.DAY_OF_MONTH, 1);
         cal.add(Calendar.DAY_OF_MONTH, -1);
@@ -672,6 +659,21 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
         cal.set(Calendar.MILLISECOND, 999);
         Timestamp currentTimestamp = new Timestamp(cal.getTimeInMillis());
         return currentTimestamp;
+    }
+
+
+    /**
+     * To calendar calendar.
+     *
+     * @param now the now
+     * @return the calendar
+     * @author ErebusST
+     * @since 2022 -09-23 11:25:11
+     */
+    public static Calendar toCalendar(Timestamp now) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(now.getTime());
+        return calendar;
     }
 
 }

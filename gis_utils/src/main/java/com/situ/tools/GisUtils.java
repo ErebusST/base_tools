@@ -12,6 +12,7 @@ import ch.hsr.geohash.BoundingBox;
 import ch.hsr.geohash.GeoHash;
 import ch.hsr.geohash.WGS84Point;
 import com.google.gson.JsonArray;
+import com.situ.config.ThreadPoolConfig;
 import com.situ.entity.bo.Point;
 import com.situ.enumeration.HexagonType;
 import com.situ.enumeration.ShapeType;
@@ -19,7 +20,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import lombok.var;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.JTSFactoryFinder;
@@ -34,6 +34,7 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
@@ -43,6 +44,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -496,6 +499,7 @@ public class GisUtils {
         return border;
     }
 
+
     /**
      * Check polygons intersect boolean.
      *
@@ -507,35 +511,44 @@ public class GisUtils {
      */
     public static boolean checkPolygonsIntersect(List<Point> polygon1, List<Point> polygon2) {
         try {
-            List<Line> polygonLines1 = getPolygonLines(polygon1);
-            List<Line> polygonLines2 = getPolygonLines(polygon2);
-            for (Line line1 : polygonLines1) {
-                for (Line line2 : polygonLines2) {
-                    boolean intersect = Line2D
-                            .linesIntersect(line1.x1, line1.y1, line1.x2, line1.y2, line2.x1, line2.y1, line2.x2, line2.y2);
-                    if (intersect) {
-                        return true;
-                    } else {
-                        continue;
+            Polygon p1 = toPolygon(polygon1);
+            Polygon p2 = toPolygon(polygon2);
+            return p1.intersects(p2);
+        } catch (Exception ex) {
+            log.error("判断两个多边形是否相交出现异常", ex);
+            try {
+
+                List<Line> polygonLines1 = getPolygonLines(polygon1);
+                List<Line> polygonLines2 = getPolygonLines(polygon2);
+                for (Line line1 : polygonLines1) {
+                    for (Line line2 : polygonLines2) {
+                        boolean intersect = Line2D
+                                .linesIntersect(line1.x1, line1.y1, line1.x2, line1.y2, line2.x1, line2.y1, line2.x2, line2.y2);
+                        if (intersect) {
+                            return true;
+                        } else {
+                            continue;
+                        }
                     }
                 }
-            }
-            for (Point point : polygon2) {
-                boolean intersect = checkPointInPolygon(point, polygon1);
-                if (intersect) {
-                    return true;
+                for (Point point : polygon2) {
+                    boolean intersect = checkPointInPolygon(point, polygon1);
+                    if (intersect) {
+                        return true;
+                    }
                 }
-            }
-            for (Point point : polygon1) {
-                boolean intersect = checkPointInPolygon(point, polygon2);
-                if (intersect) {
-                    return true;
+                for (Point point : polygon1) {
+                    boolean intersect = checkPointInPolygon(point, polygon2);
+                    if (intersect) {
+                        return true;
+                    }
                 }
+                return false;
+            } catch (Exception e) {
+                throw e;
             }
-            return false;
-        } catch (Exception ex) {
-            throw ex;
         }
+
     }
 
     /**
@@ -1348,7 +1361,7 @@ public class GisUtils {
      * @author ErebusST
      * @since 2022 -01-07 15:36:27
      */
-    public static double calcTrigonArea(Point point1, Point point2, Point point3) {
+    public static double calcTriangleArea(Point point1, Point point2, Point point3) {
         /**
          * 有 p1(x0,y0) p2(x1,y1) p3(x2,y2)
          * 直线方程 y=kx+b
@@ -1450,7 +1463,7 @@ public class GisUtils {
             return (Coordinate[]) ArrayUtils.EMPTY_OBJECT_ARRAY;
         }
         Coordinate[] coordinates = points.stream()
-                .map(GisUtils::BD09ToWGS84)
+                .map(GisUtils::GCJ02ToWGS84)
                 .map(point -> {
                     Coordinate coordinate = new Coordinate(point.getLng().doubleValue(),
                             point.getLat().doubleValue());
@@ -1497,7 +1510,9 @@ public class GisUtils {
                 .map(temp -> {
                     double x = temp.x;
                     double y = temp.y;
-                    return WGS84ToBD09(Point.get(x, y));
+                    Point point = WGS84ToBD09(Point.get(x, y));
+                    point = BaiduToGaode(point);
+                    return point;
                 }).collect(Collectors.toList());
         //.subList(0, length - 1);
     }
@@ -1607,6 +1622,7 @@ public class GisUtils {
      * @author ErebusST
      * @since 2022 -01-07 15:36:28
      */
+    @Deprecated
     public static double getArea(List<Point> points) throws FactoryException, TransformException {
         Polygon polygon = toPolygon(points);
         // WGS84(一般项目中常用的是CSR:84和EPSG:4326)
@@ -1830,43 +1846,61 @@ public class GisUtils {
      * @since 2022 -09-22 17:54:36
      */
     public static List<String> splitPolygonToGeohash(List<Point> polygon) {
+        List<String> list = new ArrayList<>();
+        splitPolygonToGeohash(polygon, list::add);
+        return list;
+    }
+
+    /**
+     * Split polygon to geohash .
+     *
+     * @param polygon  the polygon
+     * @param callback the callback
+     * @author ErebusST
+     * @since 2022 -09-24 13:40:24
+     */
+    public static void splitPolygonToGeohash(List<Point> polygon, Function<String, Boolean> callback) {
+        splitPolygonToGeohash(polygon, callback, false);
+    }
+
+    /**
+     * Split polygon to geohash .
+     *
+     * @param polygon        the polygon
+     * @param callback       the callback
+     * @param multithreading the multithreading
+     * @author ErebusST
+     * @since 2022 -09-24 13:40:27
+     */
+    public static void splitPolygonToGeohash(List<Point> polygon, Function<String, Boolean> callback, boolean multithreading) {
         long start = System.currentTimeMillis();
 
-        List<Point> range = getPolygonSquareRange(polygon);
-        Point northWest = range.get(0);
-
-        BigDecimal lngMax = NumberUtils.max(range, Point::getLng);
-        BigDecimal lngMin = NumberUtils.min(range, Point::getLng);
-
-        BigDecimal latMax = NumberUtils.max(range, Point::getLat);
-        BigDecimal latMin = NumberUtils.min(range, Point::getLat);
-
-        List<GeoHash> list = new ArrayList<>();
-        GeoHash geoHash = toGeohash(northWest);
-        list.add(geoHash);
-        while (true) {
-            double northLatitude = geoHash.getBoundingBox().getNorthLatitude();
-            if (northLatitude < latMin.doubleValue()) {
-                break;
-            }
-            list.add(geoHash);
-            GeoHash western = toGeohash(geoHash.toBase32());
-            while (true) {
-
-                double eastLongitude = western.getBoundingBox().getEastLongitude();
-                if (eastLongitude < lngMin.doubleValue()) {
-                    break;
-                }
-                list.add(western);
-                western = western.getWesternNeighbour();
-            }
-            geoHash = geoHash.getSouthernNeighbour();
+        if (multithreading) {
+            splitPolygonToGeohashMultithreading(polygon, callback);
+        } else {
+            splitPolygonToGeohashSingleThreading(polygon, callback);
         }
-        List<String> collect = list.parallelStream()
-                .filter(hash -> checkPolygonsIntersect(toRectangleByGeohash(hash), polygon))
-                .map(GeoHash::toBase32).collect(Collectors.toList());
-        log.info("{}", start - System.currentTimeMillis());
-        return collect;
+        log.info("spend:{}", DateUtils.getSpendTime(start, System.currentTimeMillis()));
+    }
+
+    /**
+     * Split polygon to geohash .
+     *
+     * @param polygon        the polygon
+     * @param callback       the callback
+     * @param multithreading the multithreading
+     * @author ErebusST
+     * @since 2022 -09-26 14:41:28
+     */
+    public static void splitPolygonToGeohash(List<Point> polygon, BiFunction<String, Integer[], Boolean> callback, boolean multithreading) {
+        long start = System.currentTimeMillis();
+
+        if (multithreading) {
+            splitPolygonToGeohashMultithreading(polygon, callback);
+        } else {
+            splitPolygonToGeohashSingleThreading(polygon, callback);
+        }
+        log.info("spend:{}", DateUtils.getSpendTime(start, System.currentTimeMillis()));
     }
 
     /**
@@ -1877,44 +1911,226 @@ public class GisUtils {
      * @author ErebusST
      * @since 2022 -09-22 19:19:20
      */
-    public static void splitPolygonToGeohash(List<Point> polygon, Function<String, Boolean> callback) {
+    private static void splitPolygonToGeohashSingleThreading(List<Point> polygon, Function<String, Boolean> callback) {
+        splitPolygonToGeohashSingleThreading(polygon, (hash, location) -> callback.apply(hash));
+    }
+
+    /**
+     * Split polygon to geohash single threading .
+     *
+     * @param polygon  the polygon
+     * @param callback the callback
+     * @author ErebusST
+     * @since 2022 -09-26 14:40:15
+     */
+    private static void splitPolygonToGeohashSingleThreading(List<Point> polygon, BiFunction<String, Integer[], Boolean> callback) {
+
         List<Point> range = getPolygonSquareRange(polygon);
-        Point northWest = range.get(0);
+        Point northEast = range.get(0);
+        Point southEast = range.get(1);
+        Point northWest = range.get(3);
 
-        BigDecimal lngMax = NumberUtils.max(range, Point::getLng);
-        BigDecimal lngMin = NumberUtils.min(range, Point::getLng);
+        double northLineLength = Math.abs(northWest.getLng().subtract(northEast.getLng()).doubleValue());
 
-        BigDecimal latMax = NumberUtils.max(range, Point::getLat);
-        BigDecimal latMin = NumberUtils.min(range, Point::getLat);
+        double eastLineLength = Math.abs(northEast.getLat().subtract(southEast.getLat()).doubleValue());
 
-        GeoHash geoHash = toGeohash(northWest);
-        callback.apply(geoHash.toBase32());
+        int toWestCount = NumberUtils.divide(northLineLength, NORTH_LINE_LENGTH).add(BigDecimal.ONE).intValue();
+
+        int toSouthCount = NumberUtils.divide(eastLineLength, EAST_LINE_LENGTH).add(BigDecimal.ONE).intValue();
+
+        log.info("default:{}-{} range:{}-{} west:{} south:{}", NORTH_LINE_LENGTH, EAST_LINE_LENGTH,
+                northLineLength, eastLineLength, toWestCount, toSouthCount);
+
+        //BigDecimal lngMax = NumberUtils.max(range, Point::getLng);
+        double lngMin = NumberUtils.min(range, Point::getLng).doubleValue();
+
+        //BigDecimal latMax = NumberUtils.max(range, Point::getLat);
+        double latMin = NumberUtils.min(range, Point::getLat).doubleValue();
+
+        AtomicInteger toSouthIndex = new AtomicInteger(0);
+
+        GeoHash geoHash = toGeohash(northEast);
+
+        Polygon splitTarget = toPolygon(polygon);
+        Polygon temp;
+        /**
+         * 从北往南
+         * 从动向西
+         */
+        int colIndex = 0;
         while (true) {
             double northLatitude = geoHash.getBoundingBox().getNorthLatitude();
-            if (northLatitude < latMin.doubleValue()) {
+            int rowIndex = toSouthIndex.incrementAndGet();
+            if (northLatitude < latMin) {
                 break;
             }
-            if (!checkPolygonsIntersect(toRectangleByGeohash(geoHash), polygon)) {
-                continue;
-            }
-            callback.apply(geoHash.toBase32());
-            GeoHash western = toGeohash(geoHash.toBase32());
-            while (true) {
+            temp = toPolygon(toRectangleByGeohash(geoHash));
 
+            if (splitTarget.intersects(temp)) {
+                callback.apply(geoHash.toBase32(), ArrayUtils.newArray(rowIndex, colIndex));
+                log.info("to south:{}/{} save", rowIndex, toSouthCount);
+            } else {
+                log.info("to south:{}/{} skip", rowIndex, toSouthCount);
+            }
+
+            GeoHash western = toGeohash(geoHash.toBase32());
+            AtomicInteger toWestIndex = new AtomicInteger(0);
+
+            while (true) {
                 double eastLongitude = western.getBoundingBox().getEastLongitude();
-                if (eastLongitude < lngMin.doubleValue()) {
+                colIndex = toWestIndex.incrementAndGet();
+                if (eastLongitude < lngMin) {
                     break;
                 }
-                if (!checkPolygonsIntersect(toRectangleByGeohash(western), polygon)) {
-                    continue;
+                temp = toPolygon(toRectangleByGeohash(western));
+                if (splitTarget.intersects(temp)) {
+                    callback.apply(geoHash.toBase32(), ArrayUtils.newArray(rowIndex, colIndex));
+                    log.info("to west:{}/{} save", colIndex, toWestCount);
+                } else {
+                    log.info("to west:{}/{} skip", colIndex, toWestCount);
                 }
-                callback.apply(western.toBase32());
                 western = western.getWesternNeighbour();
             }
             geoHash = geoHash.getSouthernNeighbour();
         }
+
+        log.info("split finished");
     }
 
+    /**
+     * Split polygon to geohash multithreading .
+     *
+     * @param polygon  the polygon
+     * @param callback the callback
+     * @author ErebusST
+     * @since 2022 -09-26 14:34:20
+     */
+    private static void splitPolygonToGeohashMultithreading(List<Point> polygon, Function<String, Boolean> callback) {
+        splitPolygonToGeohashMultithreading(polygon, (hash, location) -> callback.apply(hash));
+    }
+
+    /**
+     * Split polygon to geohash multithreading .
+     *
+     * @param polygon  the polygon
+     * @param callback the callback
+     * @author ErebusST
+     * @since 2022 -09-24 13:40:38
+     */
+    private static void splitPolygonToGeohashMultithreading(List<Point> polygon, BiFunction<String, Integer[], Boolean> callback) {
+
+        List<Point> range = getPolygonSquareRange(polygon);
+        Point northEast = range.get(0);
+        Point southEast = range.get(1);
+        Point northWest = range.get(3);
+
+        double northLineLength = Math.abs(northWest.getLng().subtract(northEast.getLng()).doubleValue());
+
+        double eastLineLength = Math.abs(northEast.getLat().subtract(southEast.getLat()).doubleValue());
+
+        int toWestCount = NumberUtils.divide(northLineLength, NORTH_LINE_LENGTH).intValue();
+
+        int toSouthCount = NumberUtils.divide(eastLineLength, EAST_LINE_LENGTH).add(BigDecimal.ONE).intValue();
+
+        log.info("default:{}-{} range:{}-{} west:{} south:{}", NORTH_LINE_LENGTH, EAST_LINE_LENGTH,
+                northLineLength, eastLineLength, toWestCount, toSouthCount);
+        AtomicInteger toSouthIndex = new AtomicInteger(0);
+
+        double lngMin = NumberUtils.min(range, Point::getLng).doubleValue();
+
+        double latMin = NumberUtils.min(range, Point::getLat).doubleValue();
+
+        Polygon splitTarget = toPolygon(polygon);
+        Polygon temp;
+
+        GeoHash geoHash = toGeohash(northEast).getNorthernNeighbour();
+
+        List<GeoHash> toSouthList = new ArrayList<>(10);
+        while (true) {
+            geoHash = geoHash.getSouthernNeighbour();
+            double northLatitude = geoHash.getBoundingBox().getNorthLatitude();
+            int southIndex = toSouthIndex.incrementAndGet();
+            if (northLatitude < latMin) {
+                if (toSouthList.size() > 0) {
+                    splitToWest(toSouthList, southIndex, toWestCount, lngMin, splitTarget, callback);
+                }
+                break;
+            }
+
+            temp = toPolygon(toRectangleByGeohash(geoHash));
+            if (splitTarget.intersects(temp)) {
+                callback.apply(geoHash.toBase32(), ArrayUtils.newArray(southIndex, 0));
+                log.info("to south:{}/{} save", southIndex, toSouthCount);
+            } else {
+                log.info("to south:{}/{} skip", southIndex, toSouthCount);
+            }
+
+            toSouthList.add(geoHash);
+
+            if (toSouthList.size() == 10) {
+                splitToWest(toSouthList, southIndex, toWestCount, lngMin, splitTarget, callback);
+            }
+        }
+        log.info("split finished");
+    }
+
+
+    private static final String DEFAULT_GEO = "y8qk0x";
+
+    private static double NORTH_LINE_LENGTH;
+    private static double EAST_LINE_LENGTH;
+
+    static {
+        List<Point> points = toRectangleByGeohash(DEFAULT_GEO);
+
+        Point northWest = points.get(0);
+        Point northEast = points.get(1);
+        Point southEast = points.get(2);
+
+        NORTH_LINE_LENGTH = Math.abs(northWest.getLng().subtract(northEast.getLng()).doubleValue());
+        EAST_LINE_LENGTH = Math.abs(northEast.getLat().subtract(southEast.getLat()).doubleValue());
+    }
+
+
+    private static void splitToWest(List<GeoHash> geoHashes, int southIndex, int toWestCount, double lngMin, Polygon polygon, BiFunction<String, Integer[], Boolean> callback) {
+        String flag = geoHashes.get(0).toBase32();
+        ThreadPoolTaskExecutor executor = ThreadPoolConfig.getExecutor();
+        for (GeoHash geoHash : geoHashes) {
+            SplitToWestThread splitToWest = new SplitToWestThread();
+            splitToWest.setCurrent(geoHash);
+            splitToWest.setToWestCount(toWestCount);
+            splitToWest.setLngMin(lngMin);
+            splitToWest.setPolygon(polygon);
+            splitToWest.setCallback(callback);
+            splitToWest.setRow(southIndex);
+            executor.execute(splitToWest);
+        }
+        while (true) {
+            int activeCount = executor.getActiveCount();
+            if (activeCount == 0) {
+                log.info("{}:全部拆分完成", flag);
+                break;
+            } else {
+                log.info("{}:仍有{}个任务执行中", flag, activeCount);
+                try {
+                    Thread.sleep(1000L);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        geoHashes.clear();
+    }
+
+
+    /**
+     * To rectangle by geohash list.
+     *
+     * @param hash the hash
+     * @return the list
+     * @author ErebusST
+     * @since 2022 -09-26 14:16:09
+     */
     public static List<Point> toRectangleByGeohash(String hash) {
         return toRectangleByGeohash(toGeohash(hash));
     }
@@ -1951,3 +2167,63 @@ public class GisUtils {
 
 
 }
+
+/**
+ * The type Split to west thread.
+ */
+@Slf4j
+class SplitToWestThread implements Runnable {
+    /**
+     * The Current.
+     */
+    @Setter
+    GeoHash current;
+    /**
+     * The To west count.
+     */
+    @Setter
+    int toWestCount;
+
+    @Setter
+    private Integer row;
+
+    /**
+     * The Lng min.
+     */
+    @Setter
+    double lngMin;
+    /**
+     * The Polygon.
+     */
+    @Setter
+    Polygon polygon;
+
+    /**
+     * The Callback.
+     */
+    @Setter
+    BiFunction<String, Integer[], Boolean> callback;
+
+    @Override
+    public void run() {
+        AtomicInteger toWestIndex = new AtomicInteger(0);
+        GeoHash western = current.getWesternNeighbour();
+        Polygon temp;
+        while (true) {
+            double eastLongitude = western.getBoundingBox().getEastLongitude();
+            if (eastLongitude < lngMin) {
+                break;
+            }
+            temp = GisUtils.toPolygon(GisUtils.toRectangleByGeohash(western.toBase32()));
+            int westIndex = toWestIndex.incrementAndGet();
+            if (polygon.intersects(temp)) {
+                callback.apply(western.toBase32(), ArrayUtils.newArray(row, westIndex));
+                log.info("to west:{}/{} save", westIndex, toWestCount);
+            } else {
+                log.info("to west:{}/{} skip", westIndex, toWestCount);
+            }
+            western = western.getWesternNeighbour();
+        }
+    }
+}
+

@@ -11,10 +11,14 @@ package com.situ.tools;
 import com.google.common.collect.Lists;
 import com.google.common.geometry.*;
 import com.situ.entity.bo.Point;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.situ.tools.GisUtils.toListPoint;
 
 /**
  * 必须使用-S2使用的是WGS84坐标
@@ -29,7 +33,6 @@ import java.util.stream.Collectors;
  * 对于指定S2Region,判断经纬度或CellToken是否在其范围内
  *
  * @author situ
- *
  */
 /*
 包
@@ -39,6 +42,7 @@ import java.util.stream.Collectors;
         <version>1.0.0</version>
     </dependency>
  */
+@Slf4j
 public class GoogleS2 {
 
     /**
@@ -95,7 +99,7 @@ public class GoogleS2 {
         S2LatLng s2LatLng = new S2CellId(cellId).toLatLng();
         double lat = s2LatLng.latDegrees();
         double lng = s2LatLng.lngDegrees();
-        return Point.get(lng,lat);
+        return Point.get(lng, lat);
     }
 
     /**
@@ -170,11 +174,6 @@ public class GoogleS2 {
     }
 
 
-
-
-
-
-
     /**
      * 不同等级S2块包含的S2子块
      *
@@ -204,6 +203,7 @@ public class GoogleS2 {
             return Lists.newArrayList(s2CellId);
         }
     }
+
     /**
      * 任意形状内所有指定等级的S2块
      *
@@ -224,8 +224,8 @@ public class GoogleS2 {
         //coverer.setMaxCells(500);//设置最大Cell
         S2CellUnion covering = coverer.getCovering(polygon);
         List<S2CellId> s2CellIds = covering.cellIds();
-        int i=0;
-        List<S2CellId> list=new ArrayList<>();
+        int i = 0;
+        List<S2CellId> list = new ArrayList<>();
         for (S2CellId s2CellId : s2CellIds) {
             List<S2CellId> s2CellIds1 = childrenCellId(s2CellId, s2CellId.level(), desevel);
             list.addAll(s2CellIds1);
@@ -233,6 +233,25 @@ public class GoogleS2 {
         return list;
     }
 
+    @Test
+    public void test() {
+        List<Point> p1 = toListPoint(" [[116.475334, 39.997534], [116.476627, 39.998315], [116.478603, 39.99879], [116.478529, 40.000296], [116.475082, 40.000151], [116.473421, 39.998717]]");
+        List<Point> p2 = toListPoint("[[116.475082,40.000151],[116.473687,39.99993],[116.473467,40.000686],[116.476122,40.001]]");
+
+        List<S2Point> collect1 = p1.stream().map(p -> S2LatLng.fromDegrees(p.getLat().doubleValue(), p.getLng().doubleValue()).toPoint()).collect(Collectors.toList());
+
+
+        List<S2Point> collect2 = p2.stream().map(p -> S2LatLng.fromDegrees(p.getLat().doubleValue(), p.getLng().doubleValue()).toPoint()).collect(Collectors.toList());
+        S2Loop s2Loop1 = new S2Loop(collect1);
+        S2Loop s2Loop2 = new S2Loop(collect2);
+
+
+        S2Polygon polygon1 = new S2Polygon(s2Loop1);
+        S2Polygon polygon2 = new S2Polygon(s2Loop2);
+        log.info("{}", polygon1.intersects(polygon2));
+    }
+
+    //public static boolean check(List<Point> )
 
 }
 

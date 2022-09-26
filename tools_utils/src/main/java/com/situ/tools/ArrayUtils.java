@@ -8,22 +8,22 @@
 
 package com.situ.tools;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * @author 司徒彬
- * @date 2022/9/22 19:16
+ * @date 2022/9/26 14:23
  */
-@Slf4j
-public class Test1 {
+public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
+
     /**
-     * Test .
+     * New array entity [ ].
      *
-     * @param hash the hash
+     * @param <Entity> the type parameter
+     * @param entities the entities
+     * @return the entity [ ]
      * @author ErebusST
-     * @since 2022 -09-22 19:20:45
+     * @since 2022 -09-26 14:25:07
      */
-    public void test(String hash) {
-        log.info("处理:{}", hash);
+    public static <Entity> Entity[] newArray(Entity... entities) {
+        return entities;
     }
 }
