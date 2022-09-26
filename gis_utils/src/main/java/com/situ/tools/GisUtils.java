@@ -2045,31 +2045,22 @@ public class GisUtils {
 
         GeoHash geoHash = toGeohash(northEast).getNorthernNeighbour();
 
-        List<GeoHash> toSouthList = new ArrayList<>(10);
         while (true) {
             geoHash = geoHash.getSouthernNeighbour();
             double northLatitude = geoHash.getBoundingBox().getNorthLatitude();
             int southIndex = toSouthIndex.incrementAndGet();
             if (northLatitude < latMin) {
-                if (toSouthList.size() > 0) {
-                    splitToWest(toSouthList, southIndex, toWestCount, lngMin, splitTarget, callback);
-                }
                 break;
             }
 
             temp = toPolygon(toRectangleByGeohash(geoHash));
             if (splitTarget.intersects(temp)) {
                 callback.apply(geoHash.toBase32(), ArrayUtils.newArray(southIndex, 0));
-                log.info("to south:{}/{} save", southIndex, toSouthCount);
+                log.info("to south:{}-0/{} save", southIndex, toSouthCount);
             } else {
-                log.info("to south:{}/{} skip", southIndex, toSouthCount);
+                log.info("to south:{}-0/{} skip", southIndex, toSouthCount);
             }
-
-            toSouthList.add(geoHash);
-
-            if (toSouthList.size() == 10) {
-                splitToWest(toSouthList, southIndex, toWestCount, lngMin, splitTarget, callback);
-            }
+            splitToWest(geoHash, southIndex, toSouthCount, toWestCount, lngMin, splitTarget, callback);
         }
         log.info("split finished");
     }
@@ -2092,34 +2083,30 @@ public class GisUtils {
     }
 
 
-    private static void splitToWest(List<GeoHash> geoHashes, int southIndex, int toWestCount, double lngMin, Polygon polygon, BiFunction<String, Integer[], Boolean> callback) {
-        String flag = geoHashes.get(0).toBase32();
+    private static void splitToWest(GeoHash geoHash, int southIndex, int toSouthCount, int toWestCount, double lngMin, Polygon polygon, BiFunction<String, Integer[], Boolean> callback) {
+        SplitToWestThread splitToWest = new SplitToWestThread();
+        splitToWest.setCurrent(geoHash);
+        splitToWest.setToWestCount(toWestCount);
+        splitToWest.setLngMin(lngMin);
+        splitToWest.setPolygon(polygon);
+        splitToWest.setCallback(callback);
+        splitToWest.setRow(southIndex);
+        splitToWest.setRowCount(toSouthCount);
         ThreadPoolTaskExecutor executor = ThreadPoolConfig.getExecutor();
-        for (GeoHash geoHash : geoHashes) {
-            SplitToWestThread splitToWest = new SplitToWestThread();
-            splitToWest.setCurrent(geoHash);
-            splitToWest.setToWestCount(toWestCount);
-            splitToWest.setLngMin(lngMin);
-            splitToWest.setPolygon(polygon);
-            splitToWest.setCallback(callback);
-            splitToWest.setRow(southIndex);
-            executor.execute(splitToWest);
-        }
         while (true) {
             int activeCount = executor.getActiveCount();
-            if (activeCount == 0) {
-                log.info("{}:全部拆分完成", flag);
-                break;
-            } else {
-                log.info("{}:仍有{}个任务执行中", flag, activeCount);
+            log.info("当前运行中的任务为:{}", activeCount);
+            if (activeCount >= 10) {
                 try {
                     Thread.sleep(1000L);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+            } else {
+                executor.execute(splitToWest);
+                break;
             }
         }
-        geoHashes.clear();
     }
 
 
@@ -2187,6 +2174,9 @@ class SplitToWestThread implements Runnable {
     @Setter
     private Integer row;
 
+    @Setter
+    private Integer rowCount;
+
     /**
      * The Lng min.
      */
@@ -2218,9 +2208,9 @@ class SplitToWestThread implements Runnable {
             int westIndex = toWestIndex.incrementAndGet();
             if (polygon.intersects(temp)) {
                 callback.apply(western.toBase32(), ArrayUtils.newArray(row, westIndex));
-                log.info("to west:{}/{} save", westIndex, toWestCount);
+                log.info("to west:{}/{}-{}/{} save", row, rowCount, westIndex, toWestCount);
             } else {
-                log.info("to west:{}/{} skip", westIndex, toWestCount);
+                log.info("to west:{}/{}-{}/{} skip", row, rowCount, westIndex, toWestCount);
             }
             western = western.getWesternNeighbour();
         }

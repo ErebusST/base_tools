@@ -74,7 +74,7 @@ public class Test {
             log.info(hash);
             list.add(hash);
             return true;
-        }, false);
+        }, true);
         JsonArray collect = list.stream()
                 .map(str -> {
                     Point polygon = GisUtils.getGeoHashCenter(str);

@@ -15,6 +15,37 @@ package com.situ.tools;
 public class ArrayUtils extends org.apache.commons.lang3.ArrayUtils {
 
     /**
+     * First entity.
+     *
+     * @param <Entity> the type parameter
+     * @param entities the entities
+     * @return the entity
+     * @author ErebusST
+     * @since 2022 -09-26 15:23:30
+     */
+    public static <Entity> Entity first(Entity... entities) {
+        return get(0, entities);
+    }
+
+    /**
+     * Get entity.
+     *
+     * @param <Entity> the type parameter
+     * @param index    the index
+     * @param entities the entities
+     * @return the entity
+     * @author ErebusST
+     * @since 2022 -09-26 15:23:32
+     */
+    public static <Entity> Entity get(Integer index, Entity... entities) {
+        int length = entities.length;
+        if (index + 1 > length) {
+            return null;
+        }
+        return entities[index];
+    }
+
+    /**
      * New array entity [ ].
      *
      * @param <Entity> the type parameter
