@@ -12,7 +12,7 @@ import ch.hsr.geohash.BoundingBox;
 import ch.hsr.geohash.GeoHash;
 import ch.hsr.geohash.WGS84Point;
 import com.google.gson.JsonArray;
-import com.situ.config.ThreadPoolConfig;
+import com.situ.config.GisThreadPoolConfig;
 import com.situ.entity.bo.Point;
 import com.situ.enumeration.HexagonType;
 import com.situ.enumeration.ShapeType;
@@ -1812,6 +1812,10 @@ public class GisUtils {
         return toGeohash(point).toBase32();
     }
 
+    public static String getGeohash(Point point, int length) {
+        return toGeohash(point, length).toBase32();
+    }
+
     /**
      * To geohash geo hash.
      *
@@ -1821,7 +1825,20 @@ public class GisUtils {
      * @since 2022 -09-22 17:54:36
      */
     public static GeoHash toGeohash(Point point) {
-        GeoHash geoHash = GeoHash.withBitPrecision(point.getLat().doubleValue(), point.getLng().doubleValue(), 30);
+        return toGeohash(point, 6);
+    }
+
+    /**
+     * To geohash geo hash.
+     *
+     * @param point  the point
+     * @param length the length
+     * @return the geo hash
+     * @author ErebusST
+     * @since 2022 -09-27 13:33:45
+     */
+    public static GeoHash toGeohash(Point point, int length) {
+        GeoHash geoHash = GeoHash.withBitPrecision(point.getLat().doubleValue(), point.getLng().doubleValue(), 5 * length);
         return geoHash;
     }
 
@@ -1860,7 +1877,20 @@ public class GisUtils {
      * @since 2022 -09-24 13:40:24
      */
     public static void splitPolygonToGeohash(List<Point> polygon, Function<String, Boolean> callback) {
-        splitPolygonToGeohash(polygon, callback, false);
+        splitPolygonToGeohash(polygon, callback, 6);
+    }
+
+    /**
+     * Split polygon to geohash .
+     *
+     * @param polygon  the polygon
+     * @param callback the callback
+     * @param length   the length
+     * @author ErebusST
+     * @since 2022 -09-27 13:31:18
+     */
+    public static void splitPolygonToGeohash(List<Point> polygon, Function<String, Boolean> callback, int length) {
+        splitPolygonToGeohash(polygon, callback, length, false);
     }
 
     /**
@@ -1873,14 +1903,21 @@ public class GisUtils {
      * @since 2022 -09-24 13:40:27
      */
     public static void splitPolygonToGeohash(List<Point> polygon, Function<String, Boolean> callback, boolean multithreading) {
-        long start = System.currentTimeMillis();
+        splitPolygonToGeohash(polygon, callback, 6, multithreading);
+    }
 
-        if (multithreading) {
-            splitPolygonToGeohashMultithreading(polygon, callback);
-        } else {
-            splitPolygonToGeohashSingleThreading(polygon, callback);
-        }
-        log.info("spend:{}", DateUtils.getSpendTime(start, System.currentTimeMillis()));
+    /**
+     * Split polygon to geohash .
+     *
+     * @param polygon        the polygon
+     * @param callback       the callback
+     * @param length         the length
+     * @param multithreading the multithreading
+     * @author ErebusST
+     * @since 2022 -09-27 13:24:26
+     */
+    public static void splitPolygonToGeohash(List<Point> polygon, Function<String, Boolean> callback, int length, boolean multithreading) {
+        splitPolygonToGeohash(polygon, (hash, location) -> callback.apply(hash), length, multithreading);
     }
 
     /**
@@ -1892,28 +1929,17 @@ public class GisUtils {
      * @author ErebusST
      * @since 2022 -09-26 14:41:28
      */
-    public static void splitPolygonToGeohash(List<Point> polygon, BiFunction<String, Integer[], Boolean> callback, boolean multithreading) {
+    public static void splitPolygonToGeohash(List<Point> polygon, BiFunction<String, Integer[], Boolean> callback, int length, boolean multithreading) {
         long start = System.currentTimeMillis();
 
         if (multithreading) {
-            splitPolygonToGeohashMultithreading(polygon, callback);
+            splitPolygonToGeohashMultithreading(polygon, callback, length);
         } else {
-            splitPolygonToGeohashSingleThreading(polygon, callback);
+            splitPolygonToGeohashSingleThreading(polygon, callback, length);
         }
         log.info("spend:{}", DateUtils.getSpendTime(start, System.currentTimeMillis()));
     }
 
-    /**
-     * Split polygon to geohash .
-     *
-     * @param polygon  the polygon
-     * @param callback the callback
-     * @author ErebusST
-     * @since 2022 -09-22 19:19:20
-     */
-    private static void splitPolygonToGeohashSingleThreading(List<Point> polygon, Function<String, Boolean> callback) {
-        splitPolygonToGeohashSingleThreading(polygon, (hash, location) -> callback.apply(hash));
-    }
 
     /**
      * Split polygon to geohash single threading .
@@ -1923,7 +1949,7 @@ public class GisUtils {
      * @author ErebusST
      * @since 2022 -09-26 14:40:15
      */
-    private static void splitPolygonToGeohashSingleThreading(List<Point> polygon, BiFunction<String, Integer[], Boolean> callback) {
+    private static void splitPolygonToGeohashSingleThreading(List<Point> polygon, BiFunction<String, Integer[], Boolean> callback, Integer length) {
 
         List<Point> range = getPolygonSquareRange(polygon);
         Point northEast = range.get(0);
@@ -1934,11 +1960,12 @@ public class GisUtils {
 
         double eastLineLength = Math.abs(northEast.getLat().subtract(southEast.getLat()).doubleValue());
 
-        int toWestCount = NumberUtils.divide(northLineLength, NORTH_LINE_LENGTH).add(BigDecimal.ONE).intValue();
+        Pair<Double, Double> setting = getGeohashRectangleInfo(length);
+        int toWestCount = NumberUtils.divide(northLineLength, setting.getLeft()).add(BigDecimal.ONE).intValue();
 
-        int toSouthCount = NumberUtils.divide(eastLineLength, EAST_LINE_LENGTH).add(BigDecimal.ONE).intValue();
+        int toSouthCount = NumberUtils.divide(eastLineLength, setting.getRight()).add(BigDecimal.ONE).intValue();
 
-        log.info("default:{}-{} range:{}-{} west:{} south:{}", NORTH_LINE_LENGTH, EAST_LINE_LENGTH,
+        log.info("default:{}-{} range:{}-{} west:{} south:{}", setting.getLeft(), setting.getRight(),
                 northLineLength, eastLineLength, toWestCount, toSouthCount);
 
         //BigDecimal lngMax = NumberUtils.max(range, Point::getLng);
@@ -1949,7 +1976,7 @@ public class GisUtils {
 
         AtomicInteger toSouthIndex = new AtomicInteger(0);
 
-        GeoHash geoHash = toGeohash(northEast);
+        GeoHash geoHash = toGeohash(northEast, length);
 
         Polygon splitTarget = toPolygon(polygon);
         Polygon temp;
@@ -2005,8 +2032,8 @@ public class GisUtils {
      * @author ErebusST
      * @since 2022 -09-26 14:34:20
      */
-    private static void splitPolygonToGeohashMultithreading(List<Point> polygon, Function<String, Boolean> callback) {
-        splitPolygonToGeohashMultithreading(polygon, (hash, location) -> callback.apply(hash));
+    private static void splitPolygonToGeohashMultithreading(List<Point> polygon, Function<String, Boolean> callback, int length) {
+        splitPolygonToGeohashMultithreading(polygon, (hash, location) -> callback.apply(hash), length);
     }
 
     /**
@@ -2017,7 +2044,7 @@ public class GisUtils {
      * @author ErebusST
      * @since 2022 -09-24 13:40:38
      */
-    private static void splitPolygonToGeohashMultithreading(List<Point> polygon, BiFunction<String, Integer[], Boolean> callback) {
+    private static void splitPolygonToGeohashMultithreading(List<Point> polygon, BiFunction<String, Integer[], Boolean> callback, int length) {
 
         List<Point> range = getPolygonSquareRange(polygon);
         Point northEast = range.get(0);
@@ -2028,11 +2055,12 @@ public class GisUtils {
 
         double eastLineLength = Math.abs(northEast.getLat().subtract(southEast.getLat()).doubleValue());
 
-        int toWestCount = NumberUtils.divide(northLineLength, NORTH_LINE_LENGTH).intValue();
+        Pair<Double, Double> setting = getGeohashRectangleInfo(length);
+        int toWestCount = NumberUtils.divide(northLineLength, setting.getLeft()).intValue();
 
-        int toSouthCount = NumberUtils.divide(eastLineLength, EAST_LINE_LENGTH).add(BigDecimal.ONE).intValue();
+        int toSouthCount = NumberUtils.divide(eastLineLength, setting.getRight()).add(BigDecimal.ONE).intValue();
 
-        log.info("default:{}-{} range:{}-{} west:{} south:{}", NORTH_LINE_LENGTH, EAST_LINE_LENGTH,
+        log.info("default:{}-{} range:{}-{} west:{} south:{}", setting.getLeft(), setting.getRight(),
                 northLineLength, eastLineLength, toWestCount, toSouthCount);
         AtomicInteger toSouthIndex = new AtomicInteger(0);
 
@@ -2043,7 +2071,7 @@ public class GisUtils {
         Polygon splitTarget = toPolygon(polygon);
         Polygon temp;
 
-        GeoHash geoHash = toGeohash(northEast).getNorthernNeighbour();
+        GeoHash geoHash = toGeohash(northEast, length).getNorthernNeighbour();
 
         while (true) {
             geoHash = geoHash.getSouthernNeighbour();
@@ -2066,20 +2094,17 @@ public class GisUtils {
     }
 
 
-    private static final String DEFAULT_GEO = "y8qk0x";
+    private static final String DEFAULT_GEO = "wtw600000006";
 
-    private static double NORTH_LINE_LENGTH;
-    private static double EAST_LINE_LENGTH;
-
-    static {
-        List<Point> points = toRectangleByGeohash(DEFAULT_GEO);
-
+    private static Pair<Double, Double> getGeohashRectangleInfo(int length) {
+        List<Point> points = toRectangleByGeohash(DEFAULT_GEO.substring(0, length));
         Point northWest = points.get(0);
         Point northEast = points.get(1);
         Point southEast = points.get(2);
 
-        NORTH_LINE_LENGTH = Math.abs(northWest.getLng().subtract(northEast.getLng()).doubleValue());
-        EAST_LINE_LENGTH = Math.abs(northEast.getLat().subtract(southEast.getLat()).doubleValue());
+        double north = Math.abs(northWest.getLng().subtract(northEast.getLng()).doubleValue());
+        double east = Math.abs(northEast.getLat().subtract(southEast.getLat()).doubleValue());
+        return Pair.of(north, east);
     }
 
 
@@ -2092,7 +2117,7 @@ public class GisUtils {
         splitToWest.setCallback(callback);
         splitToWest.setRow(southIndex);
         splitToWest.setRowCount(toSouthCount);
-        ThreadPoolTaskExecutor executor = ThreadPoolConfig.getExecutor();
+        ThreadPoolTaskExecutor executor = GisThreadPoolConfig.getExecutor();
         while (true) {
             int activeCount = executor.getActiveCount();
             log.info("当前运行中的任务为:{}", activeCount);

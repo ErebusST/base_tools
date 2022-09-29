@@ -74,7 +74,7 @@ public class Test {
             log.info(hash);
             list.add(hash);
             return true;
-        }, true);
+        }, 6,true);
         JsonArray collect = list.stream()
                 .map(str -> {
                     Point polygon = GisUtils.getGeoHashCenter(str);
@@ -83,6 +83,10 @@ public class Test {
                 })
                 .collect(Collectors.collectingAndThen(Collectors.toList(), DataSwitch::convertObjectToJsonArray));
         log.info("{}", collect);
+
+        log.info("{}",GisUtils.toGeohash(Point.get(121.289063,31.289063),12).toBase32());
+
+        log.info( "wtw600000006".substring(0,6));
     }
 
 

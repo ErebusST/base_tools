@@ -248,8 +248,11 @@ public class FieldUtils {
         Map<String, Object> parameters = setting.getFields()
                 .stream()
                 .map(field -> {
-                    String name = field.getField().getName();
-                    Object value = ReflectionUtils.getFieldValue(entity, name);
+                    String name = field.getFieldInDb();
+                    if (ObjectUtils.isEmpty(name)) {
+                        name = field.getField().getName();
+                    }
+                    Object value = ReflectionUtils.getFieldValue(entity, field.getField().getName());
                     if (ObjectUtils.isNull(value)) {
                         return null;
                     }

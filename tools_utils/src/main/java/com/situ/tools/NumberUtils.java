@@ -628,7 +628,7 @@ public class NumberUtils {
      * @since 2022 -03-19 17:58:13
      */
     public static BigDecimal calcAverage(Stream<? extends Number> stream, Integer scale, Integer roundingMode) {
-        double average = stream.mapToDouble(Number::doubleValue)
+        double average = stream.filter(ObjectUtils::isNotNull).mapToDouble(Number::doubleValue)
                 .average().orElse(0D);
         BigDecimal result = BigDecimal.valueOf(average);
         if (ObjectUtils.isNotNull(scale)) {

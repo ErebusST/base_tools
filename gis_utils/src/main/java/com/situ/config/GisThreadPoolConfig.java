@@ -23,7 +23,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Configuration
 @EnableAsync
 @Slf4j
-public class ThreadPoolConfig {
+public class GisThreadPoolConfig {
     private static ThreadPoolTaskExecutor executor = null;
 
     /**
