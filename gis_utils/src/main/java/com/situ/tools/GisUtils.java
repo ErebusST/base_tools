@@ -18,12 +18,14 @@ import com.situ.enumeration.HexagonType;
 import com.situ.enumeration.ShapeType;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import lombok.var;
 import org.apache.commons.lang3.tuple.Pair;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.geometry.jts.JTSFactoryFinder;
 import org.geotools.referencing.CRS;
+import org.junit.Test;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -1778,6 +1780,97 @@ public class GisUtils {
         return radiusLat;
     }
 
+    @Test
+    public void test() {
+        Point point = Point.get(121.289063, 31.289063);
+
+        List<Point> points = GisUtils.toRectangleByGeohash(toGeohash(point, 5));
+
+        //log.info("{}-{}", distance1, distance2);
+        //log.info("{}", toJsonArray(points));
+        List<List<Point>> result = new ArrayList<>();
+        splitRectangle(points, 5, 4, result::add);
+        JsonArray collect = result.stream().map(GisUtils::toJsonArray).collect(Collectors.collectingAndThen(Collectors.toList(), DataSwitch::convertObjectToJsonArray));
+
+        calcArea(result.get(0));
+        log.info(collect.toString());
+        log.info("{}",  calcArea(result.get(0)).doubleValue()/1000000);
+        double distance1 = distance(result.get(0).get(0), result.get(0).get(1));
+        double distance2 = distance(result.get(0).get(1), result.get(0).get(2));
+        log.info("{}-{}", distance1, distance2);
+        //log.info("{}", toJsonArray(points));
+    }
+
+    /**
+     * Split rectangle .
+     *
+     * @param polygon  the polygon
+     * @param rowCount the row count
+     * @param colCount the col count
+     * @param callback the callback
+     * @author ErebusST
+     * @since 2022 -09-29 16:47:20
+     */
+    @SneakyThrows
+    public static void splitRectangle(List<Point> polygon, Integer rowCount,
+                                      Integer colCount, Function<List<Point>, Boolean> callback) {
+
+        double lngMax = NumberUtils.max(polygon, Point::getLng).doubleValue();
+        double lngMin = NumberUtils.min(polygon, Point::getLng).doubleValue();
+
+        double lngStep = NumberUtils.divide(Math.abs(lngMax - lngMin), colCount).doubleValue();
+
+
+        double latMax = NumberUtils.max(polygon, Point::getLat).doubleValue();
+        double latMin = NumberUtils.min(polygon, Point::getLat).doubleValue();
+
+        double latStep = NumberUtils.divide(Math.abs(latMax - latMin), rowCount).doubleValue();
+
+        List<Point> eastNorth = toRectangle(lngMax - lngStep, lngMax, latMax - latStep, latMax);
+
+        for (int rowIndex = 0; rowIndex < rowCount; rowIndex++) {
+            List<Point> southern = getSouthernNeighbour(eastNorth, latStep * rowIndex);
+            for (int colIndex = 0; colIndex < colCount; colIndex++) {
+                List<Point> temp = getWesternNeighbour(southern, lngStep * colIndex);
+                callback.apply(temp);
+            }
+        }
+    }
+
+    public static List<Point> getSouthernNeighbour(List<Point> polygon, double step) {
+        String temp = GisUtils.toJsonArray(polygon).toString();
+        return GisUtils.toListPoint(temp).stream().map(point -> {
+            point.setLat(NumberUtils.subtract(point.getLat(), step));
+            return Point.get(point.getLng(), point.getLat());
+        }).collect(Collectors.toList());
+    }
+
+    /**
+     * Get western neighbour list.
+     *
+     * @param polygon the polygon
+     * @param step    the step
+     * @return the western neighbour
+     * @author ErebusST
+     * @since 2022 -09-29 16:47:17
+     */
+    public static List<Point> getWesternNeighbour(List<Point> polygon, double step) {
+        String temp = GisUtils.toJsonArray(polygon).toString();
+        return GisUtils.toListPoint(temp).stream().map(point -> {
+            point.setLng(NumberUtils.subtract(point.getLng(), step));
+            return Point.get(point.getLng(), point.getLat());
+        }).collect(Collectors.toList());
+    }
+
+    public static List<Point> toRectangle(double lngMin, double lngMax, double latMin, double latMax) {
+        return ListUtils.newArrayList(
+                Point.get(lngMax, latMax),
+                Point.get(lngMin, latMax),
+                Point.get(lngMin, latMin),
+                Point.get(lngMax, latMin)
+        );
+    }
+
 
     //=================================================================//
     //Geohash封装
@@ -2161,7 +2254,7 @@ public class GisUtils {
         return Point.get(center.getLongitude(), center.getLatitude());
     }
 
-    private static List<Point> toRectangleByGeohash(GeoHash hash) {
+    public static List<Point> toRectangleByGeohash(GeoHash hash) {
         BoundingBox boundingBox = hash.getBoundingBox();
         WGS84Point northWestCorner = boundingBox.getNorthWestCorner();
         WGS84Point northEastCorner = boundingBox.getNorthEastCorner();

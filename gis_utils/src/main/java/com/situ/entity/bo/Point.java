@@ -10,6 +10,7 @@ package com.situ.entity.bo;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.situ.tools.DataSwitch;
 import com.situ.tools.ObjectUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -92,6 +93,15 @@ public class Point implements Serializable {
      * 经度 X
      */
     private BigDecimal lng;
+
+    public void setLng(BigDecimal lng) {
+        this.lng = DataSwitch.convertObjectToBigDecimal(lng,6);
+    }
+
+    public void setLat(BigDecimal lat) {
+        this.lat = DataSwitch.convertObjectToBigDecimal(lat,6);;
+    }
+
     /**
      * 纬度 Y
      */
