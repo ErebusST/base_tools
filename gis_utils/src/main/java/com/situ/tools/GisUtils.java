@@ -2104,7 +2104,7 @@ public class GisUtils {
                 }
                 temp = toPolygon(toRectangleByGeohash(western));
                 if (splitTarget.intersects(temp)) {
-                    callback.apply(geoHash.toBase32(), ArrayUtils.newArray(rowIndex, colIndex));
+                    callback.apply(western.toBase32(), ArrayUtils.newArray(rowIndex, colIndex));
                     log.info("to west:{}/{} save", colIndex, toWestCount);
                 } else {
                     log.info("to west:{}/{} skip", colIndex, toWestCount);
