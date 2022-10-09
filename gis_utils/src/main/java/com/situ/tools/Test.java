@@ -64,6 +64,18 @@ public class Test {
         }
     }
 
+    @org.junit.Test
+    public  void toBorder(){
+        List<String> list = ListUtils.newArrayList("wm7ddp", "wm7ddn", "wm7d9y", "wm7ddj", "wm7d9v");
+        String s = list.stream()
+                .map(geohash -> {
+                    List<Point> points = GisUtils.toRectangleByGeohash(geohash);
+                    return GisUtils.toJsonArray(points);
+                })
+                .collect(Collectors.collectingAndThen(Collectors.toList(), DataSwitch::convertObjectToJsonArray)).toString();
+        log.info(s);
+    }
+
 
     @org.junit.Test
     public void testGeohashCallback() {

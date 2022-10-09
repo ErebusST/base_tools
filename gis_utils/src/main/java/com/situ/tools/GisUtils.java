@@ -1780,26 +1780,6 @@ public class GisUtils {
         return radiusLat;
     }
 
-    @Test
-    public void test() {
-        Point point = Point.get(121.289063, 31.289063);
-
-        List<Point> points = GisUtils.toRectangleByGeohash(toGeohash(point, 5));
-
-        //log.info("{}-{}", distance1, distance2);
-        //log.info("{}", toJsonArray(points));
-        List<List<Point>> result = new ArrayList<>();
-        splitRectangle(points, 5, 4, result::add);
-        JsonArray collect = result.stream().map(GisUtils::toJsonArray).collect(Collectors.collectingAndThen(Collectors.toList(), DataSwitch::convertObjectToJsonArray));
-
-        calcArea(result.get(0));
-        log.info(collect.toString());
-        log.info("{}",  calcArea(result.get(0)).doubleValue()/1000000);
-        double distance1 = distance(result.get(0).get(0), result.get(0).get(1));
-        double distance2 = distance(result.get(0).get(1), result.get(0).get(2));
-        log.info("{}-{}", distance1, distance2);
-        //log.info("{}", toJsonArray(points));
-    }
 
     /**
      * Split rectangle .
@@ -2088,9 +2068,9 @@ public class GisUtils {
 
             if (splitTarget.intersects(temp)) {
                 callback.apply(geoHash.toBase32(), ArrayUtils.newArray(rowIndex, colIndex));
-                log.info("to south:{}/{} save", rowIndex, toSouthCount);
+                //log.info("to south:{}/{} save", rowIndex, toSouthCount);
             } else {
-                log.info("to south:{}/{} skip", rowIndex, toSouthCount);
+                //log.info("to south:{}/{} skip", rowIndex, toSouthCount);
             }
 
             GeoHash western = toGeohash(geoHash.toBase32());
@@ -2105,9 +2085,9 @@ public class GisUtils {
                 temp = toPolygon(toRectangleByGeohash(western));
                 if (splitTarget.intersects(temp)) {
                     callback.apply(western.toBase32(), ArrayUtils.newArray(rowIndex, colIndex));
-                    log.info("to west:{}/{} save", colIndex, toWestCount);
+                    //log.info("to west:{}/{} save", colIndex, toWestCount);
                 } else {
-                    log.info("to west:{}/{} skip", colIndex, toWestCount);
+                    //log.info("to west:{}/{} skip", colIndex, toWestCount);
                 }
                 western = western.getWesternNeighbour();
             }
@@ -2177,9 +2157,9 @@ public class GisUtils {
             temp = toPolygon(toRectangleByGeohash(geoHash));
             if (splitTarget.intersects(temp)) {
                 callback.apply(geoHash.toBase32(), ArrayUtils.newArray(southIndex, 0));
-                log.info("to south:{}-0/{} save", southIndex, toSouthCount);
+                //log.info("to south:{}-0/{} save", southIndex, toSouthCount);
             } else {
-                log.info("to south:{}-0/{} skip", southIndex, toSouthCount);
+                //log.info("to south:{}-0/{} skip", southIndex, toSouthCount);
             }
             splitToWest(geoHash, southIndex, toSouthCount, toWestCount, lngMin, splitTarget, callback);
         }
@@ -2326,9 +2306,9 @@ class SplitToWestThread implements Runnable {
             int westIndex = toWestIndex.incrementAndGet();
             if (polygon.intersects(temp)) {
                 callback.apply(western.toBase32(), ArrayUtils.newArray(row, westIndex));
-                log.info("to west:{}/{}-{}/{} save", row, rowCount, westIndex, toWestCount);
+                //log.info("to west:{}/{}-{}/{} save", row, rowCount, westIndex, toWestCount);
             } else {
-                log.info("to west:{}/{}-{}/{} skip", row, rowCount, westIndex, toWestCount);
+                //log.info("to west:{}/{}-{}/{} skip", row, rowCount, westIndex, toWestCount);
             }
             western = western.getWesternNeighbour();
         }
