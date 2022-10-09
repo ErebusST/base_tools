@@ -432,7 +432,7 @@ public class RedisHelper {
     public JsonArray getJsonArray(@Nonnull String key, Integer dbIndex) {
         JsonElement jsonElement = getJsonElement(key, dbIndex);
         if (ObjectUtils.isNull(jsonElement)) {
-            return null;
+            return new JsonArray();
         } else {
             return jsonElement.getAsJsonArray();
         }
