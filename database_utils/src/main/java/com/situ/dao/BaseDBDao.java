@@ -820,11 +820,16 @@ public class BaseDBDao {
         String primaryKey = setting.getPrimaryKey().getFieldInDb();
 
 
+        String schema = setting.getSchema();
+
         String tableName = setting.getTable();
 
         StringBuffer sbSql = new StringBuffer();
 
         sbSql.append(" UPDATE ");
+        if (ObjectUtils.isNotEmpty(schema)) {
+            sbSql.append(schema).append(".");
+        }
         sbSql.append(tableName);
         sbSql.append(" SET ");
 

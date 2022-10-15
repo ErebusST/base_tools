@@ -249,6 +249,8 @@ public class GoogleS2 {
         S2Polygon polygon1 = new S2Polygon(s2Loop1);
         S2Polygon polygon2 = new S2Polygon(s2Loop2);
         log.info("{}", polygon1.intersects(polygon2));
+
+
     }
 
     //public static boolean check(List<Point> )
