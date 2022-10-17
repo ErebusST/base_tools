@@ -2193,7 +2193,7 @@ public class GisUtils {
         ThreadPoolTaskExecutor executor = GisThreadPoolConfig.getExecutor();
         while (true) {
             int activeCount = executor.getActiveCount();
-            log.info("当前运行中的任务为:{}", activeCount);
+            //log.info("当前运行中的任务为:{}", activeCount);
             if (activeCount >= 10) {
                 try {
                     Thread.sleep(1000L);
