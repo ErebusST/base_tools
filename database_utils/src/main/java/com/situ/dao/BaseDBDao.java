@@ -742,6 +742,10 @@ public class BaseDBDao {
         Map<String, Object> parameters = FieldUtils.getParameters(entity);
 
         String tableName = setting.getTable();
+        String schema = setting.getSchema();
+        if (ObjectUtils.isNotEmpty(schema)) {
+            tableName = schema.concat(".").concat(tableName);
+        }
         StringBuilder sql = new StringBuilder("INSERT INTO ");
         sql.append(tableName);
         String insertKey = FieldUtils.getFieldJoinStringForInsertField(entity);
@@ -820,16 +824,16 @@ public class BaseDBDao {
         String primaryKey = setting.getPrimaryKey().getFieldInDb();
 
 
-        String schema = setting.getSchema();
 
         String tableName = setting.getTable();
+        String schema = setting.getSchema();
+        if (ObjectUtils.isNotEmpty(schema)) {
+            tableName = schema.concat(".").concat(tableName);
+        }
 
         StringBuffer sbSql = new StringBuffer();
 
         sbSql.append(" UPDATE ");
-        if (ObjectUtils.isNotEmpty(schema)) {
-            sbSql.append(schema).append(".");
-        }
         sbSql.append(tableName);
         sbSql.append(" SET ");
 
@@ -1006,6 +1010,10 @@ public class BaseDBDao {
 
             StringBuilder sqlBuilder = new StringBuilder();
             String tableName = setting.getTable();
+            String schema = setting.getSchema();
+            if (ObjectUtils.isNotEmpty(schema)) {
+                tableName = schema.concat(".").concat(tableName);
+            }
             sqlBuilder.append("UPDATE ").append(tableName).append(" SET ");
 
             updateFieldParameters.keySet().forEach(key -> sqlBuilder.append(key).append("=:").append(key).append(","));
@@ -1159,6 +1167,10 @@ public class BaseDBDao {
             TableSetting setting = FieldUtils.getEntityInfo(clazz);
             StringBuilder sqlBuilder = new StringBuilder();
             String tableName = setting.getTable();
+            String schema = setting.getSchema();
+            if (ObjectUtils.isNotEmpty(schema)) {
+                tableName = schema.concat(".").concat(tableName);
+            }
             sqlBuilder.append("DELETE FROM ").append(tableName).append(" WHERE 1 = 1 ");
             parameters.forEach((key, value) -> {
                 if (ArrayList.class.equals(value.getClass())) {
@@ -1206,8 +1218,13 @@ public class BaseDBDao {
         try {
             TableSetting setting = FieldUtils.getEntityInfo(clazz);
             String tableName = setting.getTable();
+
             final String primaryKey = setting.getPrimaryKey().getFieldInDb();
             StringBuilder sql = new StringBuilder();
+            String schema = setting.getSchema();
+            if (ObjectUtils.isNotEmpty(schema)) {
+                tableName = schema.concat(".").concat(tableName);
+            }
             sql.append("SELECT * FROM ").append(tableName).append(" WHERE ").append(primaryKey).append(" = :primaryKey");
             return sql.toString();
 
@@ -1511,6 +1528,11 @@ public class BaseDBDao {
         try {
             TableSetting setting = FieldUtils.getEntityInfo(clazz);
             String tableName = setting.getTable();
+            String schema = setting.getSchema();
+            if (ObjectUtils.isNotEmpty(schema)) {
+                tableName = schema.concat(".").concat(tableName);
+            }
+
             StringBuilder sbSql = new StringBuilder("SELECT ");
             if (fields.length == 0) {
                 sbSql.append(" * ");
@@ -1981,6 +2003,10 @@ public class BaseDBDao {
             TableSetting setting = FieldUtils.getEntityInfo(clazz);
             String columns = FieldUtils.getFieldJoinStringForSelect(setting);
             String tableName = setting.getTable();
+            String schema = setting.getSchema();
+            if (ObjectUtils.isNotEmpty(schema)) {
+                tableName = schema.concat(".").concat(tableName);
+            }
             StringBuilder sqlBuilder = new StringBuilder();
             sqlBuilder.append("SELECT ").append(columns).append(" FROM ").append(tableName).append(" WHERE 1 = 1");
             if (ObjectUtils.isNotNull(parameters)) {
@@ -2191,7 +2217,11 @@ public class BaseDBDao {
             String primaryKey = setting.getPrimaryKey().getFieldInDb();
             parameters = parameters == null ? new HashedMap() : parameters;
 
-            String tableName = clazz.getAnnotation(Table.class).name();
+            String tableName = setting.getTable();
+            String schema = setting.getSchema();
+            if (ObjectUtils.isNotEmpty(schema)) {
+                tableName = schema.concat(".").concat(tableName);
+            }
             StringBuilder sqlBuilder = new StringBuilder();
             sqlBuilder.append("SELECT COUNT(1) FROM ").append(tableName).append(" WHERE 1 = 1");
             parameters.entrySet().stream().forEach(entry -> {
