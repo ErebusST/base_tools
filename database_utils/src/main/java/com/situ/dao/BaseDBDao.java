@@ -29,7 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Resource;
-import javax.persistence.Table;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
@@ -512,11 +511,84 @@ public class BaseDBDao {
         }
     }
 
+
+    //endregion
+
+    //region schema
+
     /**
-     * The Merchant utils.
+     * Check schema boolean.
+     *
+     * @param schema the schema
+     * @return the boolean
+     * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -10-23 11:34:55
      */
+    public boolean checkSchema(String schema) throws Exception {
+        StringBuilder sbSql = new StringBuilder();
+        sbSql.append(" SELECT SCHEMA_NAME TABLE_SCHEMA ");
+        sbSql.append(" FROM information_schema.SCHEMATA ");
+        sbSql.append(" WHERE SCHEMA_NAME = :schema ");
 
 
+        Map<String, Object> parameters = new HashMap<>(1);
+        parameters.put("schema", schema);
+        Map<String, Object> first = findFirstOneBySql(sbSql.toString(), parameters);
+        return ObjectUtils.isNotNull(first);
+    }
+
+    /**
+     * Check table boolean.
+     *
+     * @param schema the schema
+     * @param table  the table
+     * @return the boolean
+     * @author ErebusST
+     * @since 2022 -10-23 11:34:57
+     */
+    public boolean checkTable(String schema, String table) throws Exception {
+        StringBuilder sbSql = new StringBuilder();
+        sbSql.append(" SELECT TABLE_SCHEMA, TABLE_NAME ");
+        sbSql.append(" FROM information_schema.TABLES ");
+        sbSql.append(" WHERE TABLE_SCHEMA = :schema ");
+        sbSql.append("   AND TABLE_NAME = :table ");
+
+
+        Map<String, Object> parameters = new HashMap<>(2);
+        parameters.put("schema", schema);
+        parameters.put("table", table);
+        Map<String, Object> first = findFirstOneBySql(sbSql.toString(), parameters);
+        return ObjectUtils.isNotNull(first);
+    }
+
+
+    /**
+     * Check field boolean.
+     *
+     * @param schema the schema
+     * @param table  the table
+     * @param field  the field
+     * @return the boolean
+     * @throws Exception the exception
+     * @author ErebusST
+     * @since 2022 -10-23 11:37:06
+     */
+    public boolean checkField(String schema, String table, String field) throws Exception {
+        StringBuilder sbSql = new StringBuilder();
+        sbSql.append(" SELECT TABLE_SCHEMA, TABLE_NAME, COLUMN_NAME ");
+        sbSql.append(" FROM information_schema.COLUMNS ");
+        sbSql.append(" WHERE TABLE_SCHEMA = :schema ");
+        sbSql.append("   AND TABLE_NAME = :table ");
+        sbSql.append("   AND COLUMN_NAME = :field ");
+
+        Map<String, Object> parameters = new HashMap<>(3);
+        parameters.put("schema", schema);
+        parameters.put("table", table);
+        parameters.put("field", field);
+        Map<String, Object> first = findFirstOneBySql(sbSql.toString(), parameters);
+        return ObjectUtils.isNotNull(first);
+    }
     //endregion
 
     //region save
@@ -822,7 +894,6 @@ public class BaseDBDao {
         Class clazz = entity.getClass();
         TableSetting setting = FieldUtils.getEntityInfo(clazz);
         String primaryKey = setting.getPrimaryKey().getFieldInDb();
-
 
 
         String tableName = setting.getTable();

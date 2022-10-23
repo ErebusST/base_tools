@@ -9,6 +9,7 @@
 package com.situ.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.situ.tools.DataSwitch;
 import com.situ.tools.StringUtils;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -62,6 +63,11 @@ public class JdbcSource {
         String password;
 
         DruidDataSource druidDataSource;
+
+        @Override
+        public String toString() {
+            return DataSwitch.convertObjectToJsonString(this);
+        }
     }
 
 }

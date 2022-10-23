@@ -11,14 +11,17 @@ package com.situ.dao;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.pool.DruidDataSourceFactory;
 import com.alibaba.druid.pool.DruidPooledConnection;
+import com.google.gson.JsonObject;
 import com.situ.config.DruidDBConfig;
 import com.situ.config.JdbcSource;
 import com.situ.entity.bo.StatViewServlet;
 import com.situ.entity.bo.WebStatFilter;
+import com.situ.tools.DataSwitch;
 import com.situ.tools.ObjectUtils;
 import com.situ.tools.ReflectionUtils;
 import com.situ.tools.StringUtils;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +45,7 @@ import java.util.stream.Collectors;
  */
 @Component
 @Configuration
+@Slf4j
 public class DruidPool {
 
     /**
@@ -102,7 +106,7 @@ public class DruidPool {
         if (ObjectUtils.isNotNull(sources) && sources.size() > 0) {
             for (JdbcSource.Source source : sources) {
                 String key = source.getKey();
-                String url = source.getUrl();
+                String url = StringUtils.decode(source.getUrl());
                 String schema = source.getSchema();
                 String username = source.getUsername();
                 String password = source.getPassword();
@@ -116,7 +120,7 @@ public class DruidPool {
             }
 
         } else {
-            String url = config.getUrl();
+            String url = StringUtils.decode(config.getUrl());
             String username = config.getUsername();
             String password = config.getPassword();
 
@@ -138,6 +142,17 @@ public class DruidPool {
             source.setDruidDataSource(dataSource);
             DATA_SOURCE_SETTING.put(DEFAULT, source);
         }
+
+        log.info("当前数据库配置:{}", DATA_SOURCE_SETTING.entrySet()
+                .stream()
+                .map(entry -> {
+                    JsonObject object = new JsonObject();
+                    object.addProperty("key", entry.getKey());
+                    object.addProperty("url", entry.getValue().getUrl());
+                    object.addProperty("schema", entry.getValue().getSchema());
+                    return object;
+                })
+                .collect(Collectors.collectingAndThen(Collectors.toList(), DataSwitch::convertObjectToJsonString)));
     }
 
     /**

@@ -361,6 +361,10 @@ public class DataSwitch {
     public static String convertObjectToString(Object value) {
         try {
             if (null != value) {
+                Class<?> clazz = value.getClass();
+                if (BigDecimal.class.equals(clazz)) {
+                    return convertObjectToBigDecimal(value).toPlainString();
+                }
                 return value.toString().trim();
             } else {
                 return "";
