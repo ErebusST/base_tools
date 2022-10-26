@@ -382,6 +382,36 @@ public class RedisHelper {
         return DataSwitch.convertJsonObjectToEntity(jsonObject, clazz);
     }
 
+    /**
+     * Get value t.
+     *
+     * @param <T> the type parameter
+     * @param key the key
+     * @return the value
+     * @author ErebusST
+     * @since 2022 -10-26 10:00:20
+     */
+    public <T> T getValue(@Nonnull String key) {
+        return getValue(key, null);
+    }
+
+    /**
+     * Get value t.
+     *
+     * @param <T>     the type parameter
+     * @param key     the key
+     * @param dbIndex the db index
+     * @return the value
+     * @author ErebusST
+     * @since 2022 -10-26 09:59:43
+     */
+    public <T> T getValue(@Nonnull String key, Integer dbIndex) {
+        String string = getString(key, dbIndex);
+        if (StringUtils.isEmpty(string)) {
+            return null;
+        }
+        return (T) string;
+    }
 
     /**
      * Gets json object.
