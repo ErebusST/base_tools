@@ -35,8 +35,20 @@ import java.util.stream.StreamSupport;
 @Slf4j
 public class DataSwitch {
 
-
     //region Util
+
+    /**
+     * Get default value object.
+     *
+     * @param value the value
+     * @param type  the type
+     * @return the default value
+     * @author ErebusST
+     * @since 2022 -10-26 10:34:11
+     */
+    public static Object getDefaultValue(Object value, Type type) {
+        return getDefaultValue(value, type.getClass());
+    }
 
     /**
      * Gets default value.
@@ -47,7 +59,7 @@ public class DataSwitch {
      * @author ErebusST
      * @since 2022 -01-07 15:34:45
      */
-    public static Object getDefaultValue(Object value, Type type) {
+    public static Object getDefaultValue(Object value, Class<?> type) {
         try {
             Object resultObject;
             if (value == null) {

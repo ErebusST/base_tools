@@ -346,8 +346,7 @@ public class NumberUtils {
 
     private static Stream<BigDecimal> preExecute(Object... values) {
         return Arrays.stream(values)
-                .filter(ObjectUtils::isNotNull)
-                .map(DataSwitch::convertObjectToBigDecimal);
+                .map(value -> DataSwitch.convertObjectToBigDecimal(value, 16, BigDecimal.ZERO));
     }
 
 

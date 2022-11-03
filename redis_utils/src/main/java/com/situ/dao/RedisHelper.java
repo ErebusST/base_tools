@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -160,29 +161,15 @@ public class RedisHelper {
         return resource;
     }
 
-    private void execute(Callable callable) {
+    public <T> T execute(Function<Jedis, T> callback) {
         Jedis client = null;
         try {
             client = getClient();
+            return callback.apply(client);
         } finally {
             close(client);
         }
     }
-
-    /**
-     * Exec.
-     *
-     * @param callables the callables
-     * @author ErebusST
-     * @since 2022 -01-07 15:39:05
-     */
-    public void exec(Callable... callables) {
-
-        Arrays.stream(callables).forEach(callable -> {
-            //callable.call();
-        });
-    }
-
 
     /**
      * 通用方法：释放Jedis
@@ -391,8 +378,8 @@ public class RedisHelper {
      * @author ErebusST
      * @since 2022 -10-26 10:00:20
      */
-    public <T> T getValue(@Nonnull String key) {
-        return getValue(key, null);
+    public <T> T getValue(Class<T> clazz, @Nonnull String key) {
+        return getValue(clazz, key, null);
     }
 
     /**
@@ -405,12 +392,12 @@ public class RedisHelper {
      * @author ErebusST
      * @since 2022 -10-26 09:59:43
      */
-    public <T> T getValue(@Nonnull String key, Integer dbIndex) {
+    public <T> T getValue(Class<T> clazz, @Nonnull String key, Integer dbIndex) {
         String string = getString(key, dbIndex);
         if (StringUtils.isEmpty(string)) {
             return null;
         }
-        return (T) string;
+        return (T) DataSwitch.getDefaultValue(string, clazz);
     }
 
     /**

@@ -12,6 +12,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.situ.tools.DataSwitch;
 import com.situ.tools.ObjectUtils;
+import com.situ.tools.StringUtils;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -36,6 +37,23 @@ public class Point implements Serializable {
      */
     public Point() {
 
+    }
+
+    /**
+     * Get point.
+     *
+     * @param location the location
+     * @return the point
+     * @author ErebusST
+     * @since 2022 -10-26 15:05:15
+     */
+    public static Point get(String location){
+        List<String> strings = StringUtils.splitToList(location, ",");
+        if(strings.size() == 2){
+            return Point.get(strings.get(0), strings.get(1));
+        }else {
+            return null;
+        }
     }
 
     /**

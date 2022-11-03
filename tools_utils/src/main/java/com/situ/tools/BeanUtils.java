@@ -76,7 +76,7 @@ public class BeanUtils extends org.apache.commons.beanutils.BeanUtils {
      * @author ErebusST
      * @since 2022 -01-07 15:35:59
      */
-    public static final <T> T copyBean(@Nonnull T obj) throws Exception {
+    public static final <T> T copyBean(@Nonnull T obj) {
         try {
             return copyBean(obj, (Class<T>) obj.getClass());
         } catch (Exception e) {

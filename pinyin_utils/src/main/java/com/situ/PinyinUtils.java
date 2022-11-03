@@ -114,7 +114,8 @@ public class PinyinUtils {
                 list.add(String.valueOf(arr[i]));
             }
         }
-        return StringUtils.getCombineString(delimiter, list).replaceAll("\\W", "").trim().toLowerCase();
+        return StringUtils.getCombineString(delimiter, list);
+        //return StringUtils.getCombineString(delimiter, list).replaceAll("\\W", "").trim().toLowerCase();
     }
 
 }

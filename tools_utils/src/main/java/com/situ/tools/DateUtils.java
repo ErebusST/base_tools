@@ -24,7 +24,6 @@ import java.util.regex.Pattern;
  * @date 2016年10月27日13 :50:56
  */
 public class DateUtils extends org.apache.commons.lang.time.DateUtils {
-
     /**
      * Gets date string.
      *
@@ -33,7 +32,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @author ErebusST
      * @since 2022 -01-07 15:35:59
      */
-    public static String getDateString(Timestamp date) {
+    public static String getDateString(Object date) {
         return getDateString(date, DateFormatEnum.YYYY_MM_DD_HH_MM_SS);
     }
 
@@ -47,7 +46,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @author ErebusST
      * @since 2022 -01-07 15:35:59
      */
-    public static String getDateString(Timestamp date, DateFormatEnum dateFormatEnum) {
+    public static String getDateString(Object date, DateFormatEnum dateFormatEnum) {
         dateFormatEnum = dateFormatEnum == null ? DateFormatEnum.YYYY_MM_DD_HH_MM_SS : dateFormatEnum;
         return getDateString(date, dateFormatEnum.getValue());
     }
@@ -61,7 +60,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @author ErebusST
      * @since 2022 -04-07 19:35:31
      */
-    public static String getDateString(Timestamp date, String format) {
+    public static String getDateString(Object date, String format) {
         if (ObjectUtils.isNull(date)) {
             return "";
         }
@@ -288,6 +287,8 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
     public static Timestamp getTimestamp(Object dateStr) {
         return getTimestamp(DataSwitch.convertObjectToString(dateStr), 0);
     }
+
+
 
 
     private final static Pattern YYYY_MM_DD = Pattern.compile("^\\d{4}-[01][0-9]-[0-3][0-9]$");
