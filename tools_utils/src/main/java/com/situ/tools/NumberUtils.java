@@ -347,6 +347,7 @@ public class NumberUtils {
     private static Stream<BigDecimal> preExecute(Object... values) {
         return Arrays.stream(values)
                 .map(value -> DataSwitch.convertObjectToBigDecimal(value, 16, BigDecimal.ZERO));
+
     }
 
 
