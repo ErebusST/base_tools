@@ -9,6 +9,7 @@
 package com.situ.tools;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.util.IOUtils;
 import org.apache.tomcat.util.http.fileupload.FileItem;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
 import org.apache.tomcat.util.http.fileupload.disk.DiskFileItemFactory;
@@ -22,7 +23,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -826,11 +826,44 @@ public class FileUtils {
         return result;
     }
 
+    /**
+     * Get web file bytes byte [ ].
+     *
+     * @param urlPath the url path
+     * @return the byte [ ]
+     * @author ErebusST
+     * @since 2022 -11-09 12:23:02
+     */
+    public static byte[] getWebFileBytes(String urlPath) {
+        InputStream inputStream = null;
+        byte[] bytes = null;
+        try {
+            URL url = new URL(urlPath);
+            inputStream = url.openStream();
+            bytes = IOUtils.toByteArray(inputStream);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (ObjectUtils.isNotNull(inputStream)) {
+                    inputStream.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return bytes;
+    }
+
 
     @Test
     public void test() {
         String webFileContent = getWebFileContent("https://storage.data-dance.com/js/init.js");
         log.info(webFileContent);
+    }
+
+    public void test1() {
+        String webFileContent = getWebFileContent("https://imagepub.swguancha.com/mall/2022-03-18/d5677b8bc0864f3f9dba02de00195e8a.jpg");
     }
 
 

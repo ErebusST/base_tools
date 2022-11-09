@@ -215,7 +215,12 @@ public class OssUtils {
      */
     public static List<String> list(OSS client, @Nonnull String bucketName, @Nonnull String folder) {
         try {
-            String prefix = folder.concat("/");
+            String prefix;
+            if (StringUtils.endsWithIgnoreCase(folder, "/")) {
+                prefix = folder;
+            } else {
+                prefix = folder.concat("/");
+            }
             String nextContinuationToken = null;
             ListObjectsV2Result result = null;
             List<String> files = new ArrayList<>();
@@ -629,6 +634,51 @@ public class OssUtils {
                                @Nonnull String toBucket, @Nonnull String toKey) {
         copy(client, fromBucket, fromKey, toBucket, toKey);
         delete(client, fromBucket, fromKey);
+        return true;
+    }
+
+
+    public static boolean saveWebFileToOss(@Nonnull String webUrl, @Nonnull String bucket, @Nonnull String key) throws IOException {
+        OSS client = null;
+        try {
+            client = getClient();
+            return saveWebFileToOss(client, webUrl, bucket, key);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            shutdown(client);
+        }
+    }
+
+    /**
+     * Save web file to oss boolean.
+     *
+     * @param client the client
+     * @param webUrl the web url
+     * @param bucket the bucket
+     * @param key    the key
+     * @return the boolean
+     * @throws IOException the io exception
+     * @author ErebusST
+     * @since 2022 -11-09 12:28:15
+     */
+    public static boolean saveWebFileToOss(OSS client, @Nonnull String webUrl, @Nonnull String bucket, @Nonnull String key) throws IOException {
+        InputStream inputStream = null;
+        try {
+            URL url = new URL(webUrl);
+            inputStream = url.openStream();
+            upload(client, bucket, key, inputStream);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            try {
+                if (ObjectUtils.isNotNull(inputStream)) {
+                    inputStream.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         return true;
     }
 }
