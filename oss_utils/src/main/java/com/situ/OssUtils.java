@@ -291,7 +291,7 @@ public class OssUtils {
             if (StringUtils.equalsIgnoreCase("https", config.getProtocol())) {
                 string = StringUtils.replace(string, "http:", "https:");
             }
-            return string;
+            return string.concat("?t=" + System.currentTimeMillis());
         } catch (Exception ex) {
             throw ex;
         }
