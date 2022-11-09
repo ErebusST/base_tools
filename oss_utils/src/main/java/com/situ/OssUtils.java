@@ -480,4 +480,155 @@ public class OssUtils {
         return true;
     }
 
+    /**
+     * Copy boolean.
+     *
+     * @param bucket  the bucket
+     * @param fromKey the from key
+     * @param toKey   the to key
+     * @return the boolean
+     * @author ErebusST
+     * @since 2022 -11-09 10:40:29
+     */
+    public static boolean copy(@Nonnull String bucket, @Nonnull String fromKey, @Nonnull String toKey) {
+        return copy(bucket, fromKey, bucket, toKey);
+    }
+
+    /**
+     * Copy boolean.
+     *
+     * @param client  the client
+     * @param bucket  the bucket
+     * @param fromKey the from key
+     * @param toKey   the to key
+     * @return the boolean
+     * @author ErebusST
+     * @since 2022 -11-09 10:40:32
+     */
+    public static boolean copy(OSS client, @Nonnull String bucket, @Nonnull String fromKey, @Nonnull String toKey) {
+        return copy(client, bucket, fromKey, bucket, toKey);
+    }
+
+    /**
+     * Copy boolean.
+     *
+     * @param fromBucket the from bucket
+     * @param fromKey    the from key
+     * @param toBucket   the to bucket
+     * @param toKey      the to key
+     * @return the boolean
+     * @author ErebusST
+     * @since 2022 -11-09 10:38:02
+     */
+    public static boolean copy(@Nonnull String fromBucket, @Nonnull String fromKey,
+                               @Nonnull String toBucket, @Nonnull String toKey) {
+        OSS client = null;
+        try {
+            client = getClient();
+            return copy(client, fromBucket, fromKey, toBucket, toKey);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            shutdown(client);
+        }
+    }
+
+    /**
+     * Copy boolean.
+     *
+     * @param client     the client
+     * @param fromBucket the from bucket
+     * @param fromKey    the from key
+     * @param toBucket   the to bucket
+     * @param toKey      the to key
+     * @return the boolean
+     * @author ErebusST
+     * @since 2022 -11-09 10:38:16
+     */
+    public static boolean copy(OSS client, @Nonnull String fromBucket, @Nonnull String fromKey,
+                               @Nonnull String toBucket, @Nonnull String toKey) {
+        try {
+            CopyObjectRequest request = new CopyObjectRequest(fromBucket, fromKey, toBucket, toKey);
+            CopyObjectResult result = client.copyObject(request);
+        } catch (Exception ex) {
+            throw ex;
+        }
+        return true;
+    }
+
+    /**
+     * Move boolean.
+     *
+     * @param bucket  the bucket
+     * @param fromKey the from key
+     * @param toKey   the to key
+     * @return the boolean
+     * @author ErebusST
+     * @since 2022 -11-09 10:48:16
+     */
+    public static boolean move(@Nonnull String bucket, @Nonnull String fromKey,
+                               @Nonnull String toKey) {
+        return move(bucket, fromKey, bucket, toKey);
+    }
+
+
+    /**
+     * Move boolean.
+     *
+     * @param client  the client
+     * @param bucket  the bucket
+     * @param fromKey the from key
+     * @param toKey   the to key
+     * @return the boolean
+     * @author ErebusST
+     * @since 2022 -11-09 10:45:44
+     */
+    public static boolean move(OSS client, @Nonnull String bucket, @Nonnull String fromKey,
+                               @Nonnull String toKey) {
+        return move(client, bucket, fromKey, bucket, toKey);
+    }
+
+    /**
+     * Move boolean.
+     *
+     * @param fromBucket the from bucket
+     * @param fromKey    the from key
+     * @param toBucket   the to bucket
+     * @param toKey      the to key
+     * @return the boolean
+     * @author ErebusST
+     * @since 2022 -11-09 10:44:23
+     */
+    public static boolean move(@Nonnull String fromBucket, @Nonnull String fromKey,
+                               @Nonnull String toBucket, @Nonnull String toKey) {
+        OSS client = null;
+        try {
+            client = getClient();
+            move(client, fromBucket, fromKey, toBucket, toKey);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            shutdown(client);
+        }
+        return true;
+    }
+
+    /**
+     * Move boolean.
+     *
+     * @param client     the client
+     * @param fromBucket the from bucket
+     * @param fromKey    the from key
+     * @param toBucket   the to bucket
+     * @param toKey      the to key
+     * @return the boolean
+     * @author ErebusST
+     * @since 2022 -11-09 10:44:28
+     */
+    public static boolean move(OSS client, @Nonnull String fromBucket, @Nonnull String fromKey,
+                               @Nonnull String toBucket, @Nonnull String toKey) {
+        copy(client, fromBucket, fromKey, toBucket, toKey);
+        delete(client, fromBucket, fromKey);
+        return true;
+    }
 }
