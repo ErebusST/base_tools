@@ -36,7 +36,10 @@ public class Rectangle {
      * @since 2022 -10-26 15:06:46
      */
     public static Rectangle get(String rectangle){
-        List<String> strings = StringUtils.splitToList(rectangle, ",");
+        if(StringUtils.equals(rectangle,"[]")){
+            return null;
+        }
+        List<String> strings = StringUtils.splitToList(rectangle, ";");
         if(strings.size()==2){
             Point leftUp = Point.get(strings.get(0));
             Point rightDown = Point.get(strings.get(1));

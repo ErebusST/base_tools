@@ -290,6 +290,8 @@ public class OssUtils {
             String string = url.toString();
             if (ObjectUtils.isNotEmpty(config.getUrl())) {
                 string = string.substring(0, string.indexOf("?"));
+                string = StringUtils.replace(string,"https://","");
+                string = StringUtils.replace(string,"http://","");
                 string = string.replace(bucketName + "." + config.getEndpoint(), config.getUrl());
             }
 
