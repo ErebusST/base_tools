@@ -6,7 +6,7 @@
  * Vestibulum commodo. Ut rhoncus gravida arcu.
  */
 
-package com.situ.config;
+package com.situ.convert;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.internal.LinkedTreeMap;

@@ -9,9 +9,11 @@
 package com.situ.tools;
 
 import com.google.gson.*;
-import com.situ.config.CustomObjectTypeAdapter;
+import com.situ.convert.*;
+import com.situ.entity.bo.UserInfo;
 import com.situ.enumeration.DateFormatEnum;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Test;
 
 import javax.annotation.Nonnull;
 import java.io.UnsupportedEncodingException;
@@ -572,10 +574,14 @@ public class DataSwitch {
     private static Gson getGsonInstance(boolean isSerializeNulls, DateFormatEnum dateFormatEnum) {
         if (ObjectUtils.isNull(gson)) {
             dateFormatEnum = ObjectUtils.isNull(dateFormatEnum) ? DateFormatEnum.YYYY_MM_DD_HH_MM_SS : dateFormatEnum;
-            GsonBuilder gsonBuilder = new GsonBuilder().
-                    setPrettyPrinting().
-                    setLongSerializationPolicy(LongSerializationPolicy.STRING).
-                    setDateFormat(dateFormatEnum.getValue());
+            GsonBuilder gsonBuilder = new GsonBuilder()
+                    .setPrettyPrinting()
+                    .setLongSerializationPolicy(LongSerializationPolicy.STRING)
+                    .registerTypeAdapter(Long.class, new LongConvertAdapter())
+                    .registerTypeAdapter(Integer.class, new IntegerConvertAdapter())
+                    .registerTypeAdapter(Double.class, new DoubleConvertAdapter())
+                    .registerTypeAdapter(BigDecimal.class, new BigDecimalConvertAdapter())
+                    .setDateFormat(dateFormatEnum.getValue());
             gsonBuilder.registerTypeAdapter(Map.class, new CustomObjectTypeAdapter());
             if (isSerializeNulls) {
                 gsonBuilder.serializeNulls();
