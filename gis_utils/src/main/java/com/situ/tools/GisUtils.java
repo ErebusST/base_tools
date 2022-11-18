@@ -36,6 +36,7 @@ import org.opengis.referencing.FactoryException;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
+import org.springframework.core.annotation.AnnotationFilter;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.awt.geom.GeneralPath;
@@ -1951,6 +1952,18 @@ public class GisUtils {
      */
     public static void splitPolygonToGeohash(List<Point> polygon, Function<String, Boolean> callback) {
         splitPolygonToGeohash(polygon, callback, 6);
+    }
+
+    /**
+     * Split polygon to geohash .
+     *
+     * @param polygon  the polygon
+     * @param callback the callback
+     * @author ErebusST
+     * @since 2022 -11-16 18:27:40
+     */
+    public static void splitPolygonToGeohash(List<Point> polygon, BiFunction<String, Integer[], Boolean> callback, Integer length) {
+        splitPolygonToGeohash(polygon, callback, length, false);
     }
 
     /**

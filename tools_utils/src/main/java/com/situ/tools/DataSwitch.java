@@ -821,8 +821,13 @@ public class DataSwitch {
         }
         List<T> list = StreamSupport.stream(array.spliterator(), true)
                 .map(element -> {
-                    T t = convertJsonObjectToEntity(element.getAsJsonObject(), clazz);
-                    return t;
+                    if (element.isJsonObject()) {
+                        T t = convertJsonObjectToEntity(element.getAsJsonObject(), clazz);
+                        return t;
+                    } else {
+                        return (T) getDefaultValue(element.getAsJsonPrimitive().getAsString(), clazz);
+                    }
+
                 })
                 .collect(Collectors.toList());
         //List<T> list = getGsonInstance().fromJson(array, new TypeToken<List<T>>() {
@@ -831,6 +836,8 @@ public class DataSwitch {
         return list;
 
     }
+
+
 
     /**
      * Convert json array to list entity list.
