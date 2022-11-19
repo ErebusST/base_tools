@@ -37,8 +37,7 @@ public class MessageDigestUtils {
      * @author ErebusST
      * @since 2022 -01-07 15:36:08
      */
-    public static String getSignatureByMd5(Map<String, Object> signParameters)
-            throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public static String getSignatureByMd5(Map<String, Object> signParameters){
         try {
             return getSignature(signParameters, MessageDigestEnum.MD5);
         } catch (Exception ex) {
@@ -56,13 +55,8 @@ public class MessageDigestUtils {
      * @author ErebusST
      * @since 2022 -01-07 15:36:08
      */
-    public static String getSignatureBySha1(Map<String, Object> signParameters)
-            throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        try {
-            return getSignature(signParameters, MessageDigestEnum.SHA1);
-        } catch (Exception ex) {
-            throw ex;
-        }
+    public static String getSignatureBySha1(Map<String, Object> signParameters) {
+        return getSignature(signParameters, MessageDigestEnum.SHA1);
     }
 
     /**
@@ -76,8 +70,7 @@ public class MessageDigestUtils {
      * @author ErebusST
      * @since 2022 -01-07 15:36:08
      */
-    public static String getSignature(Map<String, Object> signParameters, MessageDigestEnum messageDigestEnum)
-            throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public static String getSignature(Map<String, Object> signParameters, MessageDigestEnum messageDigestEnum) {
         return getSignature(signParameters, messageDigestEnum, true);
     }
 
@@ -93,27 +86,22 @@ public class MessageDigestUtils {
      * @author ErebusST
      * @since 2022 -01-07 15:36:08
      */
-    public static String getSignature(Map<String, Object> signParameters, MessageDigestEnum messageDigestEnum, boolean isContainSplitChar)
-            throws UnsupportedEncodingException, NoSuchAlgorithmException {
-        try {
-            StringBuilder signBuilder = new StringBuilder();
-            signParameters.keySet().stream().sorted().forEach(key ->
-            {
-                Object parameter = signParameters.get(key);
-                if (isContainSplitChar == true) {
-                    signBuilder.append("&").append(key).append("=").append(parameter);
-                } else {
-                    signBuilder.append(key).append("=").append(parameter);
-                }
-            });
+    public static String getSignature(Map<String, Object> signParameters, MessageDigestEnum messageDigestEnum, boolean isContainSplitChar) {
+        StringBuilder signBuilder = new StringBuilder();
+        signParameters.keySet().stream().sorted().forEach(key ->
+        {
+            Object parameter = signParameters.get(key);
+            if (isContainSplitChar == true) {
+                signBuilder.append("&").append(key).append("=").append(parameter);
+            } else {
+                signBuilder.append(key).append("=").append(parameter);
+            }
+        });
 
-            String signStr =
-                    signBuilder.charAt(0) != '&' ? signBuilder.toString() : signBuilder.deleteCharAt(0).toString();
-            signStr = messageDigest(signStr, messageDigestEnum);
-            return signStr;
-        } catch (Exception ex) {
-            throw ex;
-        }
+        String signStr =
+                signBuilder.charAt(0) != '&' ? signBuilder.toString() : signBuilder.deleteCharAt(0).toString();
+        signStr = messageDigest(signStr, messageDigestEnum);
+        return signStr;
     }
 
     /**
@@ -126,7 +114,7 @@ public class MessageDigestUtils {
      * @author ErebusST
      * @since 2022 -01-07 15:36:08
      */
-    public static String md5(String str) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+    public static String md5(String str) {
         return messageDigest(str, MessageDigestEnum.MD5);
     }
 
@@ -140,7 +128,7 @@ public class MessageDigestUtils {
      * @author ErebusST
      * @since 2022 -01-07 15:36:08
      */
-    public static String sha1(String str) throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public static String sha1(String str) {
         return messageDigest(str, MessageDigestEnum.SHA1);
     }
 
@@ -155,8 +143,7 @@ public class MessageDigestUtils {
      * @author ErebusST
      * @since 2022 -01-07 15:36:08
      */
-    public static String messageDigest(String str, MessageDigestEnum messageDigestEnum)
-            throws UnsupportedEncodingException, NoSuchAlgorithmException {
+    public static String messageDigest(String str, MessageDigestEnum messageDigestEnum) {
         try {
             MessageDigest messageDigest = createMessageDigest(messageDigestEnum);
             byte[] bytes = messageDigest.digest(str.getBytes("UTF-8"));
@@ -167,7 +154,7 @@ public class MessageDigestUtils {
             }
             return sb.toString();
         } catch (Exception ex) {
-            throw ex;
+            return str;
         }
     }
 
@@ -180,7 +167,7 @@ public class MessageDigestUtils {
      * @author ErebusST
      * @since 2022 -01-07 15:36:08
      */
-    public static MessageDigest createMessageDigest(MessageDigestEnum messageDigestEnum) throws NoSuchAlgorithmException {
+    private static MessageDigest createMessageDigest(MessageDigestEnum messageDigestEnum) throws NoSuchAlgorithmException {
         try {
             MessageDigest messageDigest = MessageDigest.getInstance(messageDigestEnum.getValue());
             return messageDigest;
