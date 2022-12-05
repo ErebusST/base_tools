@@ -22,6 +22,7 @@ import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URLDecoder;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -581,6 +582,7 @@ public class DataSwitch {
                     .registerTypeAdapter(Integer.class, new IntegerConvertAdapter())
                     .registerTypeAdapter(Double.class, new DoubleConvertAdapter())
                     .registerTypeAdapter(BigDecimal.class, new BigDecimalConvertAdapter())
+                    .registerTypeAdapter(Timestamp.class, new DateTimeConvertAdapter())
                     .setDateFormat(dateFormatEnum.getValue());
             gsonBuilder.registerTypeAdapter(Map.class, new CustomObjectTypeAdapter());
             if (isSerializeNulls) {
