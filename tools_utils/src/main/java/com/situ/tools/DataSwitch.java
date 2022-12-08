@@ -586,6 +586,7 @@ public class DataSwitch {
                     .setDateFormat(dateFormatEnum.getValue());
             gsonBuilder.registerTypeAdapter(Map.class, new CustomObjectTypeAdapter());
             if (isSerializeNulls) {
+
                 gsonBuilder.serializeNulls();
             }
             gson = gsonBuilder.create();
