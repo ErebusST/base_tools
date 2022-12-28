@@ -177,7 +177,10 @@ public class NumberUtils {
      * @since 2022 -02-25 18:14:36
      */
     public static BigDecimal add(Stream<BigDecimal> values) {
-        return values.filter(ObjectUtils::isNotNull).reduce(BigDecimal.ZERO, BigDecimal::add);
+        return values.filter(ObjectUtils::isNotNull)
+                .reduce((item1, item2) -> operation(item1, item2, NumberOperation.ADD))
+                .orElse(BigDecimal.ZERO);
+        //return values.filter(ObjectUtils::isNotNull).reduce(BigDecimal.ZERO, BigDecimal::add).stripTrailingZeros();
     }
 
     /**
@@ -374,7 +377,7 @@ public class NumberUtils {
                 if (decimal2.compareTo(BigDecimal.ZERO) == 0) {
                     return BigDecimal.ZERO;
                 }
-                return decimal1.divide(decimal2, 20, BigDecimal.ROUND_HALF_UP);
+                return decimal1.divide(decimal2, 20, BigDecimal.ROUND_HALF_UP).stripTrailingZeros();
             case REMAINDER:
                 return decimal1.remainder(decimal2).stripTrailingZeros();
             default:
