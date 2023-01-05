@@ -495,6 +495,9 @@ public class DataSwitch {
             {
                 String key = field.getName();
                 Object value = ReflectionUtils.getFieldValue(entityObject, key);
+                if(ObjectUtils.isNull(value)){
+                    return;
+                }
                 Class valueClass = value.getClass();
                 if (valueClass.equals(ArrayList.class) || valueClass.equals(Collection.class) ||
                         valueClass.equals(List.class)) {
