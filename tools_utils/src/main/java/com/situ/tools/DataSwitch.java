@@ -10,10 +10,8 @@ package com.situ.tools;
 
 import com.google.gson.*;
 import com.situ.convert.*;
-import com.situ.entity.bo.UserInfo;
 import com.situ.enumeration.DateFormatEnum;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
 
 import javax.annotation.Nonnull;
 import java.io.UnsupportedEncodingException;
@@ -473,6 +471,8 @@ public class DataSwitch {
 
     }
 
+
+
     /**
      * 将单个实体转换为Map
      *
@@ -495,7 +495,7 @@ public class DataSwitch {
             {
                 String key = field.getName();
                 Object value = ReflectionUtils.getFieldValue(entityObject, key);
-                if(ObjectUtils.isNull(value)){
+                if (ObjectUtils.isNull(value)) {
                     return;
                 }
                 Class valueClass = value.getClass();
@@ -844,7 +844,6 @@ public class DataSwitch {
     }
 
 
-
     /**
      * Convert json array to list entity list.
      *
@@ -970,7 +969,7 @@ public class DataSwitch {
      * @author ErebusST
      * @since 2023 -01-05 10:58:28
      */
-    public static Map<String,Object> convertJsonObjectToMap(JsonObject object){
+    public static Map<String, Object> convertJsonObjectToMap(JsonObject object) {
         return object.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
     //endregion

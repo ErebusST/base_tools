@@ -12,6 +12,7 @@ import com.google.gson.*;
 import com.situ.tools.DataSwitch;
 import com.situ.tools.DateUtils;
 import com.situ.tools.ObjectUtils;
+import com.situ.tools.StringUtils;
 
 import java.lang.reflect.Type;
 import java.sql.Timestamp;
@@ -23,15 +24,19 @@ import java.sql.Timestamp;
 public class DateTimeConvertAdapter implements JsonSerializer<Timestamp>, JsonDeserializer<Timestamp> {
     @Override
     public Timestamp deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        String value = json.getAsString();
         try {
-            if (json.getAsString().equals("") || json.getAsString().equals("null")) {
+            if (value.equals("") || value.equals("null")) {
                 return null;
+            }
+            if (StringUtils.endsWith(value, ".0")) {
+                value = StringUtils.replace(value, ".0", "");
             }
         } catch (Exception ignore) {
             return null;
         }
         try {
-            return DateUtils.getTimestamp(json.toString());
+            return DateUtils.getTimestamp(value);
         } catch (NumberFormatException e) {
             return null;
         }
@@ -39,7 +44,7 @@ public class DateTimeConvertAdapter implements JsonSerializer<Timestamp>, JsonDe
 
     @Override
     public JsonElement serialize(Timestamp value, Type typeOfSrc, JsonSerializationContext context) {
-        if(ObjectUtils.isNull(value)){
+        if (ObjectUtils.isNull(value)) {
             return JsonNull.INSTANCE;
         }
         return new JsonPrimitive(value.toString());
