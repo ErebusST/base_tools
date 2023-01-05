@@ -958,6 +958,18 @@ public class DataSwitch {
                 });
         return result;
     }
+
+    /**
+     * Convert json object to map map.
+     *
+     * @param object the object
+     * @return the map
+     * @author ErebusST
+     * @since 2023 -01-05 10:58:28
+     */
+    public static Map<String,Object> convertJsonObjectToMap(JsonObject object){
+        return object.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
     //endregion
 
 
