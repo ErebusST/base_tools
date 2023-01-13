@@ -132,6 +132,11 @@ public class MessageDigestUtils {
         return messageDigest(str, MessageDigestEnum.SHA1);
     }
 
+
+    public static String sha512(String str) {
+        return messageDigest(str, MessageDigestEnum.SHA512);
+    }
+
     /**
      * Message digest string.
      *

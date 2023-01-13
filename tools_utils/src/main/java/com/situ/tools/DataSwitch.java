@@ -10,8 +10,10 @@ package com.situ.tools;
 
 import com.google.gson.*;
 import com.situ.convert.*;
+import com.situ.entity.bo.Message;
 import com.situ.enumeration.DateFormatEnum;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Test;
 
 import javax.annotation.Nonnull;
 import java.io.UnsupportedEncodingException;
@@ -470,7 +472,6 @@ public class DataSwitch {
         return t;
 
     }
-
 
 
     /**
@@ -1090,5 +1091,12 @@ public class DataSwitch {
 
     }
 
+    @Test
+    public void test() {
+        String sign = "F78A94DAF670E9D4F0EBDF2D643D2A7Fsams-item-name-similarity{soruce}1673328064595json{version}{\"handCheck\":\"深圳包装米Top3\",\"keywordProductList\":[{\"finalMatchStatus\":\"精准\",\"keywordProductId\":\"4075067\",\"machineStatus\":\"确认\",\"mappingMatchStatus\":\"精准\",\"matchingSimilarity\":\"0.75\",\"toPlatformProductId\":\"587646585267\",\"toProductName\":\"【2022新米】裕道府 香喷喷 五常大米 5kg\",\"toProductSpecs\":\"5kg\",\"walmartMachineStatus\":null,\"walmartMatchStatus\":null,\"walmartSimilarity\":null}],\"platformProductId\":\"0697009376736\",\"productCityName\":\"深圳\",\"searchBatch\":\"2023-01-04\",\"sizeDesc\":\"5kg\",\"skuName\":\"十月稻田 五常大米 5kg\",\"toPlatformId\":\"3\",\"toPlatformName\":\"盒马\",\"toStoreId\":\"65\",\"toStoreName\":\"盒马鲜生(景田店)\",\"walmartProductId\":\"6882e954e4a71af39128d2945c476d25\"}F78A94DAF670E9D4F0EBDF2D643D2A7F";
+
+        sign = MessageDigestUtils.sha512(sign);
+        log.info(sign);
+    }
 
 }

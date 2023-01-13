@@ -23,7 +23,9 @@ public enum MessageDigestEnum {
     /**
      * Sha 1 message digest enum.
      */
-    SHA1("SHA1"),
+    SHA1("SHA-1"),
+
+    SHA512("SHA-512"),
     ;
 
     private String value;
