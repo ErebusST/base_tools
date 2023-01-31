@@ -26,11 +26,11 @@ import org.springframework.stereotype.Component;
 @Setter
 @Slf4j
 public class RedisConfig implements InitializingBean {
-    @Value("${redis.redis_ip}")
+    @Value("${redis.redis_ip:}")
     private String redis_ip;
-    @Value("${redis.redis_port}")
+    @Value("${redis.redis_port:6379}")
     private String redis_port;
-    @Value("${redis.auth}")
+    @Value("${redis.auth:}")
     private String redis_auth;
     @Value("${redis.pool.maxTotal:10}")
     private Integer redis_pool_maxTotal;

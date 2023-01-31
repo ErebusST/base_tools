@@ -107,6 +107,10 @@ public class RedisHelper {
             }
             String redis_ip = redisConfig.getRedis_ip();
 
+            if(StringUtils.isEmpty(redis_ip)){
+              return;
+            }
+
             String redis_port = redisConfig.getRedis_port();
 
             String redis_auth = redisConfig.getRedis_auth();

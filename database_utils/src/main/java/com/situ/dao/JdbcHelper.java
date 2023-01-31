@@ -1631,6 +1631,9 @@ public class JdbcHelper {
          * @since 2022 -05-25 11:26:23
          */
         public void cloneTable(String schema, String source, String target) throws Exception {
+            if (checkTableExists(schema, target)) {
+                return;
+            }
             StringBuilder sbSql = new StringBuilder();
             sbSql.append("CREATE TABLE ");
             sbSql.append(schema).append(".");
@@ -1639,6 +1642,59 @@ public class JdbcHelper {
             sbSql.append(schema).append(".");
             sbSql.append(source);
             executeNonQuery(sbSql.toString());
+            try {
+                //处理外键
+                String name = StringUtils.concat(schema, "/", source);
+                sbSql = new StringBuilder();
+                sbSql.append(" SELECT DISTINCT FOR_COL_NAME fromCol, ");
+                sbSql.append("        REF_COL_NAME refCol, ");
+                sbSql.append("        FOR_NAME fromTable, ");
+                sbSql.append("        REF_NAME refTable");
+                sbSql.append(" FROM information_schema.INNODB_FOREIGN_COLS cols ");
+                sbSql.append("          INNER JOIN information_schema.INNODB_FOREIGN info ON info.ID = cols.ID ");
+                sbSql.append(" WHERE info.FOR_NAME = '" + name + "' ");
+
+                List<Map<String, Object>> list = findList(sbSql.toString());
+
+                if (list.size() == 0) {
+                    return;
+                }
+
+                Map<String, List<Map<String, Object>>> groupInfo = list.stream().collect(Collectors.groupingBy(item -> DataSwitch.convertObjectToString(item.get("fromTable"))));
+
+                sbSql = new StringBuilder();
+                sbSql.append(" ALTER TABLE {} ");
+                sbSql.append("     ADD FOREIGN KEY ");
+                sbSql.append("         ({}) REFERENCES ");
+                sbSql.append("             {} ({}); ");
+
+
+                for (Map.Entry<String, List<Map<String, Object>>> group : groupInfo.entrySet()) {
+                    if (group.getValue().size() > 1) {
+                        continue;
+                    }
+                    Map<String, Object> setting = group.getValue().get(0);
+
+                    /**
+                     ALTER TABLE tb_keyword_product_list_2023_01
+                     ADD FOREIGN KEY
+                     (walmartProductId) REFERENCES
+                     walmart_commodity_monitoring_v3_test.tb_walmart_product (walmartProductId);
+                     */
+                    String fromCol = DataSwitch.convertObjectToString(setting.get("fromCol"));
+                    String refCol = DataSwitch.convertObjectToString(setting.get("refCol"));
+                    //String fromTable = DataSwitch.convertObjectToString(setting.get("fromTable"));
+                    //fromTable = StringUtils.replace(fromTable, "/", ".");
+                    String refTable = DataSwitch.convertObjectToString(setting.get("refTable"));
+                    refTable = StringUtils.replace(refTable, "/", ".");
+
+                    String sql = StringUtils.format(sbSql.toString(), StringUtils.concat(schema, ".", target), fromCol, refTable, refCol);
+                    executeNonQuery(sql);
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
         }
     }
 
