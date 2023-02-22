@@ -1696,6 +1696,54 @@ public class JdbcHelper {
             }
 
         }
+
+        /**
+         * Get columns list.
+         *
+         * @param table the table
+         * @return the columns
+         * @throws Exception the exception
+         * @author ErebusST
+         * @since 2023 -01-31 14:25:36
+         */
+        public List<String> getColumns(String table) throws Exception {
+            return getColumns(schema, table);
+        }
+
+        /**
+         * Get columns list.
+         *
+         * @param schema the schema
+         * @param table  the table
+         * @return the columns
+         * @throws Exception the exception
+         * @author ErebusST
+         * @since 2023 -01-31 14:25:14
+         */
+        public List<String> getColumns(String schema, String table) throws Exception {
+            StringBuilder sbSql = new StringBuilder();
+            sbSql.append("  SELECT DISTINCT COLUMN_NAME name, ");
+            sbSql.append("                  COLUMN_TYPE type ");
+            sbSql.append("  FROM information_schema.COLUMNS ");
+            sbSql.append("  WHERE TABLE_SCHEMA = :schema ");
+            sbSql.append("    AND TABLE_NAME = :table ");
+
+
+            Map<String, Object> parameters = new HashMap(2);
+            parameters.put("schema", schema);
+            parameters.put("table", table);
+
+
+            return findList(sbSql.toString(), parameters)
+                    .stream()
+                    .map(item -> {
+                        String name = DataSwitch.convertObjectToString(item.get("name"));
+                        return name;
+                    })
+                    .collect(Collectors.toList());
+
+
+        }
     }
 
 

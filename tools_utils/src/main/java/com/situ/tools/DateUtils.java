@@ -207,9 +207,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @since 2022 -08-12 10:15:54
      */
     public static int getDayOfMonth(Timestamp timestamp) {
-        Calendar cal = toCalendar(timestamp);
-        int day = cal.get(Calendar.DAY_OF_MONTH);
-        return day;
+        return getValue(timestamp,Calendar.DAY_OF_MONTH);
     }
 
     /**
@@ -221,9 +219,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @since 2022 -01-07 15:35:59
      */
     public static int getWeekOfYear(Timestamp timestamp) {
-        Calendar cal = toCalendar(timestamp);
-        int day = cal.get(Calendar.WEEK_OF_YEAR);
-        return day;
+        return getValue(timestamp,Calendar.WEEK_OF_YEAR);
     }
 
     /**
@@ -235,9 +231,17 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @since 2022 -01-07 15:35:59
      */
     public static int getWeekOfMonth(Timestamp timestamp) {
+        return getValue(timestamp,Calendar.WEEK_OF_MONTH);
+    }
+
+    public static int getHour(Timestamp timestamp){
+        return getValue(timestamp,Calendar.HOUR);
+    }
+
+    public static int getValue(Timestamp timestamp,int field){
         Calendar cal = toCalendar(timestamp);
-        int day = cal.get(Calendar.WEEK_OF_MONTH);
-        return day;
+        int value = cal.get(field);
+        return value;
     }
 
 
