@@ -1928,6 +1928,24 @@ public class GisUtils {
         return GeoHash.fromGeohashString(hash);
     }
 
+
+    /**
+     * Get child geohash list.
+     *
+     * @param hash the hash
+     * @return the child geohash
+     * @author ErebusST
+     * @since 2023 -02-24 15:34:50
+     */
+    public static List<String> getChildGeohash(String hash) {
+        int length = hash.length() + 1;
+        List<Point> points = toRectangleByGeohash(hash);
+        List<String> result = new ArrayList<>(32);
+        splitPolygonToGeohash(points, result::add, length);
+
+        return result.stream().distinct().filter(str -> str.startsWith(hash)).sorted().collect(Collectors.toList());
+    }
+
     /**
      * Split polygon to geohash list.
      *
@@ -1939,7 +1957,7 @@ public class GisUtils {
     public static List<String> splitPolygonToGeohash(List<Point> polygon) {
         List<String> list = new ArrayList<>();
         splitPolygonToGeohash(polygon, list::add);
-        return list;
+        return list.stream().distinct().collect(Collectors.toList());
     }
 
     /**

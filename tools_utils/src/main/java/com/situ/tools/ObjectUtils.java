@@ -11,6 +11,7 @@ package com.situ.tools;
 import com.google.gson.JsonArray;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -76,6 +77,31 @@ public class ObjectUtils extends org.apache.commons.lang3.ObjectUtils {
      */
     public static boolean isNotNull(Object object) {
         return !isNull(object);
+    }
+
+
+    /**
+     * Any empty boolean.
+     *
+     * @param objects the objects
+     * @return the boolean
+     * @author ErebusST
+     * @since 2023 -02-22 18:13:12
+     */
+    public static boolean anyEmpty(Object... objects) {
+        return Arrays.stream(objects).anyMatch(ObjectUtils::isEmpty);
+    }
+
+    /**
+     * Any null boolean.
+     *
+     * @param objects the objects
+     * @return the boolean
+     * @author ErebusST
+     * @since 2023 -02-22 18:13:14
+     */
+    public static boolean anyNull(Object... objects) {
+        return Arrays.stream(objects).anyMatch(ObjectUtils::isNull);
     }
 
     /**
