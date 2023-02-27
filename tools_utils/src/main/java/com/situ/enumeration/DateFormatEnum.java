@@ -34,6 +34,7 @@ public enum DateFormatEnum {
      * Yyyymmddhhmms ssss date format enum.
      */
     YYYYMMDDHHMMSSsss("yyyyMMddHHmmssS"),
+    YYYYMMDDHHMMSS1("yyyyMMddHHmmss"),
     /**
      * Yyyymmdd date format enum.
      */

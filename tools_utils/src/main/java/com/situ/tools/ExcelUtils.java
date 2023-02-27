@@ -1,7 +1,13 @@
 package com.situ.tools;
 
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.event.AnalysisEventListener;
+import com.alibaba.excel.read.builder.ExcelReaderBuilder;
+import com.alibaba.excel.read.metadata.ReadSheet;
+import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.situ.entity.bo.ExportExcelSetting;
 import lombok.extern.slf4j.Slf4j;
@@ -10,9 +16,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
@@ -150,4 +159,42 @@ public class ExcelUtils {
     }
 
 
+    /**
+     * Import data .
+     *
+     * @param path       the path
+     * @param sheetIndex the sheet index 从0开始
+     * @param callback   the callback
+     * @author ErebusST
+     * @since 2023 -02-27 12:34:53
+     */
+    public static void importData(String path, Integer sheetIndex, Function<LinkedHashMap<Integer, String>, Boolean> callback) {
+        if (!FileUtils.isExist(path)) {
+            return;
+        }
+        ExcelReaderBuilder builder = EasyExcel
+                .read(path, new AnalysisEventListener<LinkedHashMap<Integer, String>>() {
+                    @Override
+                    public void invoke(LinkedHashMap<Integer, String> item, AnalysisContext analysisContext) {
+                        Boolean success = callback.apply(item);
+                        if (!success) {
+                            throw new RuntimeException(StringUtils.format("执行处理程序失败：{}", item.entrySet().stream().map(Map.Entry::getValue).collect(Collectors.joining(","))));
+                        }
+                    }
+
+                    @Override
+                    public void doAfterAllAnalysed(AnalysisContext analysisContext) {
+
+                    }
+                });
+        builder.ignoreEmptyRow(true);
+        builder.autoCloseStream(true);
+        builder.autoTrim(true);
+        builder.excelType(ExcelTypeEnum.XLSX);
+        ExcelReader reader = builder.build();
+
+        reader.read(new ReadSheet(sheetIndex));
+        reader.finish();
+        log.info("导入数据成功");
+    }
 }

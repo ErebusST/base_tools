@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -22,6 +23,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import static com.situ.tools.StaticValue.BUFFER_SIZE;
+import static com.situ.tools.StaticValue.ENCODING;
 
 /**
  * @author 司徒彬
@@ -32,15 +34,15 @@ public class ZipUtils {
     @Test
     public void test() {
         try {
-            decompress("/Users/situ/Works/mnt/Archive.zip", "/Users/situ/Works/mnt/a/");
+            decompress("/mnt/poi_data/酒泉市.zip", "/Users/situ/Works/mnt/a/",Charset.forName("GBK"));
         } catch (Exception e) {
-           e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
     private static final byte[] buf = new byte[1024];
 
-    public static void decompress(String file, String toPath) throws Exception {
+    public static void decompress(String file, String toPath, Charset charset) throws Exception {
         Path path = Paths.get(file);
         if (!Files.exists(path)) {
             return;
@@ -52,7 +54,7 @@ public class ZipUtils {
         toPath = toPath.concat("/").concat(FileUtils.getFileName(file));
         ZipFile zipFile = null;
         try {
-            zipFile = new ZipFile(path.toFile());
+            zipFile = new ZipFile(path.toFile(), charset);
             Enumeration<?> entries = zipFile.entries();
             while (entries.hasMoreElements()) {
                 ZipEntry entry = (ZipEntry) entries.nextElement();
