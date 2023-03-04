@@ -1148,6 +1148,9 @@ public class GisUtils {
             Gx += temp * (iLat + nextLat) / 3.0;
             Gy += temp * (iLng + nextLng) / 3.0;
         }
+        if (area == 0) {
+            return ListUtils.first(polygon);
+        }
         Gx = Gx / area;
         Gy = Gy / area;
         return Point.get(Gx, Gy);

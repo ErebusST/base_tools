@@ -638,6 +638,23 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         return string;
     }
 
+    /**
+     * Replace string.
+     *
+     * @param string     the string
+     * @param searchList the search list
+     * @param replace    the replace
+     * @return the string
+     * @author ErebusST
+     * @since 2023 -03-02 18:11:22
+     */
+    public static String replace(String string, List<String> searchList, String replace) {
+        for (String search : searchList) {
+            string = replace(string, search, replace);
+        }
+        return string;
+    }
+
     public static String removeSuffix(Object str, String suffix) {
         if (isEmpty(str) || isEmpty(suffix)) {
             return DataSwitch.convertObjectToString(str);
