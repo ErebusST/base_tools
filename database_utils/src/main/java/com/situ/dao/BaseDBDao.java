@@ -1994,6 +1994,30 @@ public class BaseDBDao {
     public Pager findPager(@Nonnull String sql, Map<String, Object> parameters, Integer pageNumber, Integer pageSize)
             throws Exception {
         try {
+            StringBuilder contSql = new StringBuilder();
+            contSql.append("SELECT COUNT(1) FROM (").append(sql).append(") TEMP");
+            return findPager(sql, parameters, pageNumber, pageSize, contSql.toString());
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    /**
+     * Find pager pager.
+     *
+     * @param sql        the sql
+     * @param parameters the parameters
+     * @param pageNumber the page number
+     * @param pageSize   the page size
+     * @param countSql   the count sql
+     * @return the pager
+     * @throws Exception the exception
+     * @author ErebusST
+     * @since 2023 -03-21 15:15:50
+     */
+    public Pager findPager(@Nonnull String sql, Map<String, Object> parameters, Integer pageNumber, Integer pageSize, String countSql)
+            throws Exception {
+        try {
             long start = System.currentTimeMillis();
             Pager pager = new Pager();
             pager.setPageSize(pageSize);
@@ -2001,10 +2025,7 @@ public class BaseDBDao {
             pager.setPageNumber(pageNumber);
             List<Map<String, Object>> resultList = this.executeList(sql, parameters, pageNumber, pageSize);
             long second = System.currentTimeMillis();
-            StringBuilder sqlBuilder = new StringBuilder();
-            sqlBuilder.append("SELECT COUNT(1) FROM (").append(sql).append(") TEMP");
-            Integer totalCount = count(sqlBuilder.toString(), parameters);
-
+            Integer totalCount = count(countSql, parameters);
             long end = System.currentTimeMillis();
 
             log.info("分页数据花费时间：{},总数花费时间:{},共计:{}",

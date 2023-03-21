@@ -235,7 +235,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
     }
 
     public static int getHour(Timestamp timestamp){
-        return getValue(timestamp,Calendar.HOUR);
+        return getValue(timestamp,Calendar.HOUR_OF_DAY);
     }
 
     public static int getValue(Timestamp timestamp,int field){

@@ -417,6 +417,25 @@ public class JdbcHelper {
         }
 
         /**
+         * Find first t.
+         *
+         * @param <T>        the type parameter
+         * @param clazz      the clazz
+         * @param connection the connection
+         * @param sql        the sql
+         * @param parameters the parameters
+         * @return the t
+         * @throws Exception the exception
+         * @author ErebusST
+         * @since 2023 -03-17 15:33:28
+         */
+        public <T> T findFirst(Class<T> clazz, DruidPooledConnection connection, String sql, Map<String, Object> parameters) throws Exception {
+            Map<String, Object> first = findFirst(connection, sql, parameters);
+            return DataSwitch.convertMapObjToEntity(clazz, first);
+        }
+
+
+        /**
          * 用户查询单个对象
          *
          * @param sql the sql
@@ -1174,6 +1193,43 @@ public class JdbcHelper {
             Map<String, Object> parameters = new HashMap<>(1);
             parameters.put(primaryKey.getFieldInDb(), id);
             return findFirst(clazz, sql.toString(), parameters);
+        }
+
+        /**
+         * Find by id t.
+         *
+         * @param <T>        the type parameter
+         * @param clazz      the clazz
+         * @param connection the connection
+         * @param id         the id
+         * @return the t
+         * @throws Exception the exception
+         * @author ErebusST
+         * @since 2023 -03-17 15:34:41
+         */
+        public <T> T findById(Class<T> clazz, DruidPooledConnection connection, Long id) throws Exception {
+            if (ObjectUtils.isNull(id)) {
+                return null;
+            }
+            TableSetting setting = FieldUtils.getEntityInfo(clazz);
+            JdbcField primaryKey = setting.getPrimaryKey();
+            String schema = setting.getSchema();
+            String tableName = setting.getTable();
+            if (ObjectUtils.isNotEmpty(schema)) {
+                tableName = schema.concat(".").concat(tableName);
+            }
+            String fields = FieldUtils.getFieldJoinStringForSelect(setting);
+            StringBuilder sql = new StringBuilder("SELECT ");
+            sql.append(fields);
+            sql.append(" FROM ")
+                    .append(tableName)
+                    .append(" WHERE ")
+                    .append(primaryKey.getFieldInDb())
+                    .append(" = :")
+                    .append(primaryKey.getFieldInDb());
+            Map<String, Object> parameters = new HashMap<>(1);
+            parameters.put(primaryKey.getFieldInDb(), id);
+            return findFirst(clazz, connection, sql.toString(), parameters);
         }
 
         /**
