@@ -700,7 +700,12 @@ public class BaseDBDao {
             Class clazz = entity.getClass();
             TableSetting setting = FieldUtils.getEntityInfo(clazz);
             StringBuilder sql = new StringBuilder("INSERT INTO ");
-            sql.append(setting.getTable()).append(" ");
+            String schema = setting.getSchema();
+            String table = setting.getTable();
+            if (StringUtils.isNotEmpty(schema)) {
+                table = schema.concat(".").concat(table);
+            }
+            sql.append(table).append(" ");
             String insertKey = FieldUtils.getFieldJoinStringForInsertField(entity);
             String parameterKey = FieldUtils.getFieldJoinStringForInsertParameter(entity);
             sql.append("(")
