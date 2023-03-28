@@ -9,7 +9,6 @@
 package com.situ.convert;
 
 import com.google.gson.*;
-import com.situ.tools.DataSwitch;
 import com.situ.tools.DateUtils;
 import com.situ.tools.ObjectUtils;
 import com.situ.tools.StringUtils;

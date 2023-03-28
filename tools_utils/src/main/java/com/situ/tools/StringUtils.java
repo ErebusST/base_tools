@@ -9,7 +9,6 @@
 package com.situ.tools;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.Test;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;

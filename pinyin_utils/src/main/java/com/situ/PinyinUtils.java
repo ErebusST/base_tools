@@ -84,8 +84,8 @@ public class PinyinUtils {
      * @author ErebusST
      * @since 2022 -04-28 00:17:21
      */
-    public static String spell(String chinese){
-        return spell(chinese,"");
+    public static String spell(String chinese) {
+        return spell(chinese, "");
     }
 
     /**
@@ -114,8 +114,7 @@ public class PinyinUtils {
                 list.add(String.valueOf(arr[i]));
             }
         }
-        return StringUtils.getCombineString(delimiter, list);
-        //return StringUtils.getCombineString(delimiter, list).replaceAll("\\W", "").trim().toLowerCase();
+        return StringUtils.getCombineString(delimiter, list).replaceAll("\\W", "").trim().toLowerCase();
     }
 
 }

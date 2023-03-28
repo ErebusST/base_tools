@@ -22,6 +22,12 @@
             <groupId>com.situ</groupId>
             <artifactId>tools_utils</artifactId>
             <version>1.2</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>commons-beanutils</artifactId>
+                    <groupId>commons-beanutils</groupId>
+                </exclusion>
+            </exclusions>
             <optional>true</optional>
             <scope>provided</scope>
         </dependency>

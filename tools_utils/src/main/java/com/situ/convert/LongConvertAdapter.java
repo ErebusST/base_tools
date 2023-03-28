@@ -9,7 +9,6 @@
 package com.situ.convert;
 
 import com.google.gson.*;
-import com.situ.tools.DataSwitch;
 
 import java.lang.reflect.Type;
 

@@ -23,7 +23,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import static com.situ.tools.StaticValue.BUFFER_SIZE;
-import static com.situ.tools.StaticValue.ENCODING;
 
 /**
  * @author 司徒彬

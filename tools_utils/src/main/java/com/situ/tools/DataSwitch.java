@@ -10,7 +10,6 @@ package com.situ.tools;
 
 import com.google.gson.*;
 import com.situ.convert.*;
-import com.situ.entity.bo.Message;
 import com.situ.enumeration.DateFormatEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;

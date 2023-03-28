@@ -26,6 +26,12 @@
             <artifactId>tools_utils</artifactId>
             <version>1.2</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>commons-beanutils</artifactId>
+                    <groupId>commons-beanutils</groupId>
+                </exclusion>
+            </exclusions>
             <optional>false</optional>
         </dependency>
 

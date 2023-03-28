@@ -85,14 +85,7 @@
                     <artifactId>lombok</artifactId>
                     <groupId>org.projectlombok</groupId>
                 </exclusion>
-                <exclusion>
-                    <artifactId>commons-beanutils</artifactId>
-                    <groupId>commons-beanutils</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>commons-lang3</artifactId>
-                    <groupId>org.apache.commons</groupId>
-                </exclusion>
+
             </exclusions>
             <optional>true</optional>
             <scope>provided</scope>
