@@ -8,7 +8,9 @@
 
 package com.situ.tools;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.RegExUtils;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -26,6 +28,7 @@ import java.util.stream.Stream;
  * @author 司徒彬
  * @date 2017 -03-15 10:56
  */
+@Slf4j
 public class StringUtils extends org.apache.commons.lang3.StringUtils {
 
     /**
@@ -632,7 +635,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
      */
     public static String format(String string, Object... objects) {
         for (Object object : objects) {
-            string = StringUtils.replace(string, "{}", DataSwitch.convertObjectToString(object), 1);
+            string = RegExUtils.replaceFirst(string, "\\{\\w*\\}", DataSwitch.convertObjectToString(object));
         }
         return string;
     }

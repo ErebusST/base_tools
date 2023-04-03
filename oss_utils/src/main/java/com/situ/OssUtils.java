@@ -14,10 +14,7 @@ import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.common.utils.IOUtils;
 import com.aliyun.oss.model.*;
 import com.situ.config.OssConfig;
-import com.situ.tools.DateUtils;
-import com.situ.tools.FileUtils;
-import com.situ.tools.ObjectUtils;
-import com.situ.tools.StringUtils;
+import com.situ.tools.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,27 +22,40 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Nonnull;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /**
+ * The type Oss utils.
+ *
  * @author 司徒彬
- * @date 2022/6/9 10:07
+ * @date 2022 /6/9 10:07
  */
 @Component
 @Slf4j
 public class OssUtils {
 
 
+    /**
+     * The Config temp.
+     */
     @Autowired
     OssConfig configTemp;
 
     private static OssConfig config;
 
+    /**
+     * Init .
+     *
+     * @author ErebusST
+     * @since 2023 -04-03 11:14:35
+     */
     @PostConstruct
     public void init() {
         config = configTemp;
@@ -54,6 +64,7 @@ public class OssUtils {
     /**
      * Init .
      *
+     * @return the client
      * @author ErebusST
      * @since 2022 -06-09 10:11:50
      */
@@ -290,8 +301,8 @@ public class OssUtils {
             String string = url.toString();
             if (ObjectUtils.isNotEmpty(config.getUrl())) {
                 string = string.substring(0, string.indexOf("?"));
-                string = StringUtils.replace(string,"https://","");
-                string = StringUtils.replace(string,"http://","");
+                string = StringUtils.replace(string, "https://", "");
+                string = StringUtils.replace(string, "http://", "");
                 string = string.replace(bucketName + "." + config.getEndpoint(), config.getUrl());
             }
 
@@ -640,6 +651,17 @@ public class OssUtils {
     }
 
 
+    /**
+     * Save web file to oss boolean.
+     *
+     * @param webUrl the web url
+     * @param bucket the bucket
+     * @param key    the key
+     * @return the boolean
+     * @throws IOException the io exception
+     * @author ErebusST
+     * @since 2023 -04-03 11:14:37
+     */
     public static boolean saveWebFileToOss(@Nonnull String webUrl, @Nonnull String bucket, @Nonnull String key) throws IOException {
         OSS client = null;
         try {
@@ -682,5 +704,103 @@ public class OssUtils {
             }
         }
         return true;
+    }
+
+    /**
+     * Write boolean.
+     *
+     * @param content the content
+     * @param bucket  the bucket
+     * @param key     the key
+     * @return the boolean
+     * @author ErebusST
+     * @since 2023 -04-03 11:14:37
+     */
+    public static boolean write(@Nonnull String content, @Nonnull String bucket, @Nonnull String key) {
+        OSS client = null;
+        try {
+            client = getClient();
+            return write(client, content, bucket, key);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            if (ObjectUtils.isNotNull(client)) {
+                shutdown(client);
+            }
+        }
+    }
+
+    private static final List<String> BLANK_CONTENT = new ArrayList<>(3);
+
+    static {
+        BLANK_CONTENT.add("\r");
+        BLANK_CONTENT.add("\t");
+        BLANK_CONTENT.add("\n");
+    }
+
+    /**
+     * Write boolean.
+     *
+     * @param client  the client
+     * @param content the content
+     * @param bucket  the bucket
+     * @param key     the key
+     * @return the boolean
+     * @author ErebusST
+     * @since 2023 -04-03 11:14:37
+     */
+    public static boolean write(OSS client, @Nonnull String content, @Nonnull String bucket, @Nonnull String key) {
+        Boolean exist = exist(client, bucket, key);
+        if (exist) {
+            delete(client, bucket, key);
+        }
+        content = StringUtils.replace(content, BLANK_CONTENT, "");
+        InputStream stream = new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8));
+        PutObjectRequest request = new PutObjectRequest(bucket, key, stream);
+        PutObjectResult result = client.putObject(request);
+        return true;
+    }
+
+    /**
+     * Read string.
+     *
+     * @param bucket the bucket
+     * @param key    the key
+     * @return the string
+     * @throws IOException the io exception
+     * @author ErebusST
+     * @since 2023 -04-03 11:17:28
+     */
+    public static String read(@Nonnull String bucket, @Nonnull String key) throws IOException {
+        OSS client = null;
+        try {
+            client = getClient();
+            return read(client, bucket, key);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            if (ObjectUtils.isNotNull(client)) {
+                shutdown(client);
+            }
+        }
+    }
+
+    /**
+     * Read string.
+     *
+     * @param client the client
+     * @param bucket the bucket
+     * @param key    the key
+     * @return the string
+     * @throws IOException the io exception
+     * @author ErebusST
+     * @since 2023 -04-03 11:16:52
+     */
+    public static String read(OSS client, @Nonnull String bucket, @Nonnull String key) throws IOException {
+        if (!exist(client, bucket, key)) {
+            return "";
+        }
+        byte[] bytes = getBytes(client, bucket, key);
+        return new String(bytes, StandardCharsets.UTF_8);
     }
 }

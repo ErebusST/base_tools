@@ -14,9 +14,7 @@ import com.situ.entity.bo.DataItem;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -29,6 +27,54 @@ import java.util.stream.Stream;
  * @date 2020 /4/16 23:51
  */
 public class ListUtils extends org.apache.commons.collections.ListUtils {
+
+    public static <Entity, Collection1 extends Collection<Entity>, Collection2 extends Collection<Entity>>
+    List<Entity> intersection(Collection1 list1, Collection2 list2) {
+        return list1.stream()
+                .filter(item -> {
+                    boolean contain = list2.stream()
+                            .anyMatch(temp -> {
+                                if (String.class.equals(temp.getClass())) {
+                                    return item.toString().trim().equals(temp.toString().trim());
+                                }
+                                return item.equals(temp);
+                            });
+                    return contain;
+                })
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public static <Entity> boolean containAny(List<Entity> list, Set<Entity> entities) {
+        return containAny(list, entities.stream());
+    }
+
+    /**
+     * Contain any boolean.
+     *
+     * @param <Entity> the type parameter
+     * @param list     the list
+     * @param entities the entities
+     * @return the boolean
+     * @author ErebusST
+     * @since 2023 -03-28 19:00:08
+     */
+    public static <Entity> boolean containAny(List<Entity> list, Entity... entities) {
+        return containAny(list, Arrays.stream(entities));
+    }
+
+    public static <Entity> boolean containAny(List<Entity> list, Stream<Entity> entities) {
+        return entities
+                .filter(ObjectUtils::isNotNull)
+                .anyMatch(entity -> {
+                    Class<?> clazz = entity.getClass();
+                    if (String.class.equals(clazz)) {
+                        entity = (Entity) entity.toString().trim();
+                    }
+                    return list.contains(entity);
+                });
+    }
+
     /**
      * New array list list.
      *
