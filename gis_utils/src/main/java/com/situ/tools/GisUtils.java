@@ -601,7 +601,9 @@ public class GisUtils {
                 .map(element -> {
                     JsonArray temp = element.getAsJsonArray();
                     return Point.get(temp.get(0).getAsBigDecimal(), temp.get(1).getAsBigDecimal());
-                }).collect(Collectors.toList());
+                })
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     @Getter
