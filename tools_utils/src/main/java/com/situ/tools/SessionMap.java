@@ -122,8 +122,22 @@ public class SessionMap {
      * @since 2022 -01-07 15:36:06
      */
     public static <T> T getValue(@Nonnull String key) {
+        return getValue(key, null);
+    }
+
+    /**
+     * Get value t.
+     *
+     * @param <T>          the type parameter
+     * @param key          the key
+     * @param defaultValue the default value
+     * @return the t
+     * @author ErebusST
+     * @since 2023 -04-13 09:33:43
+     */
+    public static <T> T getValue(@Nonnull String key, T defaultValue) {
         Object value = get(key);
-        return value == null ? null : (T) value;
+        return value == null ? defaultValue : (T) value;
     }
 
 

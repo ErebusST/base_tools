@@ -709,7 +709,7 @@ public class DataSwitch {
                 return null;
             }
             JsonParser parser = new JsonParser();
-            JsonElement jObject = parser.parse(value);
+            JsonElement jObject = parser.parse(value.trim());
             return jObject;
         } catch (Exception e) {
             throw e;
