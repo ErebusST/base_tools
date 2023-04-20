@@ -514,6 +514,7 @@ public class GisUtils {
         try {
             Polygon p1 = toPolygon(polygon1);
             Polygon p2 = toPolygon(polygon2);
+            p1.intersection(p2);
             return p1.intersects(p2);
         } catch (Exception ex) {
             log.error("判断两个多边形是否相交出现异常", ex);
@@ -1567,6 +1568,25 @@ public class GisUtils {
 
         Geometry intersection = geometry1.intersection(geometry2);
         return toListPoint(intersection);
+    }
+
+    /**
+     * Subtract list.
+     * 计算第一个多边形相对于第二个多边形不想相交的部分
+     *
+     * @param polygon1 the polygon 1
+     * @param polygon2 the polygon 2
+     * @return the list
+     * @author ErebusST
+     * @since 2023 -04-18 13:54:20
+     */
+    public static List<Point> subtract(List<Point> polygon1, List<Point> polygon2) {
+        Geometry geometry1 = fixPolygon(polygon1);
+
+        Geometry geometry2 = fixPolygon(polygon2);
+
+        Geometry difference = geometry1.difference(geometry2);
+        return toListPoint(difference);
     }
 
     private static Polygon fixPolygon(List<Point> points) {
