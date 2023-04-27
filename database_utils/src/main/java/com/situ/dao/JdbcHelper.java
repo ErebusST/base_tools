@@ -1475,7 +1475,7 @@ public class JdbcHelper {
             JdbcField primaryKeySetting = setting.getPrimaryKey();
 
             boolean autoGenerate = primaryKeySetting.isAutoGenerate();
-            if (autoGenerate) {
+            if (!autoGenerate) {
                 String primaryId = primaryKeySetting.getField().getName();
                 String primaryKeyInDb = primaryKeySetting.getFieldInDb();
                 parameters.put(primaryKeyInDb, ReflectionUtils.getFieldValue(entity, primaryId));

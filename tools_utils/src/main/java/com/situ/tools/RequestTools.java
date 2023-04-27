@@ -82,17 +82,18 @@ public class RequestTools {
      * @author ErebusST
      * @since 2022 -01-07 15:36:07
      */
-    public static Response get(@NonNull String url, Map<String, String> parameter, HttpHeader... headers) throws Exception {
+    public static Response get(@NonNull String url, Map<String, Object> parameter, HttpHeader... headers) throws Exception {
         if (ObjectUtils.isNotNull(parameter) && parameter.size() > 0) {
             String para = parameter.entrySet()
                     .stream()
+                    .filter(entry -> ObjectUtils.isNotEmpty(entry.getValue()))
                     .map(entry -> {
                         String key = entry.getKey();
-                        String value = null;
+                        String value = entry.getValue().toString();
                         try {
-                            value = URLEncoder.encode(entry.getValue(), "UTF-8");
+                            value = URLEncoder.encode(value, "UTF-8");
                         } catch (UnsupportedEncodingException e) {
-                            value = entry.getValue();
+                            value = value;
                         }
                         return StringUtils.concat(key, "=", value);
                     })

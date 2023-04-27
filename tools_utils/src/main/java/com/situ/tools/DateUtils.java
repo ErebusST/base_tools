@@ -207,7 +207,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @since 2022 -08-12 10:15:54
      */
     public static int getDayOfMonth(Timestamp timestamp) {
-        return getValue(timestamp,Calendar.DAY_OF_MONTH);
+        return getValue(timestamp, Calendar.DAY_OF_MONTH);
     }
 
     /**
@@ -219,7 +219,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @since 2022 -01-07 15:35:59
      */
     public static int getWeekOfYear(Timestamp timestamp) {
-        return getValue(timestamp,Calendar.WEEK_OF_YEAR);
+        return getValue(timestamp, Calendar.WEEK_OF_YEAR);
     }
 
     /**
@@ -231,14 +231,14 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      * @since 2022 -01-07 15:35:59
      */
     public static int getWeekOfMonth(Timestamp timestamp) {
-        return getValue(timestamp,Calendar.WEEK_OF_MONTH);
+        return getValue(timestamp, Calendar.WEEK_OF_MONTH);
     }
 
-    public static int getHour(Timestamp timestamp){
-        return getValue(timestamp,Calendar.HOUR_OF_DAY);
+    public static int getHour(Timestamp timestamp) {
+        return getValue(timestamp, Calendar.HOUR_OF_DAY);
     }
 
-    public static int getValue(Timestamp timestamp,int field){
+    public static int getValue(Timestamp timestamp, int field) {
         Calendar cal = toCalendar(timestamp);
         int value = cal.get(field);
         return value;
@@ -293,8 +293,6 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
     }
 
 
-
-
     private final static Pattern YYYY_MM_DD = Pattern.compile("^\\d{4}-[01][0-9]-[0-3][0-9]$");
     private final static Pattern YYYY_MM_DD_HH = Pattern.compile("^\\d{4}-[01][0-9]-[0-3][0-9]\\s[0-5][0-9]$");
     private final static Pattern YYYY_MM_DD_HH_MM = Pattern.compile("^\\d{4}-[01][0-9]-[0-3][0-9]\\s[0-5][0-9]:[0-5][0-9]$");
@@ -311,6 +309,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      */
     public static Timestamp getTimestamp(String dateStr, int day) {
         try {
+            dateStr = StringUtils.replace(dateStr, ListUtils.newArrayList("T", "Z"), " ");
             if (StringUtils.match(dateStr, YYYY_MM_DD)) {
                 dateStr = dateStr + " 00:00:00";
             } else if (StringUtils.match(dateStr, YYYY_MM_DD_HH)) {
@@ -384,6 +383,32 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
      */
     public static Timestamp addSeconds(Timestamp date, int second) {
         return add(date, Calendar.SECOND, second);
+    }
+
+
+    /**
+     * Add minutes timestamp.
+     *
+     * @param minute the minute
+     * @return the timestamp
+     * @author ErebusST
+     * @since 2023 -04-26 22:41:40
+     */
+    public static Timestamp addMinutes(int minute) {
+        return addMinutes(DateUtils.getNow(), minute);
+    }
+
+    /**
+     * Add minutes timestamp.
+     *
+     * @param date   the date
+     * @param minute the minute
+     * @return the timestamp
+     * @author ErebusST
+     * @since 2023 -04-26 22:41:17
+     */
+    public static Timestamp addMinutes(Timestamp date, int minute) {
+        return add(date, Calendar.MINUTE, minute);
     }
 
     /**
@@ -587,6 +612,33 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
     }
 
 
+    public static Timestamp setDay(Timestamp timestamp, Integer value) {
+        return set(timestamp, Calendar.DAY_OF_WEEK, value);
+    }
+
+    public static Timestamp setHour(Timestamp timestamp, Integer value) {
+        return set(timestamp, Calendar.HOUR_OF_DAY, value);
+    }
+
+    public static Timestamp setMinute(Timestamp timestamp, Integer value) {
+        return set(timestamp, Calendar.MINUTE, value);
+    }
+
+    public static Timestamp setSecond(Timestamp timestamp, Integer value) {
+        return set(timestamp, Calendar.SECOND, value);
+    }
+
+    public static Timestamp setMilliSecond(Timestamp timestamp, Integer value) {
+        return set(timestamp, Calendar.MILLISECOND, value);
+    }
+
+    public static Timestamp set(Timestamp timestamp, int filed, Integer value) {
+        Calendar calendar = toCalendar(timestamp);
+        calendar.set(filed, value);
+        return toTimestamp(calendar);
+    }
+
+
     /**
      * Get last day of week timestamp.
      *
@@ -679,6 +731,10 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(now.getTime());
         return calendar;
+    }
+
+    public static Timestamp toTimestamp(Calendar calendar) {
+        return Timestamp.from(calendar.toInstant());
     }
 
 }

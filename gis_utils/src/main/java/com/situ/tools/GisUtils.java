@@ -594,6 +594,19 @@ public class GisUtils {
      * @since 2022 -01-07 15:36:26
      */
     public static List<Point> toListPoint(Object polygon) {
+        return toListPoint(polygon, null);
+    }
+
+    /**
+     * To list point list.
+     *
+     * @param polygon the polygon
+     * @param fixData the fix data
+     * @return the list
+     * @author ErebusST
+     * @since 2023 -04-20 10:58:16
+     */
+    public static List<Point> toListPoint(Object polygon, Function<Point, Point> fixData) {
         if (ObjectUtils.isEmpty(polygon)) {
             return new ArrayList<>(0);
         }
@@ -602,6 +615,13 @@ public class GisUtils {
                 .map(element -> {
                     JsonArray temp = element.getAsJsonArray();
                     return Point.get(temp.get(0).getAsBigDecimal(), temp.get(1).getAsBigDecimal());
+                })
+                .map(point -> {
+                    if (ObjectUtils.isNotNull(fixData)) {
+                        return fixData.apply(point);
+                    } else {
+                        return point;
+                    }
                 })
                 .distinct()
                 .collect(Collectors.toList());
@@ -1544,6 +1564,27 @@ public class GisUtils {
     }
 
     /**
+     * Percent big decimal.
+     * 传入两个多边形，1 占 2 的 百分之多少
+     *
+     * @param polygon1 the polygon 1
+     * @param polygon2 the polygon 2
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2023 -04-20 10:53:53
+     */
+    public static BigDecimal percent(List<Point> polygon1, List<Point> polygon2) {
+        BigDecimal area1 = calcArea(polygon1);
+        BigDecimal area2 = calcArea(polygon2);
+
+        if (area1.doubleValue() < area2.doubleValue()) {
+            return NumberUtils.percent(area1, area2);
+        } else {
+            return BigDecimal.ONE;
+        }
+    }
+
+    /**
      * Intersection list.
      *
      * @param polygon1 the polygon 1
@@ -1580,7 +1621,7 @@ public class GisUtils {
      * @author ErebusST
      * @since 2023 -04-18 13:54:20
      */
-    public static List<Point> subtract(List<Point> polygon1, List<Point> polygon2) {
+    public static List<Point> difference(List<Point> polygon1, List<Point> polygon2) {
         Geometry geometry1 = fixPolygon(polygon1);
 
         Geometry geometry2 = fixPolygon(polygon2);

@@ -28,6 +28,6 @@ public class TableSetting {
     List<JdbcField> fields;
 
     public String getKey() {
-        return StringUtils.concat(schema, "^", table);
+        return StringUtils.getCombineString("^", schema, table);
     }
 }
