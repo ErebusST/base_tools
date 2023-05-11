@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -105,6 +106,24 @@ public class ExcelUtils {
             }
         }
         return write_path;
+    }
+
+
+    /**
+     * Export .
+     *
+     * @param <T>      the type parameter
+     * @param clazz    the clazz
+     * @param list     the list
+     * @param filePath the file path
+     * @throws IOException the io exception
+     * @author ErebusST
+     * @since 2023 -05-10 15:34:45
+     */
+    public static <T> void export(Class<T> clazz, List<T> list, String filePath) throws IOException {
+        Map<String, List<T>> data = new HashMap<>();
+        data.put("sheet", list);
+        export(clazz, data, filePath);
     }
 
     /**

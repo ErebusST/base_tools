@@ -234,9 +234,35 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
         return getValue(timestamp, Calendar.WEEK_OF_MONTH);
     }
 
+
     public static int getHour(Timestamp timestamp) {
         return getValue(timestamp, Calendar.HOUR_OF_DAY);
     }
+
+    /**
+     * Get minute int.
+     *
+     * @param timestamp the timestamp
+     * @return the minute
+     * @author ErebusST
+     * @since 2023 -04-29 11:45:21
+     */
+    public static int getMinute(Timestamp timestamp) {
+        return getValue(timestamp, Calendar.MINUTE);
+    }
+
+    /**
+     * Get second int.
+     *
+     * @param timestamp the timestamp
+     * @return the second
+     * @author ErebusST
+     * @since 2023 -04-29 11:45:19
+     */
+    public static int getSecond(Timestamp timestamp) {
+        return getValue(timestamp, Calendar.SECOND);
+    }
+
 
     public static int getValue(Timestamp timestamp, int field) {
         Calendar cal = toCalendar(timestamp);

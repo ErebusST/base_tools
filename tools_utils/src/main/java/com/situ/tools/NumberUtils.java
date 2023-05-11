@@ -138,6 +138,9 @@ public class NumberUtils {
      */
     public final static BigDecimal TEN_THOUSAND = BigDecimal.valueOf(10000);
 
+    /**
+     * The constant NEGATIVE_ONE.
+     */
     public final static BigDecimal NEGATIVE_ONE = BigDecimal.valueOf(-1);
     /**
      * The constant NUMBER_SCALE.
@@ -289,13 +292,14 @@ public class NumberUtils {
      * 总数
      *
      * @param <T>    the type parameter
+     * @param <E>    the type parameter
      * @param list   the list
      * @param getter the getter
      * @return the big decimal
      * @author ErebusST
      * @since 2022 -02-25 18:14:36
      */
-    //public static <T> BigDecimal total(List<T> list, Function<T, BigDecimal> getter) {
+//public static <T> BigDecimal total(List<T> list, Function<T, BigDecimal> getter) {
     //    return add(list.stream().map(getter));
     //}
     public static <T, E extends Number> BigDecimal total(List<T> list, Function<T, E> getter) {
@@ -556,7 +560,8 @@ public class NumberUtils {
      * <p>
      * 计算平均数
      *
-     * @param list the list
+     * @param list  the list
+     * @param scale the scale
      * @return the big decimal
      * @author ErebusST
      * @since 2022 -02-27 11:16:24
@@ -570,7 +575,9 @@ public class NumberUtils {
      * <p>
      * 计算平均数
      *
-     * @param list the list
+     * @param list         the list
+     * @param scale        the scale
+     * @param roundingMode the rounding mode
      * @return the big decimal
      * @author ErebusST
      * @since 2022 -02-27 11:16:24
@@ -842,6 +849,80 @@ public class NumberUtils {
     public static <T> BigDecimal max(Stream<T> list, Function<T, ? extends Number> getter) {
         return minOrMax(list, getter, Type.max);
     }
+
+    /**
+     * Max big decimal.
+     *
+     * @param decimals the decimals
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2023 -05-10 15:27:10
+     */
+    public static BigDecimal max(BigDecimal... decimals) {
+        return max(Arrays.stream(decimals));
+    }
+
+    /**
+     * Max big decimal.
+     *
+     * @param list the list
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2023 -05-10 15:27:10
+     */
+    public static BigDecimal max(List<BigDecimal> list) {
+        return max(list.stream());
+    }
+
+    /**
+     * Max big decimal.
+     *
+     * @param stream the stream
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2023 -05-10 15:27:10
+     */
+    public static BigDecimal max(Stream<BigDecimal> stream) {
+        return stream.max(BigDecimal::compareTo).orElse(null);
+    }
+
+
+    /**
+     * Min big decimal.
+     *
+     * @param decimals the decimals
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2023 -05-10 15:27:10
+     */
+    public static BigDecimal min(BigDecimal... decimals) {
+        return min(Arrays.stream(decimals));
+    }
+
+    /**
+     * Min big decimal.
+     *
+     * @param list the list
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2023 -05-10 15:27:10
+     */
+    public static BigDecimal min(List<BigDecimal> list) {
+        return min(list.stream());
+    }
+
+    /**
+     * Min big decimal.
+     *
+     * @param stream the stream
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2023 -05-10 15:27:10
+     */
+    public static BigDecimal min(Stream<BigDecimal> stream) {
+        return stream.min(BigDecimal::compareTo).orElse(null);
+    }
+
 
     /**
      * Min or max big decimal.
