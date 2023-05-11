@@ -1673,9 +1673,8 @@ public class GisUtils {
         } catch (Exception ex) {
             if (StringUtils.contains(ex.getMessage(), "Points of LinearRing do not form a closed linestring")) {
                 points.add(points.get(0));
-                Coordinate[] coordinates = toCoordinateArray(points);
-                Polygon polygon = new GeometryFactory().createPolygon(coordinates);
-                return polygon;
+                Polygon polygon = polygon(points);
+                return fixPolygon(polygon);
             }
             throw ex;
         }
