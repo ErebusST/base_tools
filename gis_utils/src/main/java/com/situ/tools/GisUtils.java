@@ -1603,9 +1603,9 @@ public class GisUtils {
         if (allIn) {
             return polygon2;
         }
-        Geometry geometry1 = fixPolygon(polygon1);
+        Geometry geometry1 = toPolygon(polygon1);
 
-        Geometry geometry2 = fixPolygon(polygon2);
+        Geometry geometry2 = toPolygon(polygon2);
 
         Geometry intersection = geometry1.intersection(geometry2);
         return toListPoint(intersection);
@@ -1622,31 +1622,38 @@ public class GisUtils {
      * @since 2023 -04-18 13:54:20
      */
     public static List<Point> difference(List<Point> polygon1, List<Point> polygon2) {
-        Geometry geometry1 = fixPolygon(polygon1);
+        Geometry geometry1 = toPolygon(polygon1);
 
-        Geometry geometry2 = fixPolygon(polygon2);
+        Geometry geometry2 = toPolygon(polygon2);
 
         Geometry difference = geometry1.difference(geometry2);
         return toListPoint(difference);
     }
 
-    private static Polygon fixPolygon(List<Point> points) {
-        Polygon polygon = toPolygon(points);
+
+    private static Polygon polygon(List<Point> points) {
+        Coordinate[] coordinates = toCoordinateArray(points);
+        Polygon polygon = new GeometryFactory().createPolygon(coordinates);
+        return polygon;
+    }
+
+    private static Polygon fixPolygon(Polygon polygon) {
         if (polygon.isValid()) {
             return polygon;
         } else {
+            List<Point> points = toListPoint(polygon);
             int size = points.size();
             for (int i = 0; i < size; i++) {
                 Point point = points.get(i);
                 points.remove(i);
-                Polygon temp = toPolygon(points);
+                Polygon temp = polygon(points);
                 if (temp.isValid()) {
                     break;
                 } else {
                     points.add(i, point);
                 }
             }
-            return toPolygon(points);
+            return polygon(points);
         }
     }
 
@@ -1661,9 +1668,8 @@ public class GisUtils {
      */
     public static Polygon toPolygon(List<Point> points) {
         try {
-            Coordinate[] coordinates = toCoordinateArray(points);
-            Polygon polygon = new GeometryFactory().createPolygon(coordinates);
-            return polygon;
+            Polygon polygon = polygon(points);
+            return fixPolygon(polygon);
         } catch (Exception ex) {
             if (StringUtils.contains(ex.getMessage(), "Points of LinearRing do not form a closed linestring")) {
                 points.add(points.get(0));
