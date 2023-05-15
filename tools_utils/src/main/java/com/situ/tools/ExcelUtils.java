@@ -8,18 +8,22 @@ import com.alibaba.excel.event.AnalysisEventListener;
 import com.alibaba.excel.read.builder.ExcelReaderBuilder;
 import com.alibaba.excel.read.metadata.ReadSheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.excel.write.builder.ExcelWriterBuilder;
 import com.alibaba.excel.write.metadata.WriteSheet;
+import com.alibaba.excel.write.metadata.fill.FillConfig;
+import com.alibaba.excel.write.metadata.fill.FillWrapper;
+import com.situ.annotation.Fill;
 import com.situ.entity.bo.ExportExcelSetting;
+import com.situ.handle.MergeHandle;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -33,6 +37,136 @@ import java.util.stream.IntStream;
  */
 @Slf4j
 public class ExcelUtils {
+    /**
+     * Fill .
+     *
+     * @param <ExcelData> the type parameter
+     * @param clazz       the clazz
+     * @param template    the template
+     * @param target      the target
+     * @param data        the data
+     * @throws IOException the io exception
+     * @author ErebusST
+     * @since 2023 -05-15 21:49:46
+     */
+    public static <ExcelData> void fill(Class<ExcelData> clazz, String template, String target, ExcelData data) {
+        FileUtils.deleteFile(target);
+        ExcelWriterBuilder builder = EasyExcel.write(target).withTemplate(template);
+        fill(clazz, ListUtils.newArrayList(data), builder);
+    }
+
+    /**
+     * Fill .
+     *
+     * @param <ExcelData> the type parameter
+     * @param clazz       the clazz
+     * @param template    the template
+     * @param target      the target
+     * @param dataSet     the data set
+     * @throws IOException the io exception
+     * @author ErebusST
+     * @since 2023 -05-15 21:49:48
+     */
+    public static <ExcelData> void fill(Class<ExcelData> clazz, String template, String target, List<ExcelData> dataSet) {
+        FileUtils.deleteFile(target);
+        ExcelWriterBuilder builder = EasyExcel.write(target).withTemplate(template);
+        fill(clazz, dataSet, builder);
+    }
+
+    /**
+     * Fill .
+     *
+     * @param <ExcelData> the type parameter
+     * @param clazz       the clazz
+     * @param template    the template
+     * @param fileName    the file name
+     * @param data        the data
+     * @param response    the response
+     * @throws IOException the io exception
+     * @author ErebusST
+     * @since 2023 -05-15 21:50:38
+     */
+    public static <ExcelData> void fill(Class<ExcelData> clazz, String template, String fileName, ExcelData data, HttpServletResponse response) throws IOException {
+        fill(clazz, template, fileName, ListUtils.newArrayList(data), response);
+    }
+
+    /**
+     * Fill .
+     *
+     * @param <ExcelData> the type parameter
+     * @param clazz       the clazz
+     * @param fileName    the file name
+     * @param dataSet     the data set
+     * @param response    the response
+     * @throws IOException the io exception
+     * @author ErebusST
+     * @since 2023 -05-15 21:49:49
+     */
+    public static <ExcelData> void fill(Class<ExcelData> clazz, String template, String fileName, List<ExcelData> dataSet, HttpServletResponse response) throws IOException {
+        fileName = URLEncoder.encode(fileName, "UTF-8");
+        //response.setContentType("application/octet-stream");
+        //response.setContentType("application/vnd.ms-excel");
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setCharacterEncoding("utf8");
+        response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
+        ExcelWriterBuilder builder = EasyExcel.write(response.getOutputStream()).withTemplate(template);
+        fill(clazz, dataSet, builder);
+    }
+
+    /**
+     * Create excel.
+     *
+     * @param <ExcelData> the type parameter
+     * @param clazz       the clazz
+     * @param dataSet     the data set
+     * @param builder     the builder
+     * @throws IOException the io exception
+     * @author ErebusST
+     * @since 2023 -05-15 21:48:08
+     */
+    public static <ExcelData> void fill(Class<ExcelData> clazz, List<ExcelData> dataSet, ExcelWriterBuilder builder) {
+        ExcelWriter writer = builder.autoCloseStream(true)
+                .excelType(ExcelTypeEnum.XLSX)
+                .registerWriteHandler(new MergeHandle()).build();
+        FillConfig fillConfig = FillConfig.builder().forceNewRow(true).build();
+
+        Field[] fields = ReflectionUtils.getFields(clazz);
+        int size = dataSet.size();
+        for (int i = 0; i < size; i++) {
+            ExcelData data = dataSet.get(i);
+            WriteSheet sheet = EasyExcel.writerSheet(i).build();
+            Map<String, Object> map = new HashMap<>(fields.length);
+            for (Field field : fields) {
+                String fieldName = field.getName();
+                Object fieldValue = ReflectionUtils.getFieldValue(data, field.getName());
+                if (ObjectUtils.isNull(fieldValue)) {
+                    continue;
+                }
+                Class<?> fieldClass = fieldValue.getClass();
+                if (fieldClass.equals(List.class) || fieldClass.equals(ArrayList.class)) {
+                    Fill fill = field.getAnnotation(Fill.class);
+                    String prefix;
+                    if (ObjectUtils.isNotNull(fill)) {
+                        prefix = fill.prefix();
+                    } else {
+                        prefix = fieldName;
+                    }
+                    FillWrapper fillWrapper = new FillWrapper(prefix, (List) fieldValue);
+                    writer.fill(fillWrapper, fillConfig, sheet);
+                } else {
+                    map.put(fieldName, fieldValue);
+                }
+            }
+
+            if (map.size() > 0) {
+                writer.fill(map, sheet);
+            }
+        }
+
+        writer.finish();
+
+    }
+
 
     /**
      * Export string.
