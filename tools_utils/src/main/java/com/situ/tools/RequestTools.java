@@ -10,13 +10,20 @@ package com.situ.tools;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.moczul.ok2curl.CurlInterceptor;
+import com.moczul.ok2curl.logger.Loggable;
 import com.situ.entity.bo.HttpHeader;
 import com.situ.enumeration.ContentType;
 import com.situ.enumeration.HttpMethod;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -33,6 +40,7 @@ import java.util.stream.Collectors;
  * @date 2020 /6/26 18:25
  */
 @Slf4j
+@Component
 public class RequestTools {
 
     public static class BasicAuthInterceptor implements Interceptor {
@@ -224,6 +232,15 @@ public class RequestTools {
         return call(HttpMethod.Delete, ContentType.application_json, url, parameter, headers);
     }
 
+    private static String ENV;
+
+    @Autowired
+    private Environment environment = null;
+
+    @PostConstruct
+    public void init() {
+        ENV = environment.getProperty("spring.profiles.active");
+    }
 
     /**
      * Get client ok http client.
@@ -239,6 +256,9 @@ public class RequestTools {
                 .readTimeout(TIME_OUT, TimeUnit.SECONDS)
                 .writeTimeout(TIME_OUT, TimeUnit.SECONDS);
 
+        if (!StringUtils.equalsIgnoreCase(ENV, "prod")) {
+            builder = builder.addNetworkInterceptor(new CurlInterceptor(log::info));
+        }
         for (Interceptor intercept : interceptors) {
             builder.addInterceptor(intercept);
         }

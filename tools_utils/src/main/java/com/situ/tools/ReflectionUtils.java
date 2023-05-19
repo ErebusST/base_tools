@@ -137,6 +137,21 @@ public class ReflectionUtils {
         invokeMethod(obj, setterMethodName, new Class[]{type}, new Object[]{value});
     }
 
+
+    /**
+     * Contain field boolean.
+     *
+     * @param obj       the obj
+     * @param fieldName the field name
+     * @return the boolean
+     * @author ErebusST
+     * @since 2023 -05-18 14:46:41
+     */
+    public static boolean containField(final Object obj, final String fieldName) {
+        Field field = getAccessibleField(obj, fieldName);
+        return ObjectUtils.isNotNull(field);
+    }
+
     /**
      * 直接读取对象属性值, 无视private/protected修饰符, 不经过getter函数.
      *

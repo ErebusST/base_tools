@@ -8,13 +8,14 @@
 
 package com.situ.tools;
 
+import com.situ.entity.bo.DataItem;
 import org.apache.commons.collections.CollectionUtils;
+import org.junit.Test;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
+import java.lang.reflect.Field;
+import java.util.*;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -182,6 +183,90 @@ public class Assert {
     public static void isTrue(boolean expression) {
         isTrue(expression, "[Assertion failed] - this expression must be true");
     }
+
+
+    /**
+     * More then zero .
+     *
+     * @param field  the field
+     * @param number the number
+     * @author ErebusST
+     * @since 2023 -05-18 14:27:16
+     */
+    public static void moreThenZero(String field, Number number) {
+        boolean moreThenZero = number.doubleValue() > 0D;
+        if (!moreThenZero) {
+            String message =
+                    String.format("The parameter named [%s] must more then 0.", field);
+            throw new IllegalArgumentException(message);
+        }
+    }
+
+    public static <Entity> void notEmpty(List<Entity> list, String field) {
+        if (ObjectUtils.isNotEmpty(list)) {
+            boolean error = list.stream()
+                    .map(item -> {
+                        boolean exist = ReflectionUtils.containField(item, field);
+                        if (!exist) {
+                            String message =
+                                    String.format("It must be contain the parameter named [%s] and the parameter must be empty.", field);
+                            throw new IllegalArgumentException(message);
+                        }
+                        return ReflectionUtils.getFieldValue(item, field);
+                    })
+                    .anyMatch(ObjectUtils::isNull);
+            if (error) {
+                String message =
+                        String.format("It must be contain the parameter named [%s] and the parameter must be empty.", field);
+                throw new IllegalArgumentException(message);
+            }
+        }
+    }
+
+    public static <Entity, Type> void isTrue(Entity entity, Function<Entity, Type> getter, Function<Type, Boolean> test, String message) {
+        try {
+            if (ObjectUtils.isNotNull(entity)) {
+                Type value = getter.apply(entity);
+                Boolean success = test.apply(value);
+                if (!success) {
+                    throw new IllegalArgumentException(message);
+                }
+            }
+        } catch (Exception ex) {
+            throw new IllegalArgumentException(message);
+        }
+    }
+
+    /**
+     * Is true .
+     *
+     * @param <Entity> the type parameter
+     * @param <Type>   the type parameter
+     * @param list     the list
+     * @param getter   the getter
+     * @param test     the test
+     * @param message  the message
+     * @author ErebusST
+     * @since 2023 -05-18 14:55:19
+     */
+    public static <Entity, Type> void isTrue(List<Entity> list, Function<Entity, Type> getter, Function<Type, Boolean> test, String message) {
+        try {
+            if (ObjectUtils.isNotEmpty(list)) {
+                boolean success = list.stream()
+                        .map(item -> {
+                            Type value = getter.apply(item);
+                            return value;
+                        })
+                        .allMatch(value -> test.apply(value));
+                if (!success) {
+                    throw new IllegalArgumentException(message);
+                }
+            }
+        } catch (Exception ex) {
+            throw new IllegalArgumentException(message);
+        }
+    }
+
 
     /**
      * Is null .
@@ -434,7 +519,7 @@ public class Assert {
             Object[] var2 = array;
             int var3 = array.length;
 
-            for(int var4 = 0; var4 < var3; ++var4) {
+            for (int var4 = 0; var4 < var3; ++var4) {
                 Object element = var2[var4];
                 if (element == null) {
                     throw new IllegalArgumentException(message);
@@ -457,7 +542,7 @@ public class Assert {
             Object[] var2 = array;
             int var3 = array.length;
 
-            for(int var4 = 0; var4 < var3; ++var4) {
+            for (int var4 = 0; var4 < var3; ++var4) {
                 Object element = var2[var4];
                 if (element == null) {
                     throw new IllegalArgumentException(nullSafeGet(messageSupplier));
@@ -533,7 +618,7 @@ public class Assert {
         if (collection != null) {
             Iterator var2 = collection.iterator();
 
-            while(var2.hasNext()) {
+            while (var2.hasNext()) {
                 Object element = var2.next();
                 if (element == null) {
                     throw new IllegalArgumentException(message);
@@ -555,7 +640,7 @@ public class Assert {
         if (collection != null) {
             Iterator var2 = collection.iterator();
 
-            while(var2.hasNext()) {
+            while (var2.hasNext()) {
                 Object element = var2.next();
                 if (element == null) {
                     throw new IllegalArgumentException(nullSafeGet(messageSupplier));
@@ -589,7 +674,7 @@ public class Assert {
      * @since 2022 -01-07 15:35:58
      */
     public static void isInstanceOf(Class<?> type, @Nullable Object obj, String message) {
-        notNull(type, (String)"Type to check against must not be null");
+        notNull(type, (String) "Type to check against must not be null");
         if (!type.isInstance(obj)) {
             instanceCheckFailed(type, obj, message);
         }
@@ -606,7 +691,7 @@ public class Assert {
      * @since 2022 -01-07 15:35:58
      */
     public static void isInstanceOf(Class<?> type, @Nullable Object obj, Supplier<String> messageSupplier) {
-        notNull(type, (String)"Type to check against must not be null");
+        notNull(type, (String) "Type to check against must not be null");
         if (!type.isInstance(obj)) {
             instanceCheckFailed(type, obj, nullSafeGet(messageSupplier));
         }
@@ -635,7 +720,7 @@ public class Assert {
      * @since 2022 -01-07 15:35:58
      */
     public static void isAssignable(Class<?> superType, @Nullable Class<?> subType, String message) {
-        notNull(superType, (String)"Super type to check against must not be null");
+        notNull(superType, (String) "Super type to check against must not be null");
         if (subType == null || !superType.isAssignableFrom(subType)) {
             assignableCheckFailed(superType, subType, message);
         }
@@ -652,7 +737,7 @@ public class Assert {
      * @since 2022 -01-07 15:35:58
      */
     public static void isAssignable(Class<?> superType, @Nullable Class<?> subType, Supplier<String> messageSupplier) {
-        notNull(superType, (String)"Super type to check against must not be null");
+        notNull(superType, (String) "Super type to check against must not be null");
         if (subType == null || !superType.isAssignableFrom(subType)) {
             assignableCheckFailed(superType, subType, nullSafeGet(messageSupplier));
         }
@@ -720,7 +805,7 @@ public class Assert {
 
     @Nullable
     private static String nullSafeGet(@Nullable Supplier<String> messageSupplier) {
-        return messageSupplier != null ? (String)messageSupplier.get() : null;
+        return messageSupplier != null ? (String) messageSupplier.get() : null;
     }
 
 }
