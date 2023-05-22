@@ -735,7 +735,7 @@ public class DataSwitch {
             JsonElement jObject = parser.parse(valueStr);
             return jObject;
         } catch (Exception e) {
-            log.info("value:");
+            log.info("value:{}", value);
             throw e;
         }
     }
