@@ -517,7 +517,7 @@ public class GisUtils {
             p1.intersection(p2);
             return p1.intersects(p2);
         } catch (Exception ex) {
-            log.error("判断两个多边形是否相交出现异常", ex);
+            log.error("判断两个多边形是否相交出现异常:[" + toJsonArray(polygon1) + "," + toJsonArray(polygon2) + "]", ex);
             try {
 
                 List<Line> polygonLines1 = getPolygonLines(polygon1);
