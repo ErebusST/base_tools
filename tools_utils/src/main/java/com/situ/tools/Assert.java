@@ -202,22 +202,26 @@ public class Assert {
         }
     }
 
-    public static <Entity> void notEmpty(List<Entity> list, String field) {
+    /**
+     * Not empty .
+     *
+     * @param <Entity> the type parameter
+     * @param <T>      the type parameter
+     * @param list     the list
+     * @param getter   the getter
+     * @param message  the message
+     * @author ErebusST
+     * @since 2023 -05-22 16:17:17
+     */
+    public static <Entity, T> void notEmpty(List<Entity> list, Function<Entity, T> getter, String message) {
         if (ObjectUtils.isNotEmpty(list)) {
             boolean error = list.stream()
                     .map(item -> {
-                        boolean exist = ReflectionUtils.containField(item, field);
-                        if (!exist) {
-                            String message =
-                                    String.format("It must be contain the parameter named [%s] and the parameter must be empty.", field);
-                            throw new IllegalArgumentException(message);
-                        }
-                        return ReflectionUtils.getFieldValue(item, field);
+                        T value = getter.apply(item);
+                        return value;
                     })
                     .anyMatch(ObjectUtils::isNull);
             if (error) {
-                String message =
-                        String.format("It must be contain the parameter named [%s] and the parameter must be empty.", field);
                 throw new IllegalArgumentException(message);
             }
         }

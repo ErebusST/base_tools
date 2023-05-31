@@ -85,6 +85,8 @@ public class DataSwitch {
                     resultObject = convertObjectToBigDecimal(value);
                 } else if (type == Short.class) {
                     resultObject = convertObjectToShort(value);
+                } else if (type == Timestamp.class) {
+                    resultObject = DateUtils.getTimestamp(value);
                 } else {
                     resultObject = value;
                 }
