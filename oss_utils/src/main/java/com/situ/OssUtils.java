@@ -14,8 +14,12 @@ import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.common.utils.IOUtils;
 import com.aliyun.oss.model.*;
 import com.situ.config.OssConfig;
-import com.situ.tools.*;
+import com.situ.tools.DateUtils;
+import com.situ.tools.FileUtils;
+import com.situ.tools.ObjectUtils;
+import com.situ.tools.StringUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -188,7 +192,7 @@ public class OssUtils {
         return true;
     }
 
-    private static final Integer MAX_KEYS = 2;
+    private static final Integer MAX_KEYS = 100;
 
 
     /**
@@ -224,6 +228,7 @@ public class OssUtils {
      * @author ErebusST
      * @since 2022 -06-09 17:50:43
      */
+    @Deprecated
     public static List<String> list(OSS client, @Nonnull String bucketName, @Nonnull String folder) {
         try {
             String prefix;
@@ -240,22 +245,110 @@ public class OssUtils {
             do {
                 ListObjectsV2Request listObjectsV2Request = new ListObjectsV2Request(bucketName).withMaxKeys(MAX_KEYS);
                 listObjectsV2Request.setPrefix(prefix);
+                listObjectsV2Request.setDelimiter("/");
                 listObjectsV2Request.setContinuationToken(nextContinuationToken);
                 result = client.listObjectsV2(listObjectsV2Request);
 
-                List<OSSObjectSummary> summaries = result.getObjectSummaries();
-                for (OSSObjectSummary summary : summaries) {
-                    files.add(summary.getKey());
-                }
+                files.addAll(result.getCommonPrefixes());
                 nextContinuationToken = result.getNextContinuationToken();
             } while (result.isTruncated());
-
             return files;
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
+
+    /**
+     * List list.
+     *
+     * @param bucketName the bucket name
+     * @param folder     the folder
+     * @param pageNumber the page number
+     * @param pageSize   the page size
+     * @param ergodic    the ergodic 是否遍历，如果为 true 则直接返回该目录下所有的文件，如果是 false 则只返回该目录下一级的目录
+     * @return the list
+     * @author ErebusST
+     * @since 2023 -06-18 16:01:00
+     */
+    public static List<String> list(@Nonnull String bucketName, @Nonnull String folder,
+                                    @Nonnull Integer pageNumber, @Nonnull Integer pageSize, @Nonnull boolean ergodic) {
+        OSS client = null;
+        try {
+            client = getClient();
+            return list(client, bucketName, folder, pageNumber, pageSize, ergodic);
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            if (ObjectUtils.isNotNull(client)) {
+                client.shutdown();
+            }
+        }
+    }
+
+    /**
+     * List list.
+     *
+     * @param client     the client
+     * @param bucketName the bucket name
+     * @param folder     the folder
+     * @param pageNumber the page number
+     * @param pageSize   the page size
+     * @param ergodic    the ergodic
+     * @return the list
+     * @author ErebusST
+     * @since 2023 -06-18 16:01:03
+     */
+    public static List<String> list(OSS client, @Nonnull String bucketName, @Nonnull String folder,
+                                    @Nonnull Integer pageNumber, @Nonnull Integer pageSize, @Nonnull boolean ergodic) {
+        try {
+            String prefix;
+            if (StringUtils.endsWithIgnoreCase(folder, "/")) {
+                prefix = folder;
+            } else {
+                prefix = folder.concat("/");
+            }
+            ListObjectsV2Result result = null;
+
+            String continuationToken = null;
+            ListObjectsV2Request request;
+            // 分页列举指定前缀的文件。
+            if (pageNumber > 1) {
+                Integer startIndex = (pageNumber - 1) * pageSize + 1;
+                //找出上次最后一个
+                request = new ListObjectsV2Request(bucketName)
+                        .withPrefix(prefix)
+                        .withMaxKeys(startIndex);
+                if (!ergodic) {
+                    request.setDelimiter("/");
+                }
+                ListObjectsV2Result result1 = client.listObjectsV2(request);
+                continuationToken = result1.getNextContinuationToken();
+            } else {
+                //因为第一页会包含自己
+                pageSize = pageSize + 1;
+            }
+
+            request = new ListObjectsV2Request(bucketName)
+                    .withPrefix(prefix)
+                    .withMaxKeys(pageSize);
+
+            if (!ergodic) {
+                request.setDelimiter("/");
+            }
+            request.setContinuationToken(continuationToken);
+            result = client.listObjectsV2(request);
+
+            return result.getCommonPrefixes();
+            //for (OSSObjectSummary summary : summaries) {
+            //    files.add(summary.getKey());
+            //}
+            //return files;
         } catch (Exception ex) {
             throw ex;
         }
 
     }
+
 
 
     /**

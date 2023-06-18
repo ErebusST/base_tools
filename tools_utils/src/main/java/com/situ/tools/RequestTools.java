@@ -239,7 +239,9 @@ public class RequestTools {
 
     @PostConstruct
     public void init() {
-        ENV = environment.getProperty("spring.profiles.active");
+        if(ObjectUtils.isNotNull(environment)){
+            ENV = environment.getProperty("spring.profiles.active");
+        }
     }
 
     /**

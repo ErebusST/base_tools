@@ -25,7 +25,7 @@ import java.util.List;
  * <p>
  * 只在Controller层中调用，用于记录日志，其他层一律向上抛错误
  */
-@Slf4j(topic = "DANCE_APP")
+@Slf4j
 public class MyException extends Exception {
 
     private boolean isDebug = false;
