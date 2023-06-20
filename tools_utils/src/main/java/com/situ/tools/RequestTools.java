@@ -239,7 +239,7 @@ public class RequestTools {
 
     @PostConstruct
     public void init() {
-        if(ObjectUtils.isNotNull(environment)){
+        if (ObjectUtils.isNotNull(environment)) {
             ENV = environment.getProperty("spring.profiles.active");
         }
     }
@@ -256,7 +256,8 @@ public class RequestTools {
         OkHttpClient.Builder builder = new OkHttpClient().newBuilder()
                 .connectTimeout(TIME_OUT, TimeUnit.SECONDS)
                 .readTimeout(TIME_OUT, TimeUnit.SECONDS)
-                .writeTimeout(TIME_OUT, TimeUnit.SECONDS);
+                .writeTimeout(TIME_OUT, TimeUnit.SECONDS)
+                .retryOnConnectionFailure(true);
 
         if (!StringUtils.equalsIgnoreCase(ENV, "prod")) {
             builder = builder.addNetworkInterceptor(new CurlInterceptor(log::info));
