@@ -8,10 +8,7 @@
 
 package com.situ.tools;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
+import com.google.gson.*;
 import com.situ.entity.bo.DataItem;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -318,6 +315,29 @@ public class JsonUtils {
             }
         } else {
             return defaultValue;
+        }
+    }
+
+    /**
+     * Try get object.
+     *
+     * @param array the array
+     * @param index the index
+     * @return the object
+     * @author ErebusST
+     * @since 2023 -06-29 10:59:12
+     */
+    public static JsonElement tryGet(JsonArray array, Integer index) {
+        int size = array.size();
+        if (index >= size) {
+            return null;
+        } else {
+            JsonElement element = array.get(index);
+            if (element.isJsonNull()) {
+                return null;
+            } else {
+                return element;
+            }
         }
     }
 }

@@ -560,7 +560,7 @@ public class DataSwitch {
 
     //region Json与实体转换
 
-    private static Gson gson;
+    private static final Map<String, Gson> GSON_INSTANCE = new HashMap<>();
 
     /**
      * Get gson instance gson.
@@ -573,30 +573,63 @@ public class DataSwitch {
         return getGsonInstance(true);
     }
 
-    private static Gson getGsonInstance(boolean isSerializeNulls) {
-        return getGsonInstance(isSerializeNulls, null);
+    /**
+     * Get gson instance gson.
+     *
+     * @param serializeNulls the serialize nulls
+     * @param prettyPrinting the pretty printing
+     * @return the gson instance
+     * @author ErebusST
+     * @since 2023 -07-10 15:33:28
+     */
+    public static Gson getGsonInstance(boolean serializeNulls, boolean prettyPrinting) {
+        return getGsonInstance(serializeNulls, prettyPrinting, null);
+    }
+
+    /**
+     * Get gson instance gson.
+     *
+     * @param isSerializeNulls the is serialize nulls
+     * @return the gson instance
+     * @author ErebusST
+     * @since 2023 -07-10 15:33:28
+     */
+    public static Gson getGsonInstance(boolean isSerializeNulls) {
+        return getGsonInstance(isSerializeNulls, false, null);
     }
 
     private static Gson getGsonInstance(boolean isSerializeNulls, DateFormatEnum dateFormatEnum) {
-        if (ObjectUtils.isNull(gson)) {
-            dateFormatEnum = ObjectUtils.isNull(dateFormatEnum) ? DateFormatEnum.YYYY_MM_DD_HH_MM_SS : dateFormatEnum;
-            GsonBuilder gsonBuilder = new GsonBuilder()
-                    .setPrettyPrinting()
-                    .setLongSerializationPolicy(LongSerializationPolicy.STRING)
-                    .registerTypeAdapter(Long.class, new LongConvertAdapter())
-                    .registerTypeAdapter(Integer.class, new IntegerConvertAdapter())
-                    .registerTypeAdapter(Double.class, new DoubleConvertAdapter())
-                    .registerTypeAdapter(BigDecimal.class, new BigDecimalConvertAdapter())
-                    .registerTypeAdapter(Timestamp.class, new DateTimeConvertAdapter())
-                    .setDateFormat(dateFormatEnum.getValue());
-            gsonBuilder.registerTypeAdapter(Map.class, new CustomObjectTypeAdapter());
-            if (isSerializeNulls) {
+        return getGsonInstance(isSerializeNulls, false, dateFormatEnum);
+    }
 
-                gsonBuilder.serializeNulls();
-            }
-            gson = gsonBuilder.create();
+    private static Gson getGsonInstance(Boolean isSerializeNulls, Boolean prettyPrinting, DateFormatEnum dateFormatEnum) {
+        isSerializeNulls = ObjectUtils.isNull(isSerializeNulls) ? false : isSerializeNulls;
+        prettyPrinting = ObjectUtils.isNull(prettyPrinting) ? false : prettyPrinting;
+        dateFormatEnum = ObjectUtils.isNull(dateFormatEnum) ? DateFormatEnum.YYYY_MM_DD_HH_MM_SS : dateFormatEnum;
+
+        String key = StringUtils.concat(isSerializeNulls, prettyPrinting, dateFormatEnum);
+        if (GSON_INSTANCE.containsKey(key)) {
+            return GSON_INSTANCE.get(key);
         }
 
+        GsonBuilder gsonBuilder = new GsonBuilder()
+                .setLongSerializationPolicy(LongSerializationPolicy.STRING)
+                .registerTypeAdapter(Long.class, new LongConvertAdapter())
+                .registerTypeAdapter(Integer.class, new IntegerConvertAdapter())
+                .registerTypeAdapter(Double.class, new DoubleConvertAdapter())
+                .registerTypeAdapter(BigDecimal.class, new BigDecimalConvertAdapter())
+                .registerTypeAdapter(Timestamp.class, new DateTimeConvertAdapter())
+                .setDateFormat(dateFormatEnum.getValue());
+        gsonBuilder.registerTypeAdapter(Map.class, new CustomObjectTypeAdapter());
+        if (isSerializeNulls) {
+            gsonBuilder.serializeNulls();
+        }
+        if (prettyPrinting) {
+            gsonBuilder.setPrettyPrinting();
+        }
+
+        Gson gson = gsonBuilder.create();
+        GSON_INSTANCE.put(key, gson);
         return gson;
     }
 
@@ -1092,6 +1125,12 @@ public class DataSwitch {
 
     }
 
+    /**
+     * Test .
+     *
+     * @author ErebusST
+     * @since 2023 -07-10 15:33:31
+     */
     @Test
     public void test() {
         String sign = "F78A94DAF670E9D4F0EBDF2D643D2A7Fsams-item-name-similarity{soruce}1673328064595json{version}{\"handCheck\":\"深圳包装米Top3\",\"keywordProductList\":[{\"finalMatchStatus\":\"精准\",\"keywordProductId\":\"4075067\",\"machineStatus\":\"确认\",\"mappingMatchStatus\":\"精准\",\"matchingSimilarity\":\"0.75\",\"toPlatformProductId\":\"587646585267\",\"toProductName\":\"【2022新米】裕道府 香喷喷 五常大米 5kg\",\"toProductSpecs\":\"5kg\",\"walmartMachineStatus\":null,\"walmartMatchStatus\":null,\"walmartSimilarity\":null}],\"platformProductId\":\"0697009376736\",\"productCityName\":\"深圳\",\"searchBatch\":\"2023-01-04\",\"sizeDesc\":\"5kg\",\"skuName\":\"十月稻田 五常大米 5kg\",\"toPlatformId\":\"3\",\"toPlatformName\":\"盒马\",\"toStoreId\":\"65\",\"toStoreName\":\"盒马鲜生(景田店)\",\"walmartProductId\":\"6882e954e4a71af39128d2945c476d25\"}F78A94DAF670E9D4F0EBDF2D643D2A7F";

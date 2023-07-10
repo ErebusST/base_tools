@@ -70,6 +70,8 @@ public class DataItem implements Serializable {
     private String text;
     private BigDecimal count;
 
+    private String color = "";
+
     private String other;
 
     public void setCount(BigDecimal count) {

@@ -105,6 +105,18 @@ public class ObjectUtils extends org.apache.commons.lang3.ObjectUtils {
     }
 
     /**
+     * All null boolean.
+     *
+     * @param objects the objects
+     * @return the boolean
+     * @author ErebusST
+     * @since 2023 -06-28 09:00:42
+     */
+    public static boolean allNull(Object... objects) {
+        return Arrays.stream(objects).allMatch(ObjectUtils::isNull);
+    }
+
+    /**
      * Equals boolean.
      *
      * @param obj1 the obj 1
