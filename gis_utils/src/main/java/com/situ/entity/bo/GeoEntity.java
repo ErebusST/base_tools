@@ -9,6 +9,7 @@
 package com.situ.entity.bo;
 
 import ch.hsr.geohash.GeoHash;
+import com.google.gson.JsonObject;
 import com.situ.tools.GisUtils;
 import com.situ.tools.NumberUtils;
 import com.situ.tools.ObjectUtils;
@@ -18,6 +19,7 @@ import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Polygon;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -45,9 +47,20 @@ public class GeoEntity {
             BigDecimal percent = NumberUtils.divide(area1, area2);
             entity.setContains(contains);
             entity.setPercent(percent);
+
+            Point core = GisUtils.getCoreOfPolygon(intersection);
+            entity.setCore(core);
+
         } catch (Exception ex) {
-            throw ex;
+            entity.setContains(false);
+            entity.setPercent(BigDecimal.ZERO);
+            Point core = GisUtils.getCoreOfPolygon(entity.getBorder());
+            entity.setCore(core);
         }
+        entity.setBorder(GisUtils.toRectangleByGeohash(geohash));
+
+
+
         return entity;
     }
 
@@ -67,6 +80,11 @@ public class GeoEntity {
     private BigDecimal percent;
     private Boolean contains;
 
+    //相交区域的重心
+    private Point core;
+
+    private List<Point> border;
+
 
     @Override
     public boolean equals(Object o) {
@@ -79,5 +97,29 @@ public class GeoEntity {
     @Override
     public int hashCode() {
         return Objects.hash(geohash.toBase32());
+    }
+
+    @Override
+    public String toString() {
+        return geohash.toBase32();
+    }
+
+    /**
+     * To json json object.
+     *
+     * @return the json object
+     * @author ErebusST
+     * @since 2023 -07-12 11:24:06
+     */
+    public JsonObject toJson() {
+        JsonObject object = new JsonObject();
+        object.addProperty("geohash", geohash.toBase32());
+        object.addProperty("row", rowIndex);
+        object.addProperty("col", columnIndex);
+        object.addProperty("percent", percent);
+        object.addProperty("contains", contains);
+        object.add("core", core.toArray());
+        object.add("border", GisUtils.toJsonArray(border));
+        return object;
     }
 }

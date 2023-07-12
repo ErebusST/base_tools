@@ -13,6 +13,7 @@ import ch.hsr.geohash.GeoHash;
 import ch.hsr.geohash.WGS84Point;
 import com.google.gson.JsonArray;
 import com.situ.config.GisThreadPoolConfig;
+import com.situ.entity.bo.GeoEntity;
 import com.situ.entity.bo.Point;
 import com.situ.enumeration.HexagonType;
 import com.situ.enumeration.ShapeType;
@@ -1145,6 +1146,17 @@ public class GisUtils {
         }
     }
 
+    /**
+     * Get core of polygon point.
+     *
+     * @param polygon the polygon
+     * @return the core of polygon
+     * @author ErebusST
+     * @since 2023 -07-12 11:50:59
+     */
+    public static Point getCoreOfPolygon(Geometry polygon) {
+        return getCoreOfPolygon(toListPoint(polygon));
+    }
 
     /**
      * Gets core of polygon.
@@ -1258,18 +1270,6 @@ public class GisUtils {
 
     /**
      * Calc area big decimal.
-     *
-     * @param polygon the polygon
-     * @return the big decimal
-     * @author ErebusST
-     * @since 2023 -07-12 10:56:36
-     */
-    public static BigDecimal calcArea(Geometry polygon) {
-        return calcArea(toListPoint(polygon));
-    }
-
-    /**
-     * Calc area big decimal.
      * <p>
      * 计算多边形面积
      *
@@ -1283,6 +1283,9 @@ public class GisUtils {
         return BigDecimal.valueOf(area);
     }
 
+    public static BigDecimal calcArea(Geometry polygon) {
+        return calcArea(toListPoint(polygon));
+    }
 
     /**
      * Calc polygon area double.
@@ -2042,6 +2045,21 @@ public class GisUtils {
     }
 
     /**
+     * Split polygon to geo entity list.
+     *
+     * @param polygon the polygon
+     * @return the list
+     * @author ErebusST
+     * @since 2023 -07-12 10:25:21
+     */
+    public static List<GeoEntity> splitPolygonToGeoEntity(List<Point> polygon) {
+        List<GeoEntity> list = new ArrayList<>();
+        splitPolygonToGeoEntity(polygon, list::add);
+        return list.stream().distinct().collect(Collectors.toList());
+    }
+
+
+    /**
      * Split polygon to geohash .
      *
      * @param polygon  the polygon
@@ -2051,6 +2069,10 @@ public class GisUtils {
      */
     public static void splitPolygonToGeohash(List<Point> polygon, Function<String, Boolean> callback) {
         splitPolygonToGeohash(polygon, callback, 6);
+    }
+
+    public static void splitPolygonToGeoEntity(List<Point> polygon, Function<GeoEntity, Boolean> callback) {
+        splitPolygonToGeoEntity(polygon, callback, 6);
     }
 
     /**
@@ -2063,6 +2085,19 @@ public class GisUtils {
      */
     public static void splitPolygonToGeohash(List<Point> polygon, BiFunction<String, Integer[], Boolean> callback, Integer length) {
         splitPolygonToGeohash(polygon, callback, length, false);
+    }
+
+    /**
+     * Split polygon to geo entity .
+     *
+     * @param polygon  the polygon
+     * @param callback the callback
+     * @param length   the length
+     * @author ErebusST
+     * @since 2023 -07-12 10:22:56
+     */
+    public static void splitPolygonToGeoEntity(List<Point> polygon, BiFunction<String, Integer[], Boolean> callback, Integer length) {
+        splitPolygonToGeoEntity(polygon, (geohash, location) -> callback.apply(geohash.getGeohash().toBase32(), location), length, false);
     }
 
     /**
@@ -2079,6 +2114,19 @@ public class GisUtils {
     }
 
     /**
+     * Split polygon to geo entity .
+     *
+     * @param polygon  the polygon
+     * @param callback the callback
+     * @param length   the length
+     * @author ErebusST
+     * @since 2023 -07-12 10:21:50
+     */
+    public static void splitPolygonToGeoEntity(List<Point> polygon, Function<GeoEntity, Boolean> callback, int length) {
+        splitPolygonToGeoEntity(polygon, callback, length, false);
+    }
+
+    /**
      * Split polygon to geohash .
      *
      * @param polygon        the polygon
@@ -2089,6 +2137,11 @@ public class GisUtils {
      */
     public static void splitPolygonToGeohash(List<Point> polygon, Function<String, Boolean> callback, boolean multithreading) {
         splitPolygonToGeohash(polygon, callback, 6, multithreading);
+    }
+
+
+    public static void splitPolygonToGeoEntity(List<Point> polygon, Function<GeoEntity, Boolean> callback, boolean multithreading) {
+        splitPolygonToGeoEntity(polygon, callback, 6, multithreading);
     }
 
     /**
@@ -2102,7 +2155,21 @@ public class GisUtils {
      * @since 2022 -09-27 13:24:26
      */
     public static void splitPolygonToGeohash(List<Point> polygon, Function<String, Boolean> callback, int length, boolean multithreading) {
-        splitPolygonToGeohash(polygon, (hash, location) -> callback.apply(hash), length, multithreading);
+        splitPolygonToGeoEntity(polygon, (hash, location) -> callback.apply(hash.getGeohash().toBase32()), length, multithreading);
+    }
+
+    /**
+     * Split polygon to geo entity .
+     *
+     * @param polygon        the polygon
+     * @param callback       the callback
+     * @param length         the length
+     * @param multithreading the multithreading
+     * @author ErebusST
+     * @since 2023 -07-12 10:20:29
+     */
+    public static void splitPolygonToGeoEntity(List<Point> polygon, Function<GeoEntity, Boolean> callback, int length, boolean multithreading) {
+        splitPolygonToGeoEntity(polygon, (hash, location) -> callback.apply(hash), length, multithreading);
     }
 
     /**
@@ -2110,21 +2177,38 @@ public class GisUtils {
      *
      * @param polygon        the polygon
      * @param callback       the callback
+     * @param length         the length
      * @param multithreading the multithreading
      * @author ErebusST
      * @since 2022 -09-26 14:41:28
      */
     public static void splitPolygonToGeohash(List<Point> polygon, BiFunction<String, Integer[], Boolean> callback, int length, boolean multithreading) {
-        long start = System.currentTimeMillis();
-
-        if (multithreading) {
-            splitPolygonToGeohashMultithreading(polygon, callback, length);
-        } else {
-            splitPolygonToGeohashSingleThreading(polygon, callback, length);
-        }
-        log.info("spend:{}", DateUtils.getSpendTime(start, System.currentTimeMillis()));
+        splitPolygonToGeoEntity(polygon, (geohash, location) -> callback.apply(geohash.getGeohash().toBase32(), location), length, multithreading);
     }
 
+
+    /**
+     * Split polygon to geo entity .
+     *
+     * @param polygon        the polygon
+     * @param callback       the callback
+     * @param length         the length
+     * @param multithreading the multithreading
+     * @author ErebusST
+     * @since 2023 -07-12 10:18:11
+     */
+    public static void splitPolygonToGeoEntity(List<Point> polygon, BiFunction<GeoEntity, Integer[], Boolean> callback, int length, boolean multithreading) {
+        long start = System.currentTimeMillis();
+
+        splitPolygonToGeohashSingleThreading(polygon, callback, length);
+        //todo : 2023/7/12 暂时不使用多线程的拆分方法
+        //if (multithreading) {
+        //    splitPolygonToGeohashMultithreading(polygon, callback, length);
+        //} else {
+        //    splitPolygonToGeohashSingleThreading(polygon, callback, length);
+        //}
+        log.info("spend:{}", DateUtils.getSpendTime(start, System.currentTimeMillis()));
+    }
 
     /**
      * Split polygon to geohash single threading .
@@ -2134,7 +2218,7 @@ public class GisUtils {
      * @author ErebusST
      * @since 2022 -09-26 14:40:15
      */
-    private static void splitPolygonToGeohashSingleThreading(List<Point> polygon, BiFunction<String, Integer[], Boolean> callback, Integer length) {
+    private static void splitPolygonToGeohashSingleThreading(List<Point> polygon, BiFunction<GeoEntity, Integer[], Boolean> callback, Integer length) {
 
         List<Point> range = getPolygonSquareRange(polygon);
         Point northEast = range.get(0);
@@ -2179,7 +2263,8 @@ public class GisUtils {
             temp = toPolygon(toRectangleByGeohash(geoHash));
 
             if (splitTarget.intersects(temp)) {
-                callback.apply(geoHash.toBase32(), ArrayUtils.newArray(rowIndex, colIndex));
+                GeoEntity geoEntity = GeoEntity.getInstance(geoHash,rowIndex, colIndex, temp, splitTarget);
+                callback.apply(geoEntity, ArrayUtils.newArray(rowIndex, colIndex));
                 //log.info("to south:{}/{} save", rowIndex, toSouthCount);
             } else {
                 //log.info("to south:{}/{} skip", rowIndex, toSouthCount);
@@ -2196,7 +2281,8 @@ public class GisUtils {
                 }
                 temp = toPolygon(toRectangleByGeohash(western));
                 if (splitTarget.intersects(temp)) {
-                    callback.apply(western.toBase32(), ArrayUtils.newArray(rowIndex, colIndex));
+                    GeoEntity geoEntity = GeoEntity.getInstance(western,rowIndex, colIndex, temp, splitTarget);
+                    callback.apply(geoEntity, ArrayUtils.newArray(rowIndex, colIndex));
                     //log.info("to west:{}/{} save", colIndex, toWestCount);
                 } else {
                     //log.info("to west:{}/{} skip", colIndex, toWestCount);
@@ -2217,7 +2303,7 @@ public class GisUtils {
      * @author ErebusST
      * @since 2022 -09-26 14:34:20
      */
-    private static void splitPolygonToGeohashMultithreading(List<Point> polygon, Function<String, Boolean> callback, int length) {
+    private static void splitPolygonToGeohashMultithreading(List<Point> polygon, Function<GeoEntity, Boolean> callback, int length) {
         splitPolygonToGeohashMultithreading(polygon, (hash, location) -> callback.apply(hash), length);
     }
 
@@ -2229,7 +2315,7 @@ public class GisUtils {
      * @author ErebusST
      * @since 2022 -09-24 13:40:38
      */
-    private static void splitPolygonToGeohashMultithreading(List<Point> polygon, BiFunction<String, Integer[], Boolean> callback, int length) {
+    private static void splitPolygonToGeohashMultithreading(List<Point> polygon, BiFunction<GeoEntity, Integer[], Boolean> callback, int length) {
 
         List<Point> range = getPolygonSquareRange(polygon);
         Point northEast = range.get(0);
@@ -2267,8 +2353,10 @@ public class GisUtils {
             }
 
             temp = toPolygon(toRectangleByGeohash(geoHash));
+
             if (splitTarget.intersects(temp)) {
-                callback.apply(geoHash.toBase32(), ArrayUtils.newArray(southIndex, 0));
+                GeoEntity geoEntity = GeoEntity.getInstance(geoHash, southIndex, 0, temp, splitTarget);
+                callback.apply(geoEntity, ArrayUtils.newArray(southIndex, 0));
                 //log.info("to south:{}-0/{} save", southIndex, toSouthCount);
             } else {
                 //log.info("to south:{}-0/{} skip", southIndex, toSouthCount);
@@ -2293,7 +2381,7 @@ public class GisUtils {
     }
 
 
-    private static void splitToWest(GeoHash geoHash, int southIndex, int toSouthCount, int toWestCount, double lngMin, Polygon polygon, BiFunction<String, Integer[], Boolean> callback) {
+    private static void splitToWest(GeoHash geoHash, int southIndex, int toSouthCount, int toWestCount, double lngMin, Polygon polygon, BiFunction<GeoEntity, Integer[], Boolean> callback) {
         SplitToWestThread splitToWest = new SplitToWestThread();
         splitToWest.setCurrent(geoHash);
         splitToWest.setToWestCount(toWestCount);
@@ -2319,6 +2407,17 @@ public class GisUtils {
         }
     }
 
+    /**
+     * To rectangle by geohash list.
+     *
+     * @param geoEntity the geo entity
+     * @return the list
+     * @author ErebusST
+     * @since 2023 -07-12 10:47:28
+     */
+    public static List<Point> toRectangleByGeohash(GeoEntity geoEntity){
+        return toRectangleByGeohash(geoEntity.getGeohash());
+    }
 
     /**
      * To rectangle by geohash list.
@@ -2402,7 +2501,7 @@ class SplitToWestThread implements Runnable {
      * The Callback.
      */
     @Setter
-    BiFunction<String, Integer[], Boolean> callback;
+    BiFunction<GeoEntity, Integer[], Boolean> callback;
 
     @Override
     public void run() {
@@ -2417,7 +2516,8 @@ class SplitToWestThread implements Runnable {
             temp = GisUtils.toPolygon(GisUtils.toRectangleByGeohash(western.toBase32()));
             int westIndex = toWestIndex.incrementAndGet();
             if (polygon.intersects(temp)) {
-                callback.apply(western.toBase32(), ArrayUtils.newArray(row, westIndex));
+                GeoEntity geoEntity = GeoEntity.getInstance(western, row, westIndex, temp, polygon);
+                callback.apply(geoEntity, ArrayUtils.newArray(row, westIndex));
                 //log.info("to west:{}/{}-{}/{} save", row, rowCount, westIndex, toWestCount);
             } else {
                 //log.info("to west:{}/{}-{}/{} skip", row, rowCount, westIndex, toWestCount);
