@@ -1258,6 +1258,18 @@ public class GisUtils {
 
     /**
      * Calc area big decimal.
+     *
+     * @param polygon the polygon
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2023 -07-12 10:56:36
+     */
+    public static BigDecimal calcArea(Geometry polygon) {
+        return calcArea(toListPoint(polygon));
+    }
+
+    /**
+     * Calc area big decimal.
      * <p>
      * 计算多边形面积
      *
