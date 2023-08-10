@@ -36,7 +36,7 @@ public class GeoEntity {
         entity.setGeohash(geohash);
         entity.setRowIndex(row);
         entity.setColumnIndex(col);
-
+        entity.setBorder(GisUtils.toRectangleByGeohash(geohash));
         try {
             boolean contains = parent.contains(current);
             Geometry intersection = parent.intersection(current);
@@ -57,9 +57,6 @@ public class GeoEntity {
             Point core = GisUtils.getCoreOfPolygon(entity.getBorder());
             entity.setCore(core);
         }
-        entity.setBorder(GisUtils.toRectangleByGeohash(geohash));
-
-
 
         return entity;
     }

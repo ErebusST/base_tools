@@ -186,6 +186,20 @@ public class Assert {
 
 
     /**
+     * Match .
+     *
+     * @param value   the value
+     * @param regex   the regex
+     * @param message the message
+     * @author ErebusST
+     * @since 2023 -08-10 10:48:20
+     */
+    public static void match(String value, String regex, String message) {
+        boolean match = StringUtils.match(value, regex);
+        isTrue(match, message);
+    }
+
+    /**
      * More then zero .
      *
      * @param field  the field
@@ -227,6 +241,18 @@ public class Assert {
         }
     }
 
+    /**
+     * Is true .
+     *
+     * @param <Entity> the type parameter
+     * @param <Type>   the type parameter
+     * @param entity   the entity
+     * @param getter   the getter
+     * @param test     the test
+     * @param message  the message
+     * @author ErebusST
+     * @since 2023 -08-10 10:48:20
+     */
     public static <Entity, Type> void isTrue(Entity entity, Function<Entity, Type> getter, Function<Type, Boolean> test, String message) {
         try {
             if (ObjectUtils.isNotNull(entity)) {

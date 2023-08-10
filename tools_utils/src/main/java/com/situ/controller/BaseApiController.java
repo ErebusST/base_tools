@@ -120,7 +120,9 @@ public class BaseApiController {
      * @since 2022 -01-07 15:36:09
      */
     public JsonObject getSuccessJson() {
-        return getResultJson(SUCCESS_STR);
+        JsonObject result = getResultJson(SUCCESS_STR);
+        result.addProperty("status", 200);
+        return result;
     }
 
     /**
@@ -132,7 +134,9 @@ public class BaseApiController {
      * @since 2022 -01-07 15:36:09
      */
     public JsonObject getSuccessJson(String message) {
-        return this.getResultJson(SUCCESS_STR, message);
+        JsonObject result = this.getResultJson(SUCCESS_STR, message);
+        result.addProperty("status", 200);
+        return result;
     }
 
 
@@ -145,7 +149,9 @@ public class BaseApiController {
      * @since 2022 -01-07 15:36:09
      */
     public JsonObject getSuccessJson(JsonElement jsonElement) {
-        return this.getResultJson(SUCCESS_STR, jsonElement);
+        JsonObject result = this.getResultJson(SUCCESS_STR, jsonElement);
+        result.addProperty("status", 200);
+        return result;
     }
 
     /**
@@ -157,7 +163,9 @@ public class BaseApiController {
      * @since 2022 -01-07 15:36:09
      */
     public JsonObject getFailedJson(JsonElement jsonElement) {
-        return this.getResultJson(FAILED_STR, jsonElement);
+        JsonObject result = this.getResultJson(FAILED_STR, jsonElement);
+        result.addProperty("status", 400);
+        return result;
     }
 
     /**
@@ -213,7 +221,9 @@ public class BaseApiController {
      * @since 2022 -01-07 15:36:09
      */
     public JsonObject getExistJson() {
-        return getResultJson("exist");
+        JsonObject result = getResultJson("exist");
+        result.addProperty("status", 200);
+        return result;
     }
 
     /**
@@ -225,11 +235,12 @@ public class BaseApiController {
      * @since 2022 -01-07 15:36:09
      */
     public JsonObject getExistJson(String field) {
-        JsonObject jsonObject = getExistJson();
-        jsonObject.addProperty("field", field);
+        JsonObject result = getExistJson();
+        result.addProperty("field", field);
         String message = String.format("The field named [%s] value is exist.", field);
-        jsonObject.addProperty(MESSAGE_KEY, message);
-        return jsonObject;
+        result.addProperty(MESSAGE_KEY, message);
+        result.addProperty("status", 400);
+        return result;
     }
 
 
@@ -252,7 +263,9 @@ public class BaseApiController {
      * @since 2022 -01-07 15:36:09
      */
     public JsonObject getFailedJson() {
-        return getResultJson(FAILED_STR);
+        JsonObject result = getResultJson(FAILED_STR);
+        result.addProperty("status", 400);
+        return result;
     }
 
     /**
