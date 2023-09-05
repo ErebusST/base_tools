@@ -66,6 +66,21 @@ public class RedisHelper {
         return instance;
     }
 
+    /**
+     * Get jedis pool jedis pool.
+     *
+     * @return the jedis pool
+     * @author ErebusST
+     * @since 2023 -08-23 14:31:09
+     */
+    public synchronized static JedisPool getJedisPool(){
+        if(jedisPool == null){
+            RedisHelper instance1 = getInstance();
+            instance1.initPool();
+        }
+        return jedisPool;
+    }
+
 
     private static RedisConfig redisConfig;
 

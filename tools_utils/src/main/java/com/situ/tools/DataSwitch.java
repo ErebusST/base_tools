@@ -685,6 +685,12 @@ public class DataSwitch {
      */
     public static JsonObject convertObjectToJsonObject(Object obj) {
         try {
+            if (ObjectUtils.isNull(obj)) {
+                return null;
+            }
+            if (obj.getClass().equals(String.class)) {
+                return DataSwitch.convertStringToJsonObject(obj);
+            }
             JsonElement jsonElement = convertObjectToJsonElement(obj);
             return jsonElement == null ? null : jsonElement.getAsJsonObject();
         } catch (Exception e) {
