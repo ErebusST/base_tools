@@ -8,13 +8,33 @@
 
 package com.situ.tools;
 
+import org.apache.commons.collections4.SetUtils;
+
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.BiFunction;
 
 /**
  * @author 司徒彬
  * @date 2022/2/27 13:08
  */
 public class MapUtils {
+
+    public static <Key, Value> Map<Key, Value> merge(Map<Key, Value> map1, Map<Key, Value> map2, BiFunction<Value, Value, Value> function) {
+        Map<Key, Value> map = new HashMap<>();
+        Set<Key> keys1 = map1.keySet();
+        Set<Key> keys2 = map2.keySet();
+        SetUtils.SetView<Key> keys = SetUtils.union(keys1, keys2);
+        for (Key key : keys) {
+            Value value1 = tryGet(map1, key);
+            Value value2 = tryGet(map2, key);
+            Value result = function.apply(value1, value2);
+            map.put(key, result);
+        }
+        return map;
+    }
+
     /**
      * Try get value.
      *
@@ -73,7 +93,7 @@ public class MapUtils {
      * @since 2022 -04-05 22:54:51
      */
     public static <Key, Value> Value tryGet(Map<Key, Value> map, Integer index) {
-        return tryGet(map,index,null);
+        return tryGet(map, index, null);
     }
 
     /**
