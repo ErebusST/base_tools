@@ -8,7 +8,6 @@
 
 package com.situ.entity.bo;
 
-import ch.hsr.geohash.GeoHash;
 import com.google.gson.JsonObject;
 import com.situ.tools.GisUtils;
 import com.situ.tools.NumberUtils;
@@ -18,6 +17,7 @@ import lombok.Setter;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.Polygon;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
@@ -28,10 +28,10 @@ import java.util.Objects;
  */
 @Getter
 @Setter
-public class GeoEntity {
+public class GeoEntity implements Serializable {
 
 
-    public static GeoEntity getInstance(GeoHash geohash, Integer row, Integer col, Polygon current, Polygon parent) {
+    public static GeoEntity getInstance(String geohash, Integer row, Integer col, Polygon current, Polygon parent) {
         GeoEntity entity = new GeoEntity();
         entity.setGeohash(geohash);
         entity.setRowIndex(row);
@@ -61,7 +61,7 @@ public class GeoEntity {
         return entity;
     }
 
-    public static GeoEntity getInstance(GeoHash geohash, Integer row, Integer col, Boolean contains, BigDecimal percent) {
+    public static GeoEntity getInstance(String geohash, Integer row, Integer col, Boolean contains, BigDecimal percent) {
         GeoEntity entity = new GeoEntity();
         entity.setGeohash(geohash);
         entity.setRowIndex(row);
@@ -71,7 +71,7 @@ public class GeoEntity {
         return entity;
     }
 
-    private GeoHash geohash;
+    private String geohash;
     private Integer rowIndex;
     private Integer columnIndex;
     private BigDecimal percent;
@@ -88,17 +88,17 @@ public class GeoEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         GeoEntity entity = (GeoEntity) o;
-        return ObjectUtils.equals(this.geohash.toBase32(), entity.getGeohash().toBase32());
+        return ObjectUtils.equals(this.geohash, entity.getGeohash());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(geohash.toBase32());
+        return Objects.hash(geohash);
     }
 
     @Override
     public String toString() {
-        return geohash.toBase32();
+        return geohash;
     }
 
     /**
@@ -110,7 +110,7 @@ public class GeoEntity {
      */
     public JsonObject toJson() {
         JsonObject object = new JsonObject();
-        object.addProperty("geohash", geohash.toBase32());
+        object.addProperty("geohash", geohash);
         object.addProperty("row", rowIndex);
         object.addProperty("col", columnIndex);
         object.addProperty("percent", percent);
