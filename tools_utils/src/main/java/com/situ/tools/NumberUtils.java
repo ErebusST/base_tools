@@ -303,7 +303,23 @@ public class NumberUtils {
     //    return add(list.stream().map(getter));
     //}
     public static <T, E extends Number> BigDecimal total(List<T> list, Function<T, E> getter) {
-        Stream<BigDecimal> stream = list.stream().map(item -> getter.apply(item)).map(DataSwitch::convertObjectToBigDecimal);
+        return total(list.stream(), getter);
+    }
+
+
+    /**
+     * Total big decimal.
+     *
+     * @param <T>    the type parameter
+     * @param <E>    the type parameter
+     * @param source the source
+     * @param getter the getter
+     * @return the big decimal
+     * @author ErebusST
+     * @since 2023 -09-22 15:30:15
+     */
+    public static <T, E extends Number> BigDecimal total(Stream<T> source, Function<T, E> getter) {
+        Stream<BigDecimal> stream = source.map(item -> getter.apply(item)).map(DataSwitch::convertObjectToBigDecimal);
         return add(stream);
     }
 

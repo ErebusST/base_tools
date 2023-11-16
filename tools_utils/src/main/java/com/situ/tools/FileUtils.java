@@ -792,6 +792,38 @@ public class FileUtils {
         }
     }
 
+
+    /**
+     * Download .
+     *
+     * @param inputStream the input stream
+     * @param savePath    the save path
+     * @throws IOException the io exception
+     * @author ErebusST
+     * @since 2023 -09-14 11:08:41
+     */
+    public static void download(InputStream inputStream, String savePath) throws IOException {
+        try {
+            FileUtils.deleteFile(savePath);
+            File file = new File(savePath);
+            FileOutputStream outputStream = new FileOutputStream(file);
+            byte[] buffer = new byte[2048];
+            int length = 0;
+            while ((length = inputStream.read(buffer)) > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+
+            outputStream.flush();
+            outputStream.close();
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            if (ObjectUtils.isNotNull(inputStream)) {
+                inputStream.close();
+            }
+        }
+    }
+
     /**
      * Get web file content string.
      *

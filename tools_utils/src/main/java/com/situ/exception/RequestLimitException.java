@@ -8,6 +8,9 @@
 
 package com.situ.exception;
 
+import com.situ.tools.DataSwitch;
+import lombok.Getter;
+
 /**
  * 请求上限异常
  *
@@ -28,6 +31,24 @@ public class RequestLimitException extends Exception {
      */
     public RequestLimitException(String message) {
         super(message);
+    }
+
+
+    /**
+     * The Count.
+     */
+    @Getter
+    Integer count = 0;
+
+    /**
+     * Instantiates a new Request limit exception.
+     *
+     * @param message the message
+     * @param count   the count
+     */
+    public RequestLimitException(String message, Object count) {
+        super(message);
+        this.count = DataSwitch.convertObjectToInteger(count, 0);
     }
 
     /**
