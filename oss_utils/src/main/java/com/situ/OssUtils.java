@@ -10,15 +10,15 @@ package com.situ;
 
 import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.OSS;
-import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.common.utils.IOUtils;
 import com.aliyun.oss.model.*;
 import com.situ.config.OssConfig;
-import com.situ.config.OssUrlSetting;
-import com.situ.tools.*;
+import com.situ.tools.DateUtils;
+import com.situ.tools.FileUtils;
+import com.situ.tools.ObjectUtils;
+import com.situ.tools.StringUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -365,16 +365,16 @@ public class OssUtils {
             URL url = client.generatePresignedUrl(request);
             String string = url.toString();
 
-            String replaceUrl = config.getUrlList().stream()
+            String replaceUrl = config.getUrls().stream()
                     .filter(setting -> StringUtils.equalsIgnoreCase(setting.getBucket(), bucketName))
-                    .map(OssUrlSetting::getUrl)
+                    .map(OssConfig.UrlConfig::getUrl)
                     .findFirst()
                     .orElse(config.getUrl());
             if (ObjectUtils.isNotEmpty(replaceUrl)) {
                 string = string.substring(0, string.indexOf("?"));
                 string = StringUtils.replace(string, "https://", "");
                 string = StringUtils.replace(string, "http://", "");
-                string = string.replace(bucketName + "." + config.getEndpoint(), config.getUrl());
+                string = string.replace(bucketName + "." + config.getEndpoint(), replaceUrl);
             }
 
             if (StringUtils.equalsIgnoreCase("https", config.getProtocol())) {

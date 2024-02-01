@@ -8,9 +8,12 @@
 
 package com.situ.config;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -22,6 +25,7 @@ import java.util.List;
 @Component
 @Getter
 @Setter
+@ConfigurationProperties(prefix = "oss")
 public class OssConfig {
     @Value("${oss.endpoint}")
     private String endpoint;
@@ -31,9 +35,16 @@ public class OssConfig {
     private String accessKeySecret;
     @Value("${oss.url:}")
     private String url;
-    @Value("${oss.url_list}")
-    private List<OssUrlSetting> urlList;
 
     @Value("${oss.protocol:http}")
     private String protocol;
+
+    private List<UrlConfig> urls;
+
+    @Data
+    public static class UrlConfig {
+        private String bucket;
+        private String url;
+
+    }
 }
