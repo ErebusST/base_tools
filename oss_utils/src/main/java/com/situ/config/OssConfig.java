@@ -13,6 +13,8 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * @author 司徒彬
  * @date 2022/6/9 18:34
@@ -29,6 +31,8 @@ public class OssConfig {
     private String accessKeySecret;
     @Value("${oss.url:}")
     private String url;
+    @Value("${oss.url_list:}")
+    private List<OssUrlSetting> urlList;
 
     @Value("${oss.protocol:http}")
     private String protocol;

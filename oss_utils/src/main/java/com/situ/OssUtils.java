@@ -15,6 +15,7 @@ import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.common.utils.IOUtils;
 import com.aliyun.oss.model.*;
 import com.situ.config.OssConfig;
+import com.situ.config.OssUrlSetting;
 import com.situ.tools.*;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -363,7 +364,13 @@ public class OssUtils {
             request.setExpiration(expiration);
             URL url = client.generatePresignedUrl(request);
             String string = url.toString();
-            if (ObjectUtils.isNotEmpty(config.getUrl())) {
+
+            String replaceUrl = config.getUrlList().stream()
+                    .filter(setting -> StringUtils.equalsIgnoreCase(setting.getBucket(), bucketName))
+                    .map(OssUrlSetting::getUrl)
+                    .findFirst()
+                    .orElse(config.getUrl());
+            if (ObjectUtils.isNotEmpty(replaceUrl)) {
                 string = string.substring(0, string.indexOf("?"));
                 string = StringUtils.replace(string, "https://", "");
                 string = StringUtils.replace(string, "http://", "");

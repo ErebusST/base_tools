@@ -24,7 +24,7 @@ public class PayloadEntity  implements Serializable {
     //The subject of the token，token 主题
     private String sub;
     //Expiration Time。 token 过期时间，Unix 时间戳格式
-    private String exp;
+    private Long exp;
     //Issued At。 token 创建时间， Unix 时间戳格式
     private String iat;
     //JWT ID。针对当前 token 的唯一标识

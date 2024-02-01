@@ -9,6 +9,7 @@
 package com.situ.tools;
 
 import com.situ.enumeration.DateFormatEnum;
+import org.junit.Test;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -702,31 +703,15 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 
 
     /**
-     * Get first day of month timestamp.
-     *
-     * @param timestamp the timestamp
-     * @return the first day of month
-     * @author ErebusST
-     * @since 2023 -11-16 12:08:27
-     */
-    public static Timestamp getFirstDayOfMonth(Timestamp timestamp) {
-        Calendar cal = toCalendar(timestamp);
-        int month = cal.get(Calendar.MONTH);
-        return getFirstDayOfMonth(timestamp, month);
-    }
-
-    /**
      * Gets first day of month.
      *
      * @param timestamp the now
-     * @param month     the month
      * @return the first day of month
      * @author ErebusST
      * @since 2022 -01-07 15:36:00
      */
-    public static Timestamp getFirstDayOfMonth(Timestamp timestamp, int month) {
+    public static Timestamp getFirstDayOfMonth(Timestamp timestamp) {
         Calendar cal = toCalendar(timestamp);
-        cal.add(Calendar.MONTH, month);
         cal.set(Calendar.DAY_OF_MONTH, 1);
         cal.set(Calendar.HOUR_OF_DAY, 0);
         cal.set(Calendar.MINUTE, 0);
@@ -736,16 +721,22 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
         return currentTimestamp;
     }
 
-    public static Timestamp getLastDayOfMonth(Timestamp timestamp) {
-        Calendar cal = toCalendar(timestamp);
-        int month = cal.get(Calendar.MONTH);
-        return getLastDayOfMonth(timestamp, month);
+    @Test
+    public void test() {
+        Timestamp timestamp = DateUtils.getTimestamp("2023-12-01");
+        Timestamp lastDayOfMonth = getLastDayOfMonth(timestamp);
+        System.out.printf(lastDayOfMonth.toString());
     }
+
+    public static Timestamp getLastDayOfMonth(Timestamp timestamp) {
+        return getLastDayOfMonth(timestamp, 0);
+    }
+
     /**
      * Get last day of month timestamp.
      *
-     * @param timestamp   the now
-     * @param month the month
+     * @param timestamp the now
+     * @param month     the month
      * @return the last day of month
      * @author ErebusST
      * @since 2022 -01-07 15:36:00

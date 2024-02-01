@@ -51,8 +51,8 @@ public class AuthHelper {
         payloadEntity.setIat(iatString);
 
         //获得过期时间时间戳  按毫秒计算
-        String expString = DataSwitch.convertObjectToString(currentTimeMillis + durationDay * 24 * 60 * 60 * 1000);
-        payloadEntity.setExp(expString);
+        Long exp = currentTimeMillis + durationDay * 24 * 60 * 60 * 1000;
+        payloadEntity.setExp(exp);
         //objEntity.setExp(expString);
 
         //iss
@@ -92,8 +92,8 @@ public class AuthHelper {
 
                 String sign = DesUtils.decrypt(token, 0);
                 T userInfo = DataSwitch.convertJsonStringToEntity(sign, clazz);
-                PayloadEntity payloadEntity = userInfo.getPayloadEntity();
-                if (StringUtils.equalsIgnoreCase(payloadEntity.getIss(), ISSUER)) {
+                PayloadEntity payload = userInfo.getPayloadEntity();
+                if (StringUtils.equalsIgnoreCase(payload.getIss(), ISSUER)) {
                     return userInfo;
                 } else {
                     return null;

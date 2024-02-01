@@ -15,9 +15,12 @@ import com.alibaba.excel.write.metadata.fill.FillWrapper;
 import com.situ.annotation.Fill;
 import com.situ.entity.bo.ExportExcelSetting;
 import com.situ.handle.MergeHandle;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletResponse;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URLEncoder;
@@ -25,6 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -37,6 +41,59 @@ import java.util.stream.IntStream;
  */
 @Slf4j
 public class ExcelUtils {
+
+    /**
+     * Read .
+     *
+     * @param filePath   the file path
+     * @param sheetIndex the sheet index 从 0 开始
+     * @param callback   the callback
+     * @throws FileNotFoundException the file not found exception
+     * @author ErebusST
+     * @since 2023 -11-30 10:49:52
+     */
+    public static void read(String filePath, Integer sheetIndex,
+                            @Nonnull BiFunction<LinkedHashMap<Integer, String>, Integer, Boolean> callback) throws FileNotFoundException {
+        boolean exist = FileUtils.isExist(filePath);
+        if (!exist) {
+            throw new FileNotFoundException(StringUtils.format("文件不存在,{pah}", filePath));
+        }
+        ExcelTypeEnum type =
+                StringUtils.endsWithIgnoreCase(filePath, ExcelTypeEnum.XLSX.name())
+                        ? ExcelTypeEnum.XLSX : ExcelTypeEnum.XLS;
+        ExcelReader reader = EasyExcel
+                .read(filePath, new AnalysisEventListener<LinkedHashMap<Integer, String>>() {
+                    @Override
+                    public void invokeHeadMap(Map<Integer, String> header, AnalysisContext context) {
+                        LinkedHashMap<Integer, String> data = header.entrySet()
+                                .stream()
+                                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+                                        (oldValue, newValue) -> newValue, LinkedHashMap::new));
+                        callback.apply(data, 0);
+                    }
+
+                    @SneakyThrows
+                    @Override
+                    public void invoke(LinkedHashMap<Integer, String> data, AnalysisContext analysisContext) {
+                        Integer rowIndex = analysisContext.getCurrentRowNum();
+                        callback.apply(data, rowIndex);
+                        log.info("{}", DataSwitch.convertObjectToJsonElement(data));
+                    }
+
+                    @Override
+                    public void doAfterAllAnalysed(AnalysisContext analysisContext) {
+
+                    }
+                })
+                .ignoreEmptyRow(true)
+                .autoCloseStream(true)
+                .autoTrim(true)
+                .excelType(type)
+                .build();
+        reader.read(new ReadSheet(sheetIndex));
+        reader.finish();
+    }
+
     /**
      * Fill .
      *
@@ -95,6 +152,7 @@ public class ExcelUtils {
      *
      * @param <ExcelData> the type parameter
      * @param clazz       the clazz
+     * @param template    the template
      * @param fileName    the file name
      * @param dataSet     the data set
      * @param response    the response
@@ -291,6 +349,20 @@ public class ExcelUtils {
     }
 
     /**
+     * Get string.
+     *
+     * @param data       the data
+     * @param columnName the column name
+     * @return the string
+     * @author ErebusST
+     * @since 2023 -11-30 11:02:29
+     */
+    public static String get(LinkedHashMap<Integer, String> data, String columnName) {
+        Integer columnIndex = index(columnName);
+        return data.get(columnIndex);
+    }
+
+    /**
      * Index integer.
      *
      * @param column the column
@@ -299,10 +371,11 @@ public class ExcelUtils {
      * @since 2022 -01-07 15:36:06
      */
     public static Integer index(String column) {
-        int length = column.length();
+        String colUpper = column.toUpperCase();
+        int length = colUpper.length();
         return IntStream.range(0, length)
                 .mapToObj(index -> {
-                    char ch = column.charAt(length - index - 1);
+                    char ch = colUpper.charAt(length - index - 1);
                     int num = (int) (ch - 'A' + 1);
                     num *= Math.pow(26, index);
                     return num;

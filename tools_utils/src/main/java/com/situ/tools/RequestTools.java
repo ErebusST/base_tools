@@ -257,6 +257,7 @@ public class RequestTools {
                 .connectTimeout(TIME_OUT, TimeUnit.SECONDS)
                 .readTimeout(TIME_OUT, TimeUnit.SECONDS)
                 .writeTimeout(TIME_OUT, TimeUnit.SECONDS)
+                .followSslRedirects(true)
                 .retryOnConnectionFailure(true);
 
         if (!StringUtils.equalsIgnoreCase(ENV, "prod")) {
