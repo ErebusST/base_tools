@@ -29,9 +29,9 @@ public class OssConfig {
     private String accessKeyId;
     @Value("${oss.access_key_secret}")
     private String accessKeySecret;
-    @Value("${oss.url:}")
+    @Value("${oss.url}")
     private String url;
-    @Value("${oss.url_list:}")
+    @Value("${oss.url_list}")
     private List<OssUrlSetting> urlList;
 
     @Value("${oss.protocol:http}")
