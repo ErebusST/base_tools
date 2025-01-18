@@ -436,7 +436,7 @@ public class BaseDBDao {
             if (parameters == null) {
                 return false;
             }
-
+            List<String> error = new ArrayList<>(parameters.size());
             long errorCount = parameters.keySet().stream().filter(key -> {
                 boolean isEmpty = StringUtils.isEmpty(key);
 
@@ -445,13 +445,16 @@ public class BaseDBDao {
                 } else {
                     Matcher matcher = SQL_INJECTION_ATTACK_PATTERN.matcher(":".concat(key));
                     boolean flag = matcher.matches();
+                    if (!flag) {
+                        error.add(String.format("The keyName of parameter is not allowed. [ %s ]", key));
+                    }
                     return !flag;
                 }
 
             }).count();
             if (errorCount > 0) {
                 throw new Exception("this is has sql injection attack code,the keyName of parameter is not allowed. "
-                        .concat(DataSwitch.convertObjectToJsonElement(parameters.keySet()).toString()));
+                        .concat(StringUtils.getCombineString(error)));
             } else {
                 return false;
             }
